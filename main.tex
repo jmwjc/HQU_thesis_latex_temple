@@ -1,0 +1,295 @@
+%! TEX program = xelatex
+%! TEX encoding = UTF-8 Unicode
+
+\documentclass[engineeringmaster]{hquThesis}
+\usepackage{lineno}
+\usepackage{amsmath,amsfonts,amssymb,textcomp,ulem}
+\usepackage{booktabs,multirow,tabularx,float}
+\usepackage{listings}
+
+
+
+
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
+\begin{document}
+\makecover
+% NOTE: 正式文档请取消下面两行注释
+% \include{decision}
+% \include{declaration}
+
+\frontmatter{
+    \include{abstract}
+    \tableofcontents
+}
+
+\mainmatter
+\chapter{前期准备}
+\section{封面关键字设置}
+\section{Git相关}
+\begin{enumerate}
+    \item 通过fork建仓，具体步骤可参考\href{https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository}{这里}。
+    \item 设置 .gitignore 文件(已配置)。
+\item 设置临时文件(.aux、.bbl等)和编译文件(.pdf)位置，具体可参考\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-tools}{LaTeX-Workshop帮助文档}(设置\%TMPDIR\%、\%OUTDIR\%)。
+\end{enumerate}
+
+\section{VS code配置}
+\subsection*{配置Latex}
+\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-tools}{LaTeX-Workshop配置}
+\subsection*{LaTeX workshop: }
+
+正向搜索(forward research)从代码处定位至PDF文档处：Ctrl+alt+j
+
+反向搜索(inverse research)从PDF文档准确定位至LaTeX代码处：Ctrl+鼠标左键
+
+正反向搜索具体教程可参考\href{https://github.com/James-Yu/LaTeX-Workshop/wiki/View#synctex}{这里}。
+\subsection*{Git Graph}
+点击左侧源代码管理插件-点击左上角View Git Graph(git log)-查看修改记录
+
+\subsection*{Todo Tree}
+帮助管理项目中的TODO注释和其他标记，\href{https://blog.csdn.net/m0_37586991/article/details/104239568}{Todo Tree安装步骤}。
+
+\subsection*{Zotero LaTeX}
+Zotero管理参考文献
+\section{文件、label 命名规则}
+Latex路径中文件只允许以英文命名
+
+\subsection*{公式}
+\begin{lstlisting}[language=TeX]
+    \label{CH_name}{formula_name}
+\end{lstlisting}
+
+\subsection*{图}
+\begin{lstlisting}
+    \label{CH_name}{fig_name}
+\end{lstlisting}
+
+\subsection*{表}
+\begin{lstlisting}
+    \label{CH_name}{table_name}
+\end{lstlisting}
+
+
+\chapter{图表设置}
+\subsection*{单张}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.4]{figures/1.png}
+\caption{\centering{边界点处无网格形函数}}
+\label{CHGraphsettings_fig1_meshfree}
+\end{figure}
+单张图片Latex代码
+\begin{lstlisting}
+\begin{figure}[H]-放置位置
+\centering-居中
+\includegraphics[scale=0.4]{figures/1.png}-大小、图片路径
+\caption{\centering{边界点处无网格形函数}}-图名
+\label{CHGraphsettings_fig1_meshfree}-命名
+\end{figure}
+\end{lstlisting}
+\newpage
+\subsection*{并排}
+\begin{figure}[H]
+    \centering
+    \begin{subcaptiongroup}
+    \includegraphics[width=0.49\textwidth]{figures/1.png}
+    \phantomcaption\label{1}
+    \includegraphics[width=0.49\textwidth]{figures/2.png}
+    \phantomcaption\label{2}
+    \end{subcaptiongroup}
+\caption{\centering{无网格形函数：\subref{1}边界点；\subref{2}中心点}}
+% NOTE:遇到图名过长需要换行的编写：
+% \caption{\centering{标题：\protect\linebreak \subref{xxx} 小标题1；\subref{xx} 小标题2；\subref{xxx}小标题3；\subref{xxx} 小标题4}}
+\label{CHGraphsettings_fig2_meshfree}
+\end{figure}
+并排图片Latex代码
+\begin{lstlisting}
+\begin{figure}[H]
+\centering
+\begin{subcaptiongroup}
+\includegraphics[width=0.49\textwidth]{figure/1.png}
+\phantomcaption\label{1}
+\includegraphics[width=0.49\textwidth]{figure/2.png}
+\phantomcaption\label{2}
+\end{subcaptiongroup}
+\caption{\centering{无网格形函数：\subref{1}边界点；\subref{2}中心点}}
+\end{lstlisting}
+\newpage
+\subsection*{表格式图片}
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{cccc}
+    $\quad$&$p=2$&$p=2$&$p=2$\\
+    边界点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}
+    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}
+    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/1.png}}\end{subcaptiongroup}\\
+    中心点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}
+    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}
+    &\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figures/2.png}}\end{subcaptiongroup}\\
+    \end{tabular}
+    \caption{\textbf{二维边界点与内部节点无网格形函数图}}\label{CHGraphsettings_fig3_meshfree}
+    \end{figure}
+
+表格式图片Latex代码
+\begin{lstlisting}
+\begin{figure}[H]
+\centering
+\begin{tabular}{cccc}
+$\quad$&$p=2$&$p=2$&$p=2$\\
+边界点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}
+&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}
+&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/1.png}}\end{subcaptiongroup}\\
+中心点&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}
+&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}
+&\begin{subcaptiongroup}\raisebox{-0.5\height}{\includegraphics[width=0.3\textwidth]{figure/2.png}}\end{subcaptiongroup}\\
+\end{tabular}
+\caption{\textbf{二维边界点与内部节点无网格形函数图}}\label{CHGraphsettings_fig3_meshfree}
+\end{figure}     
+\end{lstlisting}
+
+\subsection*{三线表}
+\begin{table}[H]
+    \caption{\textbf{三次基函数无网格法分片实验结果}}
+    \centering\label{CHGraphsettings_table_cubic}
+    \begin{tabular}{lcccc}
+       \toprule
+    & \multicolumn{2}{c}{二次分片实验} & \multicolumn{2}{c}{三次分片实验} \\ \cline{2-5}
+       &$L_2$-Error$\quad$&$H_1$-Error&$L_2$-Error$\quad$&$H_1$-Error\\
+       \midrule
+      RKGSI-Penalty&$1.4\times10^{-7}$&$2.1\times10^{-6}$&$2.0\times10^{-7}$&$2.7\times10^{-6}$\\
+      RKGSI-LM&$3.0\times10^{-4}$&$9.8\times10^{-3}$&$4.2\times10^{-4}$&$9.8\times10^{-3}$\\
+      RKGSI-Nitsche&$3.6\times10^{-15}$&$1.0\times10^{-13}$&$4.6\times10^{-15}$&$9.5\times10^{-14}$\\
+      RKGSI-HR&$3.1\times10^{-15}$&$1.0\times10^{-13}$&$3.5\times10^{-15}$&$7.4\times10^{-14}$\\
+       \bottomrule
+    \end{tabular}
+    \end{table}
+三线表Latex代码
+\begin{lstlisting}
+\begin{table}[H]
+\caption{\textbf{三次基函数无网格法分片实验结果}}
+\centering\label{CHGraphsettings_table_cubic}
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{二次分片实验} & \multicolumn{2}{c}{三次分片实验} \\ \cline{2-5}
+&$L_2$-Error$\quad$&$H_1$-Error&$L_2$-Error$\quad$&$H_1$-Error\\
+\midrule
+RKGSI-Penalty&$1.4\times10^{-7}$&$2.1\times10^{-6}$&$2.0\times10^{-7}$&$2.7\times10^{-6}$\\
+RKGSI-LM&$3.0\times10^{-4}$&$9.8\times10^{-3}$&$4.2\times10^{-4}$&$9.8\times10^{-3}$\\
+RKGSI-Nitsche&$3.6\times10^{-15}$&$1.0\times10^{-13}$&$4.6\times10^{-15}$&$9.5\times10^{-14}$\\
+RKGSI-HR&$3.1\times10^{-15}$&$1.0\times10^{-13}$&$3.5\times10^{-15}$&$7.4\times10^{-14}$\\
+\bottomrule
+\end{tabular}
+\end{table}    
+\end{lstlisting}
+
+\chapter{使用Zotero管理参考文献}
+1.下载附件：Better BibTex
+链接：\href{https://zhuanlan.zhihu.com/p/621145900}{Better BibTex安装步骤}
+
+2.新建分类建立文件库：references
+
+3.右击该文件库-选择导出分类-以Better BibTex形式导出条目
+
+4.导出条目至与Latex文件相同路径
+
+5.在主文件(ef:main.tex)中添加：
+\begin{lstlisting}
+\begin{document}
+    .....
+    \bibliography{references}--导出文献的文件名
+    .....
+\end{document}
+\end{lstlisting}
+eg：基于赫林格-赖斯纳原理的变分一致型伽辽金无网格法\cite{Wu2022,wu2023}相较于传统的本质边界条件施加方法能够有效提高计算精度和计算效率。
+
+Latex代码
+
+\begin{lstlisting}
+eg：基于赫林格-赖斯纳原理的变分一致型伽辽金无网格法\cite{Wu2022,wu2023}相较于传统的本质边界条件施加方法能够有效提高计算精度和计算效率。
+\end{lstlisting}
+
+\chapter{\LaTeX 部分所需包介绍}
+
+
+编写公式-\{amsmath,amsfonts,amssymb,textcomp,ulem\}
+
+绘制表格-\{booktabs,multirow,tabularx,float\}
+
+书写代码-\{listings\}
+
+代码块设置
+\begin{lstlisting}
+\lstset{breaklines,        %自动换行
+        columns=flexible,  %不随便添加空格,只在已经有空格的地方添加空格,
+       }
+\end{lstlisting}
+
+设置PDF文档中超链接的颜色
+\begin{lstlisting}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}
+\end{lstlisting}
+
+
+
+% NOTE 毕业论文致谢部分
+% \include{acknowledgments}
+\appendix
+\chapter{附录}
+附录章节前需添加以下下代码
+\begin{lstlisting}
+    \appendix
+\end{lstlisting}
+
+
+\chapter{参考格式}
+\begin{lstlisting}
+
+\documentclass[engineeringmaster]{hquThesis}-hquThesis是模板文件,包含文本格式,字体设置,文献格式.....
+\usepackage{amsmath,amsfonts,amssymb,textcomp}-公式所需
+\usepackage{booktabs,multirow,tabularx,float}-表格所需
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black}-设置超链接格式
+\titleZh{XXX}-中文标题
+\titleEn{XXX}-英文标题
+\id{}-学号
+\authorZh{XXX}-作者姓名
+\supervisorZh{XXX}{XXX}-指导教师+职称
+\cosupervisorZh{XXX}{XXX}-合作教师+职称
+\practicevisorZh{XXX}{XXX}-实践教师+职称
+\departmentZh{土木工程学院}
+\fieldZh{结构体系创新与工程应用}
+\majortype{工程硕士}
+\major{土木水利}
+\coverdate{二〇二四年三月XX日}
+-封面设置
+\begin{document}-正文开始
+
+\makecover
+\include{decision}-答辩委员会
+\include{declaration}-独创性说明
+\frontmatter
+\include{abstract}-摘要
+\tableofcontents
+\mainmatter
+\include{Introduction}-正文章节
+\include{XXX}
+\include{XXXX}
+\backmatter-页眉另起设置
+\bibliography{references}-引用参考文献条目(.bib)
+\include{acknowledgments}-致谢
+\appendix-附录部分
+\include{appendixA}-附录章节
+\include{appendixB}-附录章节
+\include{cv}-个人简历
+
+\end{document}-结束正文
+\end{lstlisting}
+
+
+\backmatter
+
+
+\bibliography{references}
+
+% NOTE 毕业论文个人简历部分
+% \include{cv}
+
+\end{document}
