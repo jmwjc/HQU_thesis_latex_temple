@@ -12,16 +12,20 @@
 \section{动力问题及基于强形式的迭代求解}
 
 在动力问题的数值求解中，基于控制方程强形式的方法是重要途径之一。
+以单自由度系统的自由振动为例，其控制方程可表示为：
 \begin{equation}\label{2.1}
 m \ddot q + k q =0
 \end{equation}
 其中，$m$表示质量，$\ddot q$表示加速度，$k$表示刚度系数，$q$表示位移。
 
-欧拉迭代法通过对时间导数进行有限差分近似，
-根据差分近似中使用的“时间信息”分为显式、隐式和半隐式算法。
+对此类问题的时间域分析，常采用基于微分方程强形式的离散方法(如有限差分法)，
+而欧拉迭代法正是通过对时间导数的有限差分近似构建的数值算法。
+根据差分近似所选用的“时间信息”，可分为显式、隐式和半隐式三种形式。
 显示欧拉迭代如式\ref{2.2}所示，采用向前差分近似时间导数，
 利用当前时刻(第$n$步)的状态(位移、速度、加速度)计算下一时刻(第$n+1$步)的状态，
-无需求解方程组。式中$q_n$表示第$n$个时间步的位移，
+无需求解方程组。它使用恒定的时间步长，依次计算出近似值$q_1$，$q_2$，$q_3$\dots，
+来逼近初始值$q_0$对应的解析值$q_{1h}$，$q_{2h}$，$q_{3h}$\dots。
+式中$q_n$表示第$n$个时间步的位移，
 $\dot q_n$表示第$n$个时间步的速度，$\ddot q_n$表示第$n$个时间步的加速度，
 $\Delta t$为时间步长。
 \begin{equation}\label{2.2}
@@ -35,7 +39,8 @@ q_{n+1} &= q_n + \Delta t \dot q_n
 \end{equation}
 
 隐式欧拉法采用向后差分近似时间导数，
-即利用下一时刻(第$n+1$步)的状态反推当前时刻的更新，需要求解方程组。
+即利用下一时刻(第$n+1$步)的状态反推当前时刻的更新，
+因此需要求解方程组以获取未知的$n+1$步状态，迭代公式为：
 \begin{equation}\label{2.3}
 \left \{
 \begin{split}
@@ -47,8 +52,9 @@ q_{n+1} &= q_n + \Delta t \dot q_{n+1}
 \end{equation}
 
 半隐式欧拉法结合向前差分与向后差分的特点：
-对高频部分采用向后差分，对低频部分采用向前差分。如式\ref{2.4}所示，
-加速度仍用当前时刻的位移计算，速度和位移则用下一时刻的加速度更新。
+对高频部分采用向后差分以增强稳定性，对低频部分采用向前差分以简化计算。
+如式\ref{2.4}所示，加速度仍用当前时刻的位移计算，
+速度和位移则用下一时刻的加速度更新。
 \begin{equation}\label{2.4}
 \left \{
 \begin{split}
@@ -65,13 +71,18 @@ q_{n+1} &= q_n + \Delta t \dot q_{n+1}
 % 增加计算负担。同时，强形式方法的迭代求解过程同样依赖于上一步的计算结果，
 % 难以实现高度并行化，在大规模动力问题的求解中，计算效率较差。
 
-综上所述，欧拉迭代法的三种形式，都是对时间域采用基于微分方程的强形式进行离散分析，
-差别在于对时间导数的差分近似方式。
+综上所述，欧拉迭代法的三种形式，
+都是对时间域采用基于微分方程的强形式进行离散分析，
+差别在于对时间导数的差分近似方式。显式算法依赖当前时刻信息，
+隐式算法依赖未来时刻信息，半隐式算法则混合使用两类信息，
+在计算效率与稳定性之间取得平衡。
 
 \section{基于哈密顿原理的完全弱形式求解}
 
-另一种方法是基于哈密顿原理的完全弱形式求解，该方法是一种从系统能量变分本质出发，
-对动力问题（包括弹性波传播等）进行全域时空离散的数值方法。
+另一种方法是基于哈密顿原理的完全弱形式求解，将时间域作为第四维空间，
+并采用基于哈密顿原理的伽辽金弱形式协同空间区域进行混合离散，
+称为时空混合离散伽辽金法。该方法是一种从系统能量变分本质出发，
+对动力问题(包括弹性波传播等)进行全域时空离散的数值方法。
 其核心思想是通过构建包含空间变量与时间变量的作用量泛函，
 利用变分原理将动力系统的控制方程，如欧拉-拉格朗日方程或哈密顿正则方程，
 转化为全域范围内的弱形式，从而实现空间域与时间域的统一求解，
@@ -217,22 +228,25 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 同时不再要求初始时刻虚位移为零，将初始时刻速度边界条件在此处作为自然边界条件施加。
 为此保证整个系数矩阵是方阵，从而可以进行求解。
 但是这种做法存在明显的局限性，该方法无法对网格进行任意离散，
-必须保证初始时刻的节点和最后时刻的节点保持一致。
+必须保证初始时刻的节点和最后时刻的节点保持一致，
+限制了时域边界处布置节点的个数。
 此时，时空离散网格难以进行局部加密，限制了其在复杂问题中的应用。
-为此，Hughes等人提出了一种间断伽辽金法，
-该方法在泛函变分中添加非连续的边界条件使弱形式满足变分一致性，
-此时弱形式无需要求虚位移在时间末端为零。
-但添加的非连续边界条件将导致弱形式的正定性无法得到满足，
-需要添加额外的稳定项来保证计算精度。
-同时，间断伽辽金方法仍然无法实现绝对非均布的离散，
-只能在均布的时域块内做非均布计算，对于具有高度局部特性的问题时仍不够理想。
-而Wriggers和Junker则是采用虚单元法构造非协调单元进行时间区域与空间区域的整体离散，
-也是属于间断伽辽金范畴，该方法可以使用高阶单元来提高计算精度，
-但同样需要添加稳定项。采用配点型的方法也可以规避处理时间末端边界条件的问题，
-并引入正交基函数离散哈密顿正则方程进行求解。但该方法求解精度与配点位置相关，
-为保证计算精度也需要采用均布网格进行离散。
-目前，时空混合离散方案均无法做到绝对的时空混合离散，
-限制了该类方法在实际工程中的应用和推广。
+% 为此，Hughes等人提出了一种间断伽辽金法，
+% 该方法在泛函变分中添加非连续的边界条件使弱形式满足变分一致性，
+% 此时弱形式无需要求虚位移在时间末端为零。
+% 但添加的非连续边界条件将导致弱形式的正定性无法得到满足，
+% 需要添加额外的稳定项来保证计算精度。
+% 同时，间断伽辽金方法仍然无法实现绝对非均布的离散，
+% 只能在均布的时域块内做非均布计算，对于具有高度局部特性的问题时仍不够理想。
+% 而Wriggers和Junker则是采用虚单元法构造非协调单元进行时间区域与空间区域的整体离散，
+% 也是属于间断伽辽金范畴，该方法可以使用高阶单元来提高计算精度，
+% 但同样需要添加稳定项。采用配点型的方法也可以规避处理时间末端边界条件的问题，
+% 并引入正交基函数离散哈密顿正则方程进行求解。但该方法求解精度与配点位置相关，
+% 为保证计算精度也需要采用均布网格进行离散。
+% 目前，时空混合离散方案均无法做到绝对的时空混合离散，
+% 限制了该类方法在实际工程中的应用和推广。
+所以，建立时域末端虚位移本质边界条件的施加方案，
+是发展适用于任意节点分布时空伽辽金无网格法的必要条件。
 
 \begin{figure}[!h]
     \centering
@@ -328,8 +342,15 @@ f_I = N_I(t_0) P
 \end{Bmatrix}
 \end{equation}
 
-其中，刚度矩阵$\boldsymbol K$重复在三个地方使用，
-将利用该特点优化程序结构，降低内存开销。
+其中，总刚度矩阵如图\ref{2.2}所示，$\boldsymbol K$重复在三个地方使用，
+因此可以利用该特点优化程序结构，降低内存开销。
+\begin{figure}[!h] 
+    \centering
+    \includegraphics[scale=0.7]{fig/math/总刚度矩阵.png}
+\caption{\centering{总刚度矩阵示意图}}
+\label{fg:2.2}
+\end{figure}
+
 $\boldsymbol K^\alpha$和$\boldsymbol f^\alpha$、
 $\boldsymbol K^\beta$和$\boldsymbol f^\beta$
 分别为施加与$q$和$p$相关的本质边界条件刚度矩阵和力向量,分量表达式如下：
@@ -355,7 +376,7 @@ f^\beta_I = \beta N_I q(t_1)
 \section{数值算例}
 \subsection{弹簧小车问题}
 
-考虑一维弹簧小车问题，如图\ref{fg:2.2}所示，一辆质量为$m = 1.0$的小车，
+考虑一维弹簧小车问题，如图\ref{fg:2.3}所示，一辆质量为$m = 1.0$的小车，
 在初始位移$q_0=1.0$和初始速度$\dot q_o=1.0$作用下水平向右移动。
 同时，一个刚度系数为$k=100$的弹簧作用在小车的左端，
 整个弹簧小车模型的左端为固定支座，右端不施加任何约束。
@@ -366,7 +387,7 @@ f^\beta_I = \beta N_I q(t_1)
     \centering
     \includegraphics[scale=1.0]{fig/math/弹簧小车模型.png}
 \caption{\centering{一维弹簧小车算例模型}}
-\label{fg:2.2}
+\label{fg:2.3}
 \end{figure}
  
 根据弹性力学的分析，该弹簧小车问题的解析解为：
@@ -380,7 +401,8 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 通过控制方程我们可以采用欧拉迭代法对它进行动力分析，
 根据式\ref{2.1}-\ref{2.3}所提到的在计算时是否采用当前时间步信息而区分的三种迭代法进行测试。
 
-如图\ref{fg:2.3}所示，蓝色的线为显示欧拉迭代法的计算结果，黑线为精确解。
+如图\ref{fg:2.4}所示为弹簧小车问题在不同计算方法下的位移随时间变化的对比图，
+其中蓝色的线为数值计算方法的计算结果，黑线为精确解。
 从计算过程来看显示算法计算时无需求解方程组，
 计算效率较高，并且适用于多种类型的微分方程。
 但是该算法的稳定性差，对时间步长敏感，
@@ -412,28 +434,42 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 
 \begin{figure}[!h]
     \centering
-        \begin{tabular}{c@{\hspace{20pt}}c}
+        \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Explicit_1d.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Explicit_1d_e.png} \\
-            显式欧拉与精确解位移对比图 & 显式欧拉迭代法的位移误差图 \\
+        \end{tabular}
+        \caption{显示欧拉迭代法计算弹簧小车问题的位移图与误差图}\label{fg:2.4}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+        \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Implicit_1d.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Implicit_1d_e.png} \\
-            隐式欧拉与精确解位移对比图 & 隐式欧拉迭代法的位移误差图 \\
+        \end{tabular}
+        \caption{隐示欧拉迭代法计算弹簧小车问题的位移图与误差图}\label{fg:2.5}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+        \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Semi_implicit_1d.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Semi_implicit_1d_e.png} \\
-            半隐欧拉与精确解位移对比图 & 半隐欧拉迭代法的位移误差图 \\
+        \end{tabular}
+        \caption{半隐欧拉迭代法计算弹簧小车问题的位移图与误差图}\label{fg:2.6}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+        \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/string_1d.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/string_1d_e.png} \\
-            哈密顿法与精确解位移对比图 & 哈密顿法的位移误差图 \\
         \end{tabular}
-        \caption{传统迭代法和哈密顿法计算弹簧小车问题的位移与误差图}\label{fg:2.3}
+        \caption{哈密顿法计算弹簧小车问题的位移图与误差图}\label{fg:2.7}
 \end{figure}
 
 
 \subsection{摆锤问题}
 
 
-考虑如图\ref{fg:2.4}所示的单摆锤问题，
+考虑如图\ref{fg:2.8}所示的单摆锤问题，
 一个质量为$m$的摆锤通过长度为$l$轻质刚性杆悬挂于固定支点，
 初始时刻，摆锤在初始转角$\theta_0 = 0.1$(小角度假设，满足$\sin \theta = \theta$简化条件)
 和初始角速度$\dot \theta_0 = 0$的作用下，
@@ -444,118 +480,14 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
     \centering
     \includegraphics[scale=0.6]{fig/math/摇摆问题模型.png}
 \caption{\centering{摆锤问题算例模型}}
-\label{fg:2.4}
+\label{fg:2.8}
 \end{figure}
-
-% 根据动力学分析，摆锤的转动惯量为:
-% \begin{equation}\label{2.29}
-% J = m l^2
-% \end{equation}
-
-% 根据转动定律:
-% \begin{equation}\label{2.30}
-% J \ddot \theta = M
-% \end{equation}
-
-% 重力对支点的力矩为：
-% \begin{equation}\label{2.31}
-% M = -m g l \sin \theta
-% \end{equation}
-
-% 在小角度假设下$\sin \theta \approx \theta$，运动方程简化为：
-% \begin{equation}\label{2.32}
-% m l^2 \ddot \theta + m g l \theta = 0
-% \end{equation}
-
-% 其中，固有圆频率$\omega = \sqrt{\frac{g}{l}}$，整理方程得：
-% \begin{equation}\label{2.33}
-% \ddot \theta + \omega \theta = 0
-% \end{equation}
 
 摆锤运动方程为二阶线性齐次微分方程，其通解形式为简谐振动，
 结合初始边界条件得其解析解为：
 \begin{equation}\label{2.34}
 \theta(t) = \theta_0 \cos(\omega t) + \frac{\theta_0}{\omega} \sin(\omega t)
 \end{equation}
-
-% 根据方程\ref{2.33}，摆锤运动的欧拉迭代公式如下，显示欧拉迭代：
-% \begin{equation}\label{2.35}
-% \left \{
-% \begin{split}
-% \ddot{\theta}_n &= -\frac{g}{l} \theta_n \\ 
-% \dot{\theta}_{n+1} &= \dot{\theta}_n + \Delta t \ddot \theta_n \\ 
-% \theta_{n+1} &= \theta_n + \Delta t  \dot{\theta}_n 
-% \end{split}
-% \right .
-% \end{equation}
-
-% 隐式欧拉迭代：
-% \begin{equation}\label{2.36}
-% \left \{
-% \begin{split}
-% \ddot{\theta}_{n+1} &= -\frac{g}{l} \theta_{n+1} \\ 
-% \dot{\theta}_{n+1} &= \dot{\theta}_n + \Delta t \ddot \theta_{n+1} \\ 
-% \theta_{n+1} &= \theta_n + \Delta t  \dot{\theta}_{n+1}
-% \end{split}
-% \right .
-% \end{equation}
-
-% 半隐欧拉迭代：
-% \begin{equation}\label{2.37}
-% \left \{
-% \begin{split}
-% \ddot{\theta}_{n+1} &= -\frac{g}{l} \theta_{n} \\ 
-% \dot{\theta}_{n+1} &= \dot{\theta}_n + \Delta t \ddot \theta_{n+1} \\ 
-% \theta_{n+1} &= \theta_n + \Delta t  \dot{\theta}_{n+1}
-% \end{split}
-% \right .
-% \end{equation}
-
-% 在小角度假设下，摆锤问题基于哈密顿原理的完全弱形式推导如下：
-% $T$为总动能，$U$为总势能：
-% \begin{equation}\label{2.38}
-% T = \frac{1}{2} m (l \dot \theta)^2, \quad U = \frac{1}{2} mgl \theta^2
-% \end{equation}
-
-% 拉格朗日方程：
-% \begin{equation}\label{2.39}
-% L=T-U
-% \end{equation}
-
-% 总内能为：
-% \begin{equation}\label{2.40}
-% \Phi (\theta) =  \int_{t_0}^{t_1} \frac{1}{2} m (l \dot \theta)^2 - \frac{1}{2} mgl \theta^2
-% \end{equation}
-
-% 根据最小势能原理变分得到弱形式表达式：
-% \begin{equation}\label{2.41}
-% \delta \Phi (\theta) =  \int_{t_0}^{t_1}
-% \delta \dot \theta l \dot \theta - \delta \theta g \theta dt = 0
-% \end{equation}
-
-% 引入拉格朗日乘子$p$替换虚角位移$\delta \theta$，
-% 再引入以下双线性形式和线性形式来表达拉格朗日变分问题：
-% \begin{equation}\label{2.42}
-% \Phi(\theta,p) = \int_{t_0}^{t_1}
-%  \dot \theta l \dot p -  \theta g p dt
-% \end{equation}
-% \begin{equation}\label{2.43}
-% f(\theta) = \theta P\vert_{t=t_0}
-% \end{equation}
-
-% 其中$P = l \dot \theta(t_0)$，将$\Phi(\theta,p)$当作一个投影项加入到原能量泛函式里进行变分，
-% 总能量表达式为：
-% \begin{equation}\label{2.44}
-% \bar \Psi (\theta,p) = \Phi (\theta) - f(\theta) + \Phi(\theta,p) - f(p) 
-% \end{equation}
-
-% 变分得到弱形式：
-% \begin{equation}\label{2.45}
-% \begin{split}
-% \Phi(\delta \theta, \theta) + \Phi(\delta \theta, p) &= f(\delta \theta) \\
-% \Phi(\delta p, \theta) &= f(\delta p)
-% \end{split}
-% \end{equation}
 
 取总时长$T = 10$和时间步长$\Delta t =0.01$对该问题进行测试，测试结果如下：
 \begin{figure}[!h]
@@ -574,7 +506,25 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
             \includegraphics[width=0.45\textwidth]{fig/math/摇摆问题哈密顿角位移误差.png} \\
             哈密顿法与精确解位移对比图 & 哈密顿法的位移误差图 \\
         \end{tabular}
-        \caption{传统迭代法和哈密顿法计算摆锤问题的位移与误差图}\label{fg:2.5}
+        \caption{传统迭代法和哈密顿法计算摆锤问题的位移与误差图}\label{fg:2.9}
 \end{figure}
 
- 
+图\ref{fg:2.9}为摆锤问题在不同计算方法下的位移随时间变化的对比图，
+其中蓝色的线为数值计算方法的计算结果，黑线为精确解。
+可以看出该问题的测试结果和
+
+
+\section{小结}
+
+本章系统探究了动力问题的基于强形式的欧拉迭代求解法和基于哈密顿原理的完全若新式求解法，
+对两种方法的利弊进行了对比分析，
+并探讨理论基于哈密顿原理求解法的时间末端边界问题及其解决方案。
+首先，从强形式的控制方程出发，介绍了欧拉迭代的三种方法，
+三种方法均对时间域采用基于微分方程强形式离散分析。
+随后，分析了基于哈密顿原理的完全弱形式伽辽金法在时间末端存在虚位移必须为零的边界问题，
+并提出了一种基于拉格朗日乘子型的时域未端本质边界条件的施加方案来解决该问题，
+通过引入一个拉格朗日乘数$p$代替原来无法数值实现的虚位移$\delta u$,
+再将变分后的弱形式作为一个投影项加入到原来的能量泛函式里进行变分计算。
+最后，通过对典型的弹簧小车算例的系统验证，证实了所提方案的优越性。
+数值结果表明，该拉格朗日乘子变分求解方案不仅计算效率更高，
+而且能够更好的确保数值计算结果的稳定性，同时具有最高的计算精度。
