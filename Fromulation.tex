@@ -7,6 +7,17 @@
 为这套解决方案提供更为坚实的理论基础和实际依据。
 \section{}
 首先对“1+1”维类问题进行计算公式推导。
+同样采用基于哈密顿原理的完全弱形式求解法，时域作为第四维空间协同空间域，
+构建伽辽金弱形式进行混合离散，最后在时空混合网格里\ref{timespace}数值计算。
+横坐标为空间网格，纵坐标为时间网格，构成"1+1"维的时空混合网格单元。
+下面是在这类网格问题下的计算公式推导：
+\begin{figure}[!h]
+    \centering
+    \includegraphics[scale=0.8]{fig/时空混合网格.png}
+\caption{\centering{一维弦横向自由振动问题示意图}}
+\label{fg:timespace}
+\end{figure}
+
 考虑到一根长为$L$的杆，它在空间上关于$0-L$的势能积分表达式：
 \begin{equation}\label{3.1}
 U = \int_{0}^{l} \frac{1}{2} EA u_{,x}^2 dx
@@ -84,44 +95,46 @@ f_{I} = - \int_{0}^{l} N_I(t_0) C dx   + \int_{t_0}^{t_1} (\int_{0}^{l} N_{I} b 
 \end{equation}
 
 \section{等价性推导}
-令体力$b=0$，外力$P=0$，得到简化后的弱形式方程：
+当体力$b=0$，外力$P=0$，系统仅受自身惯性力和弹性内力作用，无外界力驱动。
+此时，弱形式方程仅剩内能。得到简化后的弱形式方程：
 \begin{equation}\label{3.15}
 \int_{t_0}^{t_1} \int_{0}^{l} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt = (\int_{0}^{l} \rho A \dot udx \delta u) \vert_{t_0}^{t_1}
 \end{equation}
-对时间部分积分得到：
+对时间部分进行分部积分得到：
 \begin{equation}\label{3.16}
 \int_{t_0}^{t_1} \int_{0}^{l} \delta \dot{u} \rho A \dot{u} \, dx dt = \left. \int_{0}^{l} \rho A \dot{u} \delta u \, dx \right|_{t_0}^{t_1} - \int_{t_0}^{t_1} \int_{0}^{l} \delta u \rho A \ddot{u} \, dx dt 
 \end{equation}
-对空间部分积分得到：
+对空间部分进行分部积分得到：
 \begin{equation}\label{3.17}
 \begin{split}
 \int_{t_0}^{t_1} \int_{0}^{l} \delta u_{,x} EA u_{,x} \, dx dt = &- \int_{t_0}^{t_1} \left( \delta u  EA u_{,x} \bigg|_{0}^{l} \right) dt \\ 
 &+ \int_{t_0}^{t_1} \int_{0}^{l} \delta u  \frac{\partial}{\partial x} \left( EA u_{,x} \right) dx dt \\
 \end{split}
 \end{equation}
-将两项代入弱形式左边整理得到：
+将时间和空间的分部积分结果代入原弱形式左边整理得到：
 \begin{equation}\label{3.18}
 \begin{split}
 &\left[ \left. \int_{0}^{l} \rho A \dot{u} \delta u \, dx \right|_{t_0}^{t_1} - \int_{t_0}^{t_1} \int_{0}^{l} \delta u \rho A \ddot{u} \, dx dt \right] + \\
 &\left[ - \int_{t_0}^{t_1} \left( \delta u  EA u_{,x} \bigg|_{0}^{l} \right) dt + \int_{t_0}^{t_1} \int_{0}^{l} \delta u  \frac{\partial}{\partial x} \left( EA u_{,x} \right) dx dt \right] 
 \end{split}
 \end{equation}
-两边同时约去同类项：
+两边同时约去时间边界项：
 \begin{equation}\label{3.19}
 (\int_{0}^{l} \rho A \dot udx \delta u) \vert_{t_0}^{t_1}
 \end{equation}
-将余项整理：
+剩余部分整理得：
 \begin{equation}\label{3.20}
 - \int_{t_0}^{t_1} \int_{0}^{l} \delta u \left( \rho A \ddot{u} - \frac{\partial}{\partial x} \left( EA u_{,x} \right) \right) dx dt - \left. \int_{t_0}^{t_1} \delta u EA u_{,x} \right|_{0}^{l} dt =0
 \end{equation}
-由于$\delta u$的任意性，所以式中的两项系数必须为零，内部区域：
+由于$\delta u$的任意性，要使积分恒为零，必须满足式中的两项系数为零，内部区域：
 \begin{equation}\label{3.21}
 \rho A \ddot{u} - \frac{\partial}{\partial x} ( EA u_{,x} ) =0
 \end{equation}
-等价于运动方程强形式
+等价于杆的波动方程方程强形式：
 \begin{equation}\label{3.22}
 u_{,tt} - a^2 u_{xx} = 0 
 \end{equation}
+其中$a$为波速：
 \begin{equation}\label{3.23}
 a^2 = \frac{EA}{\rho A}
 \end{equation}
@@ -129,8 +142,10 @@ a^2 = \frac{EA}{\rho A}
 \begin{equation}\label{3.24}
 EA u_{,x}\vert_{0}^{l} =0
 \end{equation}
-即杆的两端均为自由端，应力为零，自然边界条件由变分自动满足，无需额外指定。
+即杆的两端均为自由端，应力为零，自然边界条件由变分原理自动满足，无需额外施加。
 
+通过上述步骤，从基于变分原理的积分形式严格推导得到了波动方程的强形式微分方程和自然边界条件，
+完整证明了弱形式和强形式的等价性。
 
 \section{数值算例}
 \subsection{一维弹性杆撞击刚性墙实验}
@@ -304,9 +319,17 @@ EA u_{,x}\vert_{0}^{l} =0
 
 
 \subsection{一维弦的横向自由振动问题}
-考虑一根长度为$l$的均匀弦，两端固定，如图\ref{}所示，
+考虑一根长度为$l$的均匀弦，两端固定，如图\ref{xian}所示，
 材料密度$\rho=1.0$，弹性模量$E=1.0$，波速$\alpha =1.0$，
 在初始时刻具有一定的位移和速度，做自由横向振动。
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[scale=0.7]{fig/一维弦横向振动.png}
+\caption{\centering{一维弦横向自由振动问题示意图}}
+\label{fg:xian}
+\end{figure}
+
 弦的自由振动满足一维波动方程，结合边界条件和初始条件，问题可表述为：
 \begin{equation}\label{3.3}
 \left \{

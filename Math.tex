@@ -465,11 +465,48 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \caption{哈密顿法计算弹簧小车问题的位移图与误差图}\label{fg:2.7}
 \end{figure}
 
+当我们取波速$\omega=\sqrt{3}$时，如图\ref{2.8}，\ref{2.9}所示，
+用均布和非均布的两种节点布置，来测试基于哈密顿原理的完全弱形式法的误差收敛率。
+节点密度采取$16,32,64,128$四种形式来计算时，发现无论是均布还是非均布的节点布置，
+都可以得到$2.0$的位移误差收敛率，达到理论误差收敛率
+
+\begin{figure}[!h]
+    \centering
+        \begin{tabular}{c@{\hspace{20pt}}c}
+            \includegraphics[width=0.45\textwidth]{fig/math/n=16.png} &
+            \includegraphics[width=0.45\textwidth]{fig/math/n=32.png} \\
+            $n=16$ & $n=32$ \\
+            \includegraphics[width=0.45\textwidth]{fig/math/n=64.png} &
+            \includegraphics[width=0.45\textwidth]{fig/math/n=128.png} \\
+            $n=64$ & $n=128$ \\
+        \end{tabular}
+        \caption{弹性小车问题节点均布布置示意图}\label{fg:2.8}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+        \begin{tabular}{c@{\hspace{20pt}}c}
+            \includegraphics[width=0.45\textwidth]{fig/math/un_n=16.png} &
+            \includegraphics[width=0.45\textwidth]{fig/math/un_n=32.png} \\
+            $n=16$ & $n=32$ \\
+            \includegraphics[width=0.45\textwidth]{fig/math/un_n=64.png} &
+            \includegraphics[width=0.45\textwidth]{fig/math/un_n=128.png} \\
+            $n=64$ & $n=128$ \\
+        \end{tabular}
+        \caption{弹性小车问题节点非均布布置示意图}\label{fg:2.9}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[scale=0.38]{fig/math/弹簧小车(16-128_ndiv).png}
+\caption{\centering{弹簧小车问题误差收敛结果}}
+\label{fg:2.10}
+\end{figure}
 
 \subsection{摆锤问题}
 
 
-考虑如图\ref{fg:2.8}所示的单摆锤问题，
+考虑如图\ref{fg:2.11}所示的单摆锤问题，
 一个质量为$m$的摆锤通过长度为$l$轻质刚性杆悬挂于固定支点，
 初始时刻，摆锤在初始转角$\theta_0 = 0.1$(小角度假设，满足$\sin \theta = \theta$简化条件)
 和初始角速度$\dot \theta_0 = 0$的作用下，
@@ -480,7 +517,7 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
     \centering
     \includegraphics[scale=0.6]{fig/math/摇摆问题模型.png}
 \caption{\centering{摆锤问题算例模型}}
-\label{fg:2.8}
+\label{fg:2.11}
 \end{figure}
 
 摆锤运动方程为二阶线性齐次微分方程，其通解形式为简谐振动，
@@ -506,10 +543,10 @@ u(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
             \includegraphics[width=0.45\textwidth]{fig/math/摇摆问题哈密顿角位移误差.png} \\
             哈密顿法与精确解位移对比图 & 哈密顿法的位移误差图 \\
         \end{tabular}
-        \caption{传统迭代法和哈密顿法计算摆锤问题的位移与误差图}\label{fg:2.9}
+        \caption{传统迭代法和哈密顿法计算摆锤问题的位移与误差图}\label{fg:2.12}
 \end{figure}
 
-图\ref{fg:2.9}为摆锤问题在不同计算方法下的位移随时间变化的对比图，
+图\ref{fg:2.12}为摆锤问题在不同计算方法下的位移随时间变化的对比图，
 其中蓝色的线为数值计算方法的计算结果，黑线为精确解。
 可以看出该问题的测试结果和
 
