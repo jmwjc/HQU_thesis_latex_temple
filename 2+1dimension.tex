@@ -1,0 +1,173 @@
+\chapter{“2+1”维波动问题完全弱形式时空混合有限元分析}
+
+\section{基于哈密顿原理的完全弱形式求解}
+
+根据前两章的基于哈密顿原理的完全弱形式公式推导，考虑一个二维平面域$\Omega$，边界为$\Gamma$。
+求解域的空间尺寸为$L_x \times L_y$，
+根据波动控制方程：
+\begin{equation}\label{4.1}
+u_{,tt} - a^2 \Delta u = 0
+\end{equation}
+其中，二维空间的位移场为$u (x,y,t)$，
+拉普拉斯算子$\Delta u = u_{,xx} + u_{,yy}$，
+波速$a = \sqrt{\frac{E}{\rho}}$，$E$为杨氏模量，$\rho$为材料密度。
+ 
+动能由二维空间内的运动能量在时空域上的积分表示，
+速度$\dot u =  \frac{\partial u}{\partial t}$，动能表达式：
+\begin{equation}\label{4.2}
+T  =  \int_{\Omega} \frac{1}{2} \rho A \dot u^2 dxdy
+\end{equation}
+其中$A$为材料的厚度。
+
+二维弹性体的势能用应变能积分表达，应变分量为
+$\varepsilon_{xx} = u_{,x}$, 
+$\varepsilon_{yy} = v_{,y}$, 
+对于线弹性各向同性材料，势能表达式为：
+\begin{equation}\label{4.3}
+U = \int_{\Omega} \frac{1}{2} 
+EA (u_{,x}^2 + u_{,y}^2) dxdy
+\end{equation}
+其中，$E$为杨氏模量。
+
+根据拉格朗日函数$L = T - U$，三维时空下的总内能为：
+\begin{equation}\label{4.4}
+\phi = \int_{t_0}^{t_1}  L dt
+= \int_{t_0}^{t_1} \int_{\Omega} (\frac{1}{2} \rho A \dot u^2 -
+\frac{1}{2} EA (u_{,x}^2 + u_{,y}^2)) dxdydt
+\end{equation}
+
+对能量泛函进行变分得到弱形式：
+\begin{equation}\label{4.5}
+\delta \phi = \int_{t_0}^{t_1} \int_{\Omega} \delta \dot{u} 
+\rho A \dot{u} - \delta u_{,x} E A u_{,x} - \delta u_{,y} E A u_{,y} dxdydt
+\end{equation}
+
+根据最小势能原理，能量泛函在变分得到弱形式后等于零。
+但是由第二章式\ref{2.8}对能量泛函变分的公式可知，只有在时间末端虚位移等于零的情况下，
+也就是满足$\delta u(t_0) = \delta u(t_1) = 0$时，
+变分得到的弱形式才能够等价于控制方程强形式。因此，综上哈密顿原理，
+我们可得推导出在“2+1”下的计算动力学问题的时空表达式为：
+\begin{equation}\label{4.6}
+\delta \int_{t_0}^{t_1} L dt -  \frac{\partial L}{\partial \dot u} 
+\delta u \vert_{t_0}^{t_1} = 0 
+\end{equation}
+对上式进行变分得到弱形式：
+\begin{equation}\label{4.7}
+\int_{t_0}^{t_1} \int_{\Omega} (\delta \dot{u} 
+\rho A \dot{u} - \delta u_{,x} E A u_{,x} - \delta u_{,y} E A u_{,y}) dxdydt
+ - (\int_{\Omega} \rho A \dot u dxdy \delta u) t \vert_{t_0}^{t_1} = 0
+\end{equation}
+
+分别对$u, \dot u , u_{,x} , u_{,y}$进行近似：
+\begin{equation}\label{4.8}
+\begin{split}
+u^h(x,t) &= \sum_{I=1}^{n_p} N_I(x,t) d_I \\
+\dot u^h &= \sum_{I=1}^{n_p} N_{I,t} d_I \\
+u_{,x}^h &= \sum_{I=1}^{n_p} N_{I,x} d_I \\ 
+u_{,y}^h &= \sum_{I=1}^{n_p} N_{I,y} d_I
+\end{split}
+\end{equation}
+
+得到刚度矩阵$K_IJ$为：
+\begin{equation}\label{4.9}
+K_{IJ} = \int_{t_0}^{t_1} \int_{0}^{l} (N_{I,t} \rho A N_{J,t} - 
+N_{I,x} EA N_{J,x} - N_{I,y} EA N_{J,y})  dxdydt
+\end{equation}
+
+得到力矩阵$f_I$为：
+\begin{equation}\label{4.10}
+f_{I} = \int_{0}^{l} \rho A N_I  N_{I,t} dxdy \vert_{t_0}^{t_1}
+\end{equation}
+
+将时间末端虚位移边界条件$\delta u (t_1) = 0$带入弱形式，
+引入动量表达式:
+\begin{equation}\label{4.11}
+C = \rho A \dot u(t_0)
+\end{equation}
+
+最终得到力矩阵$f_I$为：
+\begin{equation}\label{4.12}
+f_{I} = - \int_{0}^{l} N_I(t_0) C dxdy
+\end{equation}
+
+带入离散控制方程$Kd = f$得到精确解。
+
+综上，在“2+1"维波动问题中采用基于哈密顿原理的完全弱形式求解时也要要求时间末端的虚位移必须为零。
+这在实际的工程应用中是无法数值实现的，
+所以，我们需要建立时域末端虚位移本质边界条件的施加方案，
+建立一个在有限元伽辽金数值计算中能完全时空混合离散的方案。
+
+\section{拉格朗日乘子型时域末端本质边界条件施加方案}
+同第二章和第三章的方法一样，将传统能量泛函变分得到的弱形式当作一个拉格朗日乘子项加入到能量泛函中进行变分，
+将虚位移$\delta u$用$p$的表达方式替换，构造一种基于拉格朗日乘子型的时域末端本质边界条件的施加方案，
+来解决基于哈密顿原理的传统有限元法在时间末端边界无法数值施加的问题。
+
+
+
+动能由质量运动能量积分表示，速度分量为$\dot u= \frac{\partial u}{\partial t}$,
+$\dot v= \frac{\partial v}{\partial t}$，
+积分表达式为：
+\begin{equation}\label{4.2}
+T = \int_{\Omega} \frac{1}{2} \rho A ( \dot{u}^2 + \dot{v}^2 ) dxdy
+\end{equation}
+
+其中，$\rho$为材料密度，$\dot u$，$\dot v$分别为$x$，$y$方向的速度。 
+
+拉格朗日函数$L = T - U$，引入时间范畴，总内能为时间$[t_0,t_1]$和空间$\Omega$的二重积分：
+\begin{equation}\label{4.3}
+\Phi = \int_{t_0}^{t_1} \int_{\Omega} [\frac{1}{2} \rho A ( \dot{u}^2 + \dot{v}^2 ) -
+\frac{1}{2} (EA (\varepsilon_{xx}^2 + \varepsilon_{yy}^2 + 2\nu 
+\varepsilon_{xx}\varepsilon_{yy}) + G A \varepsilon_{xy}^2)] dxdydt
+\end{equation}
+
+对能量泛函进行变分，根据应变变分和位移变分的关系，
+$\delta \varepsilon_{xx} = \delta u_{，x}$，
+$\delta \varepsilon_{yy} = \delta v_{，y}$，
+$\delta \varepsilon_{xy} = \frac{1}{2} (\delta u_{，y} \delta v_{，x})$，
+得到弱形式：
+\begin{equation}\label{4.4}
+\delta \Phi = \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot u +
+\delta \dot v \rho A \dot v - \delta u_{,x} \sigma_{xx} - 
+\delta v_{,y} \sigma_{yy} - \frac{1}{2} (\delta u_{,y} + \delta v_{,x}) \sigma_{xy}dxdydt)
+\end{equation}
+
+其中，$\sigma_{xx} = EA(\varepsilon_{xx} + \mu \varepsilon_{yy})$，
+$\sigma_{yy} = EA(\varepsilon_{yy} + \mu \varepsilon_{xx})$，
+$\sigma_{xy} = GA \varepsilon_{xy}$为应力分量。
+
+外力功的表达式为：
+\begin{equation}\label{4.5}
+W = \int_{t_0}^{t_1} ( \int_{\Omega} (u b_x + v b_y) dxdy + 
+\int_{\Gamma} (u t_x + v t_y) ds)dt
+\end{equation}
+
+其中，体力$\boldsymbol b = [b_x,b_y]^T$，边界力$\boldsymbol{t} = [t_x,t_y]^T$。
+基于哈密顿原理，得到计算动力学问题的时空表达式：
+\begin{equation}\label{4.6}
+\delta \int_{t_0}^{t_1} L dt - \int_{t_0}^{t_1} \delta W dt = 0
+\end{equation}
+
+对上式进行变分得到弱形式：
+\begin{equation}\label{4.7}
+\int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot u +
+\delta \dot v \rho A \dot v - \delta u_{,x} \sigma_{xx} - 
+\delta v_{,y} \sigma_{yy} - \frac{1}{2} (\delta u_{,y} + \delta v_{,x} )\sigma_{xy}dxdydt)
+= 
+\end{equation}
+
+根据前两章对能量泛函进行变分的公式可以发现，只有在时间末端虚位移等于零的情况下，
+即满足$\delta u (t_1)=0,\delta v (t_1)=0$时，弱形式才会等价于强形式。
+因此，根据上述的哈密顿原理，我们可以得到计算动力问题的时空表达式:
+\begin{equation}\label{4.8}
+\begin{aligned}
+&\int_{t_0}^{t_1} \int_{\Omega} ( \delta \dot{u} \rho A \dot{u} + \delta \dot{v} \rho A \dot{v} 
+- \delta u_{,x} \sigma_{xx} - \delta v_{,y} \sigma_{yy} - \frac{1}{2}(\delta u_{,y} + \delta v_{,x}) \sigma_{xy} ) dxdy dt \\
+&=  \int_{\Omega} \rho A (\dot{u} \delta u + \dot{v} \delta v) dxdy|_{t_0}^{t_1} 
++ \int_{t_0}^{t_1} ( \int_{\Omega} (\delta u b_x + \delta v b_y) dxdy + \int_{\Gamma} (\delta u t_x + \delta v t_y) ds ) dt
+\end{aligned}
+\end{equation}
+
+
+\section{} 
+
+\section{}
