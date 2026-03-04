@@ -1,0 +1,94 @@
+
+\documentclass[12pt,oneside]{article}
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=20mm,
+    right=20mm,
+    top=18.5mm,
+    bottom=15mm,
+    bindingoffset=0mm,
+    footskip=5pt,
+}
+\usepackage{xeCJK,lmodern}
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\setCJKmainfont{simsun.ttc}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\setCJKsansfont{simhei.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\setCJKmonofont{Kaiti_GB2312.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\newCJKfontfamily\declarationfont{simfang.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\usepackage{graphicx,float}
+\graphicspath{{figures/}}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{caption,subcaption,setspace,titlesec}
+%- section
+\titleformat{\section}[hang]{\sffamily\bfseries\fontsize{14pt}{20pt}\selectfont}{\arabic{section}}{14pt}{}
+\titlespacing{\section}{0pt}{24pt}{6pt}
+%- subsection
+\titleformat{\subsection}[hang]{\sffamily\bfseries\fontsize{12pt}{20pt}\selectfont}{\arabic{section}.\arabic{subsection}}{12pt}{}
+\titlespacing{\subsection}{0pt}{12pt}{6pt}
+\titleformat{\subsubsection}[hang]{\sffamily\fontsize{12pt}{20pt}\selectfont}{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}}{12pt}{}
+\titlespacing{\subsubsection}{0pt}{12pt}{6pt}
+\renewcommand\figurename{图}
+\renewcommand\tablename{表}
+\DeclareCaptionFont{captionfont}{\rmfamily\fontsize{11pt}{\baselineskip}\selectfont}
+\captionsetup{font=captionfont,labelsep=quad,skip=6pt,subrefformat=parens}
+\titleformat{\paragraph}[runin]{\rmfamily\fontsize{12pt}{20pt}\selectfont}{}{}{}
+\titlespacing{\paragraph}{0pt}{0pt}{0pt}
+\setlength{\parskip}{0pt}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm,bm} % mathamatics
+\usepackage{tabularray}
+\SetTblrInner{rowsep=5pt}
+
+\usepackage[sort&compress]{gbt7714}
+\bibliographystyle{gbt7714-2005-numerical}
+\renewcommand\refname{\fontsize{12pt}{20pt}\selectfont\bfseries 参考文献}
+\usepackage{hyperref}
+
+\begin{document}
+\center{\fontsize{14pt}{20pt}\selectfont\bfseries 表1-1：研究生学位论文开题报告（首次开题）}
+\vspace{7pt}
+
+\centering\begin{tblr}{|X[1.2,c]|X[c]|X[c]|}
+\hline
+拟撰写学位论文的题目 & \SetCell[c=2]{c} & \\
+\hline
+支持学位论文研究的科研项目 & \SetCell[c=2]{c} &
+\end{tblr}
+
+\begin{tcolorbox}[
+    colback=white,
+    breakable=true,
+    sharp corners,
+    boxsep=0mm,
+    boxrule=0.5pt,
+    before skip=0mm,
+    after skip=0mm,
+    space to=\myspace,
+]
+开题报告内容\textbf{（博士不少于5000字，硕士不少于3000字）}： 
+\setlength{\parindent}{2em}\input{introduction_proposal} 
+\bibliography{references}
+\end{tcolorbox}
+
+\centering\begin{tblr}{|X[2,l]|X[c]|}
+\SetCell[c=2]{c} {\bfseries 开题报告指导老师审阅意见} & \\
+\hline
+对开题报告进行审阅，是否同意进入专家评审环节 & $\Box$ 是 \qquad $\Box$ 否 \\
+\hline
+\SetCell[c=2]{l} 请填写审阅意见：& \\
+[48pt]
+\SetCell[c=2]{halign=r,valign=b} 
+指导老师签名：\hspace{42pt}
+
+年 \quad 月 \quad 日
+& \\
+\hline
+\end{tblr}
+
+\end{document}
+
+

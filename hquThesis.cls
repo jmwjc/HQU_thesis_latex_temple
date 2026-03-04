@@ -61,10 +61,10 @@
 %---------------------------------------------------------------------------%
 \setmainfont{Times New Roman}
 \setsansfont{Times New Roman}
-\setCJKmainfont{simsun.ttc}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={2}]
-\setCJKsansfont{simhei.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={2}]
-\setCJKmonofont{Kaiti_GB2312.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={2}]
-\newCJKfontfamily\declarationfont{simfang.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={2}]
+\setCJKmainfont{simsun.ttc}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\setCJKsansfont{simhei.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\setCJKmonofont{Kaiti_GB2312.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
+\newCJKfontfamily\declarationfont{simfang.ttf}[Path=./fonts/, AutoFakeSlant, AutoFakeBold={5}]
 \geometry{a4paper,top=3.8cm,bottom=3.8cm,left=3.2cm,right=3.2cm,bindingoffset=0cm,voffset=0.3cm,footskip=1cm,headheight=14pt}
 \sloppy
 \pagestyle{empty}
