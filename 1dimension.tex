@@ -135,75 +135,6 @@ $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力
 即动能与势能之差在时间区间上的积分取极值。也就是说能量泛函的变分等于零。
 (这些放后面)
 
-% 基于变分原理得到欧拉-拉格朗日方程：
-% \begin{equation}\label{2.6}
-% \frac{d}{dt}(\frac{\partial L}{\partial \dot q}) - \frac{\partial L}{\partial q} = 0 \Rightarrow
-% m\ddot q = - kq
-% \end{equation}
-
-% 勒让德变化，$p$表示动量：
-% \begin{equation}\label{2.7}
-% p = \frac{\partial L}{\partial \dot q} = m \dot q
-% \end{equation}
-
-% 将半隐欧拉方程式\ref{2.3}进行勒让德变换可得： 
-% \begin{equation}\label{2.8}
-% \begin{split}
-% &\frac{q_{n+1} - q_n}{\Delta t} = \dot q = \frac{p_{n+1}}{m}\\
-% &\frac{p_{n+1} - p_n}{\Delta t} = \dot p = -k q_n
-% \end{split}
-% \end{equation}
-
-
-% 哈密顿量(能量)：
-% \begin{equation}\label{2.9}
-% H = \frac{1}{2m}p^2 + \frac{1}{2}kq^2 
-% \end{equation}
-
-% 哈密顿正则方程：
-% \begin{equation}\label{2.10}
-% \begin{split}
-% \dot p &= - \frac{\partial H}{\partial q} = - kq\\
-% \dot q &= \frac{\partial H}{\partial p} = \frac{p}{m}
-% \end{split}
-% \end{equation}
-
-% 通过上述算式方程式可以得出将欧拉-拉格朗日方程进行正则变换的式\ref{2.8}，
-% 能够等价于哈密顿正则方程式\ref{2.10}。
-% 当我们在哈密顿正则方程的情况下进行迭代计算时，
-% 将式\ref{2.10}两个变量代入到哈密顿方程对时间求偏导的微分方程中。
-% 可以发现哈密顿量在对于时间求偏导的每个时刻，它的角动量是守恒的。如式\ref{2.11}所示，
-% 因为哈密顿量关于空间的变化量的值是等于0的，也就是说每个时刻它的几何空间是不变的。
-% \begin{equation}\label{2.11}
-% \begin{split}
-% \frac{dH(q(t),p(t))}{dt} &= \dot q \frac{\partial H}{\partial q} + \dot p \frac{\partial H}{\partial p} \\
-% &= \frac{\partial H}{\partial p} \frac{\partial H}{\partial q} - \frac{\partial H}{\partial q} \frac{\partial H}{\partial p}\\
-% &= 0
-% \end{split}
-% \end{equation}
-
-% 根据式\ref{2.8}，我们可以发现，只有在满足$\delta q(t_0) = \delta q(t_1) = 0$，
-% 也就是时间初始时刻以及时间末端的边界条件等于零的情况下，算式才能成立。
-% 才能等价于强形式：
-% \begin{equation}\label{2.9}
-% \int_{t_0}^{t_1} \delta q (m \ddot q + kq) dt = 0
-% \end{equation}
-
-% 根据上述的哈密顿原理，我们可以得到计算动力问题的时空表达式：
-% \begin{equation}\label{2.10}
-% \delta \int_{t_0}^{t_1} L dt - \left . \frac{\partial L}{\partial \dot q} \delta q \right \vert_{t_0}^{t_1} = 0
-% \end{equation}
-
-% 对上式进行变分得到弱形式：
-% \begin{equation}\label{2.11}
-% \int_{t_0}^{t_1}\delta \dot q m \dot q - \delta qkq dt = \left . \delta qm\dot q \right \vert_{t_0}^{t_1}
-% \end{equation}
-
-% 初始边界条件：
-% \begin{equation}\label{2.12}
-% q(t_0) = q_0,\quad m\dot q(t_0) = P_0,\quad \delta q(t_1) = 0
-% \end{equation}
-
 然而，直接采用式\eqref{eq:variation}通常遇到以下问题:
 试函数空间$Q$和权函数空间$P$并不相同，尤其是在时间末端$t_1$处，$q(t_1)$通常是未知的，而$\delta q(t_1)=0$，这导致在数值实现时难以处理时间末端的边界条件。
 并且，初始时刻$t_0$的边界条件同时具有$q(t_0)=q_0$和$\dot q(t_0)=\dot q_0$两个边界条件，如何在弱形式\eqref{eq:variation}的同一时刻施加两个边界条件也是一个难题。
@@ -224,7 +155,7 @@ q_h = \sum_{I=1}^{n_p} N_I d_I
 \end{equation}
 
 值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$P_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$。
-将有限元近似表达式\eqref{2.13}和式\eqref{dotq_h}代入弱形式\eqref{eq:variation}，
+将有限元近似表达式\eqref{}和式\eqref{dotq_h}代入弱形式\eqref{eq:variation}，
 可得到离散控制方程为：
 \begin{equation}\label{2.15}
 \boldsymbol K \boldsymbol d = \boldsymbol f
@@ -277,32 +208,6 @@ FIXME
 误差可能持续放大，最终导致计算结果失真甚至求解失败。
 所以，建立时域末端虚位移本质边界条件的施加方案，
 是发展适用于任意节点分布时空伽辽金无网格法的必要条件。
-
-% 通过上述的公式推导我们可以得出结论，
-% 基于哈密顿原理的完全弱形式求解要求时间末端的虚位移必须为零。
-% 然而，实际工程问题中时间末端的位移往往是未知的，
-% 直接施加虚位移节点系数为零将导致刚度矩阵不为方阵，无法直接求解。
-% 解决该问题最直接方式是将初始时间的强制边界条件直接施加到时间末端，如图\ref{fg:2.1}所示，
-% 同时不再要求初始时刻虚位移为零，将初始时刻速度边界条件在此处作为自然边界条件施加。
-% 为此保证整个系数矩阵是方阵，从而可以进行求解。
-% 但是这种做法存在明显的局限性，该方法无法对网格进行任意离散，
-% 必须保证初始时刻的节点和最后时刻的节点保持一致，
-% 限制了时域边界处布置节点的个数。
-% 此时，时空离散网格难以进行局部加密，限制了其在复杂问题中的应用。
-% 为此，Hughes等人提出了一种间断伽辽金法，
-% 该方法在泛函变分中添加非连续的边界条件使弱形式满足变分一致性，
-% 此时弱形式无需要求虚位移在时间末端为零。
-% 但添加的非连续边界条件将导致弱形式的正定性无法得到满足，
-% 需要添加额外的稳定项来保证计算精度。
-% 同时，间断伽辽金方法仍然无法实现绝对非均布的离散，
-% 只能在均布的时域块内做非均布计算，对于具有高度局部特性的问题时仍不够理想。
-% 而Wriggers和Junker则是采用虚单元法构造非协调单元进行时间区域与空间区域的整体离散，
-% 也是属于间断伽辽金范畴，该方法可以使用高阶单元来提高计算精度，
-% 但同样需要添加稳定项。采用配点型的方法也可以规避处理时间末端边界条件的问题，
-% 并引入正交基函数离散哈密顿正则方程进行求解。但该方法求解精度与配点位置相关，
-% 为保证计算精度也需要采用均布网格进行离散。
-% 目前，时空混合离散方案均无法做到绝对的时空混合离散，
-% 限制了该类方法在实际工程中的应用和推广。
 
 综上所述，有限元模拟动力问题的分析方法经历了从传统迭代方法到基于哈密顿原理的时空混合离散方法的演变。
 这些方法的发展不仅提高了分析的效率和精度，还增强了模拟的稳定性。
