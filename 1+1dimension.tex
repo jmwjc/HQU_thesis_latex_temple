@@ -8,6 +8,17 @@
 
 \section{一维波动问题及时间强形式求解方案}
 \subsection{一维波动问题时间强形式离散控制方程}
+
+\begin{figure}[!h] 
+    \centering
+    \includegraphics[scale=0.9]{fig/一维波动问题示意图.png}
+\caption{\centering{一维弹性杆问题示意图}}
+\label{fg:yiweibodongwenti}
+\end{figure}
+
+不失一般性，我们考虑如图\ref{fg:yiweibodongwenti}所示的一维弹性杆问题，展示如何求解动力问题。
+在拉格朗日表达式\eqref{eq:lagrangian}的基础上，
+一维波动问题在轴向区间$[x_0,x_1]$的动能$T$和势能$U$的积分表达式为：
 \begin{equation}
     T = \int_{x_0}^{x_1} \frac{1}{2} \rho A \dot u^2 dx
 \end{equation}
@@ -16,14 +27,19 @@
     U = \int_{x_0}^{x_1} \frac{1}{2} EA u_{,x}^2 dx
       - \int_{x_0}^{x_1} ub dx  -uP \vert_{x=x_t}
 \end{equation}
+式中，$\rho$为材料密度，$A$为材料横截面积，$u$和$\dot u$为广义自由度和其对时间$t$的一阶导数，
+$u,x$为广义自由度对位移$x$的一阶导数。$E$为材料的弹性模量，$b$为体力，$P$为外力。
 
-\begin{equation}
+根据哈密顿原理，将动能和势能表达式代入式\eqref{eq:variation}，
+可以找到一个精确解$u$使得该问题的能量泛函变分等于$0$：
+
+\begin{equation}\label{eq:1d weak found}
     \begin{aligned}
         \delta \Phi(u) &= \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt \\
         &- \int_{t_0}^{t_1} (\int_{x_0}^{x_1} \delta ub dx  + \delta uP \vert_{x=x_t})dt \\ &= 0
     \end{aligned}
 \end{equation}
-
+对弱形式的时间项和空间项分别做分部积分，可得：
 \begin{equation}
     \begin{aligned}
         & - \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u (\rho A \ddot u - EA u_{,xx} - b) dx dt \\
@@ -32,14 +48,13 @@
         &= 0
     \end{aligned}
 \end{equation}
-
-其中，根据哈密顿原理可令：
+其中，$n_t$和$n_x$分别为时间和空间方向的单位外法向量，根据哈密顿原理虚位移在时间端点处为零：
 \begin{equation}
-    \delta u(t_0) = \delta u(t_1) = 0
+    \delta u\vert_{t_0} = \delta u\vert_{t_1} = 0
 \end{equation}
 同时，由于$\delta u$在强制边界条件处$x=x_g$也必须为零，因此可以得到：
 \begin{equation}
-    EA u_{,x} \vert_{x_0}^{x_1} = EA u_{,x} n_x \vert_{x_t} = P
+    EA u_{,x} \vert_{x_0}^{x_1} = EA u_{,x} n_x \vert_{x_t} 
 \end{equation}
 结合本质边界条件$u\vert_{x_g} = u_g$，其等价的强形式表达式为：
 \begin{equation}
@@ -54,8 +69,9 @@
     \right .
 \end{equation}
 
-传统有限元法在求解上述问题时，通常采用时间域强形式离散与空间域弱形式离散相结合的方法。
-在式基础上，只在时间域上采用分部积分，有
+根据上述的公式推导，采用了分部积分的方法验证了能量泛函变分后的弱形式和强形式控制方程之间的等价性。
+而在传统有限元法在求解上述问题时，通常采用时间域强形式离散与空间域弱形式离散相结合的方法。
+在式\eqref{eq:1d weak found}基础上，只在时间域上采用分部积分，有
 \begin{multline}
     \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u \rho A \ddot u dx dt + \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u_{,x} EA u_{,x} dx dt = \\ 
     \int_{x_0}^{x_1} \delta u \rho A \dot u n_t dx \vert_{t_0}^{t_1}
@@ -66,7 +82,7 @@
     \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u \rho A \ddot u dx dt + \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u_{,x} EA u_{,x} dx dt = \\ 
     \int_{t_0}^{t_1} \delta u P\vert_{x_t} dt + \int_{t_0}^{t_1} \int_{x_0}^{x_1} \delta u b dx dt
 \end{multline}
-对上式采用配点法进行求解，$t = t_n+1$时，满足：
+对上式采用配点法进行求解，$t = t_{n+1}$时，满足：
 \begin{equation}
     \int_{x_0}^{x_1} \delta u \rho A \ddot u dx + \int_{x_0}^{x_1} \delta u_{,x} EA u_{,x} dx = 
     \delta u P\vert_{x_t} + \int_{x_0}^{x_1} \delta u b dx 
@@ -76,43 +92,50 @@
 \begin{equation}
     \left \{ 
         \begin{aligned}
-        u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) d_{In} \\
-        \dot u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) \dot d_{In} \\
-        \ddot u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) \ddot d_{In}
+        u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) u_{In} \\
+        \dot u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) \dot u_{In} \\
+        \ddot u^h(x,t_n) &= \sum_{I=1}^{n_p} N_I(x) \ddot u_{In}
         \end{aligned}
     \right .
 \end{equation}
 
 其中，$\Omega$为求解区间，$\Gamma$为区间边界，$n_x$为边界法向量。
 通过有限元形函数近似离散$u= \sum_{I=1}^{n_p} N_I d_I$可得到矩阵方程：
-\begin{equation}\label{3.4}
-\boldsymbol M \ddot{\boldsymbol d}_{n+1} + \boldsymbol K \boldsymbol d_{n+1} = \boldsymbol f_{n+1}
+\begin{equation}\label{Mu+Ku=f}
+\boldsymbol M \ddot{\boldsymbol u}_{n+1} + \boldsymbol K \boldsymbol u_{n+1} = \boldsymbol f_{n+1}
 \end{equation}
-
+其中，$\boldsymbol M$为质量矩阵，其分量$M_{IJ}$的表达式为：
 \begin{equation}
 M_{IJ} = \int_{x_0}^{x_1} \rho A N_I N_J dx
 \end{equation}
-
+$\boldsymbol K$为刚度矩阵，其分量$K_{IJ}$的表达式为：
+\begin{equation}
+K_{IJ} = \int_{x_0}^{x_1} EA N_{I,x} N_{J,x} dx
+\end{equation}
+$\boldsymbol f_{n+1}$为力向量，其分量$f_{I}$的表达式为：
+\begin{equation}
+f_{I} = \int_{x_0}^{x_1} b N_{I} dx + N_{I} P\vert_{x_t} 
+\end{equation}
+$\boldsymbol u_{n+1}$为结点位移,其分量$u_{I}$的表达式为：
 \begin{equation}
     \boldsymbol u_n = \{u_{1n}, u_{2n}, \cdots, u_{n_p n}\}^T 
 \end{equation}
-
-其中，$\boldsymbol M$为质量矩阵，$\boldsymbol K$为刚度矩阵，
-$\boldsymbol f_{n+1}$为力向量，$\boldsymbol d_{n+1}$为结点位移。
-
+$\ddot {\boldsymbol u}_{n+1}$为结点位移对时间的二阶导数,其分量$\ddot u_{I}$的表达式为：
+\begin{equation}
+    \ddot {\boldsymbol u}_{n+1}= \{\ddot u_{1n}, \ddot u_{2n}, \cdots, \ddot u_{n_p n}\}^T 
+\end{equation}
 \subsection{Newmark--$\beta$法}
 Newmark法便是典型代表，它在时间域采用基于强形式的差分近似，
 在空间域通过变分原理建立弱形式，形成耦合迭代格式。
 
 Newmark法对位移、速度和加速度的时间导数采用如下近似：
-\begin{equation}
-    \ddot{\boldsymbol u}_{n+1} = \boldsymbol u_n + \Delta t \dot{\boldsymbol u}_n + \frac{\Delta t^2}{2}((1 - 2\beta)\ddot{\boldsymbol u}_n + 2\beta\ddot{\boldsymbol u}_{n+1})
-\end{equation}
+
 \begin{equation}\label{3.2}
 \left \{
 \begin{split}
-u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{u}_n + 2\beta\ddot{u}_{n+1} \\
-\dot{u}_{n+1} &= \dot{u}_n + \Delta t (1 - \gamma)\ddot{u}_n + \gamma\ddot{u}_{n+1}
+\ddot{u}_{n+1} &= \frac{1}{m}(f_{n+1} - k u_{n+1})  \\
+\dot{u}_{n+1} &= \dot{u}_n + \Delta t ((1 - \gamma)\ddot{u}_n + \gamma\ddot{u}_{n+1}) \\
+u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{u}_n + 2\beta\ddot{u}_{n+1} 
 \end{split}
 \right .
 \end{equation}
@@ -123,14 +146,14 @@ $\beta$和$\gamma$为Newmark参数，$\delta t$为时间步长。
 $\beta = \frac{1}{4}$时为无条件稳定的平均加速度法。
 当$\gamma = \frac{1}{2}$、$\beta = 0$时为条件稳定的中心差分法。
 
-空间弱形式可以通过利用格林公式对波动方程两边与试函数$v(x)$作内积得到：
-\begin{equation}\label{3.3}
-\int_{\Omega} v\frac{\partial^2 u}{\partial t^2}dx + c^2\int_{\Omega}\frac{\partial v}{\partial x}\frac{\partial u}
-{\partial x}dx=\int_{\Omega}vf(x,t)dx+\int_{\Gamma}v\frac{\partial u}{\partial x}n_xdx
-\end{equation}
+% 空间弱形式可以通过利用格林公式对波动方程两边与试函数$v(x)$作内积得到：
+% \begin{equation}\label{3.3}
+% \int_{\Omega} v\frac{\partial^2 u}{\partial t^2}dx + c^2\int_{\Omega}\frac{\partial v}{\partial x}\frac{\partial u}
+% {\partial x}dx=\int_{\Omega}vf(x,t)dx+\int_{\Gamma}v\frac{\partial u}{\partial x}n_xdx
+% \end{equation}
 
 
-最后联立时间离散格式与空间离散方程，消去速度项后得到Newmark法的迭代公式：
+最后联立时间离散格式与空间离散方程式\eqref{Mu+Ku=f}，消去速度项后得到Newmark法的迭代公式：
 \begin{equation}\label{3.5}
 \left \{
 \begin{split}
