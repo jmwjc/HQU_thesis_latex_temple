@@ -154,7 +154,7 @@ u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{u}_n
 \end{equation}
 
 其中，$u_n$、$\dot u_n$、$\ddot u_n$分别为$t_n$时刻的位移、速度和加速度，
-$\beta$和$\gamma$为Newmark参数，$\delta t$为时间步长。
+$\beta$和$\gamma$为Newmark参数，$\Delta t$为时间步长。
 通过调整参数可控制算法的特性，当$\gamma = \frac{1}{2}$、
 $\beta = \frac{1}{4}$时为无条件稳定的平均加速度法。
 当$\gamma = \frac{1}{2}$、$\beta = 0$时为条件稳定的中心差分法。
