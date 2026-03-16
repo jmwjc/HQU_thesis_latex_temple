@@ -22,25 +22,25 @@ $L$为拉格朗日量，其表达式为：
     L = T - U
 \end{equation}
 式中，$T$为动能，$U$为势能。
-根据哈密顿原理\cite{arnold1978}，该问题的精确解$q$使得式\eqref{eq:functional}的变分等于$0$，即：找到一个$q\in Q$，使得
+根据哈密顿原理\cite{arnold1978}，该问题的精确解$q$使得式\eqref{eq:functional}的变分等于$0$，即：找到一个$q\in \mathcal{Q}$，使得
 \begin{equation}\label{eq:variation}
     \begin{aligned}
         \delta \Phi(q) &= \int_{t_0}^{t_1} \left( \frac{\partial L}{\partial q} \delta q + \frac{\partial L}{\partial \dot{q}} \delta \dot{q} \right) dt \\
         &= \int_{t_0}^{t_1} \left( \frac{\partial L}{\partial q} - \frac{d}{dt} \frac{\partial L}{\partial \dot{q}} \right) \delta q \, dt + \left. \frac{\partial L}{\partial \dot{q}} \delta q \right|_{t_0}^{t_1} \\ &= 0
     \end{aligned}
-    \quad \forall \delta q \in Q'
+    \quad \forall \delta q \in \mathcal{Q}'
 \end{equation}
-其中，$Q$为试函数空间满足$q\in Q$，$q_0$和$\dot q_0$为$q$在$t_0$时刻的初始位移和速度。
-而$P$为权函数空间，满足$\delta q\in Q'$。
-根据$P$的定义，可得到如下所示欧拉-拉格朗日方程：
+其中，$\mathcal{Q}$为试函数空间满足$q\in \mathcal{Q}$，$q_0$和$\dot q_0$为$q$在$t_0$时刻的初始位移和速度。
+而$\mathcal{P}$为权函数空间，满足$\delta q\in \mathcal{Q}'$。
+根据$\mathcal{P}$的定义，可得到如下所示欧拉-拉格朗日方程：
 \begin{equation}\label{eq:euler-lagrange}
     \frac{\partial L}{\partial q} - \frac{d}{dt} \frac{\partial L}{\partial \dot{q}} = 0 
 \end{equation}
 
 通常情况下，此类动力问题已知初始条件$q(t_0)=q_0$和$\dot{q}(t_0)=\dot{q}_0$，所以也称为初值问题。
 欧拉-拉格朗日相较于哈密顿原理中的式\eqref{eq:variation}对解的要求更高，式\eqref{eq:euler-lagrange}要求在时间域$(t_0,t_1)$内处处成立，而式\eqref{eq:variation}只要求对全域积分后下成立。
-所以可以称式\eqref{eq:euler-lagrange}为强形式方程(\textbf{Strong Found})，
-而式\eqref{eq:variation}为弱形式方程(\textbf{Weak Found})。
+所以可以称式\eqref{eq:euler-lagrange}为强形式方程(\textbf{Strong Form})，
+而式\eqref{eq:variation}为弱形式方程(\textbf{Weak Form})。
 
 \begin{figure}[!h] 
     \centering
@@ -63,31 +63,31 @@ m \ddot q + k q =0
 \end{equation}
 
 Newmark-$\beta$法是基于时间导数的有限差分近似构建的线性动力系统数值积分算法,
-通过当前时刻(第n步)的状态(位移$u_n$、速度$v_n$​、加速度$a_n$)，
-计算下一时刻(第n+1步)的状态，迭代公式中$\Delta t$为时间步长，
+通过当前时刻(第$n$步)的状态(位移$q_n$、速度$\dot q_n$​、加速度$\ddot q_n$)，
+计算下一时刻(第$n+1$步)的状态，迭代公式中$\Delta t$为时间步长，
 $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力。
 当取$\gamma=0$、$\beta=0$时，Newmark-$\beta$法为显式格式，
-采用向前差分近似时间导数，仅利用当前时刻(第n步)的状态计算下一时刻(第n+1步)状态，
+采用向前差分近似时间导数，仅利用当前时刻(第$n$步)的状态计算下一时刻(第$n+1$步)状态，
 无需求解方程组，迭代公式为：
 \begin{equation}\label{newmark-explicit}
     \left \{
         \begin{split}
-            a_n &= \frac{1}{m}(f_n - c v_n - k u_n) \\
-            v_{n+1} &= v_n + \Delta t a_n \\
-            u_{n+1} &= u_n + \Delta t v_n
+            \ddot q_n &= \frac{1}{m}(f_n - c \dot q_n - k q_n) \\
+            \dot q_{n+1} &= \dot q_n + \Delta t \ddot q_n \\
+            q_{n+1} &= q_n + \Delta t \dot q_n
         \end{split}
     \right .
 \end{equation}
 
 当取$\gamma=1$、$\beta=\frac{1}{2}$时，Newmark-$\beta$法为隐式格式，
-采用向后差分近似时间导数，利用下一时刻(第n+1步)的状态反推更新，
+采用向后差分近似时间导数，利用下一时刻(第$n+1$步)的状态反推更新，
 需通过求解线性方程组获取未知状态，迭代公式为：
 \begin{equation}\label{newmark-implicit}
     \left \{
         \begin{split}
-            a_{n+1} &= \frac{1}{m}(f_{n+1} - c v_{n+1} - k u_{n+1}) \\
-            v_{n+1} &= v_n + \Delta t a_{n+1} \\
-            u_{n+1} &= u_n + \Delta t v_{n+1}
+            \ddot q_{n+1} &= \frac{1}{m}(f_{n+1} - c \dot q_{n+1} - k q_{n+1}) \\
+            \dot q_{n+1} &= \dot q_n + \Delta t \ddot q_{n+1} \\
+            q_{n+1} &= q_n + \Delta t \dot q_{n+1}
         \end{split}
     \right .
 \end{equation}
@@ -98,9 +98,9 @@ $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力
 \begin{equation}\label{newmark-semi-implicit}
     \left \{
         \begin{split}
-            a_{n+1} &= \frac{1}{m}(f_{n+1} - c v_{n+1} - k u_n) \\
-            v_{n+1} &= v_n + \Delta t a_{n+1} \\
-            u_{n+1} &= u_n + \Delta t v_{n+1}
+            \ddot q_{n+1} &= \frac{1}{m}(f_{n+1} - c \dot q_{n+1} - k q_n) \\
+            \dot q_{n+1} &= \dot q_n + \Delta t \ddot q_{n+1} \\
+            q_{n+1} &= q_n + \Delta t \dot q_{n+1}
         \end{split}
     \right .
 \end{equation}
@@ -113,7 +113,7 @@ $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力
 
 \section{基于哈密顿原理的完全弱形式求解}
 
-另一类方法是基于哈密顿原理的完全弱形式\eqref{eq:variation}进行求解，
+基于哈密顿原理的完全弱形式\eqref{eq:variation}进行求解，
 % 将时间域作为第四维空间，
 % 并采用基于哈密顿原理的伽辽金弱形式协同空间区域进行混合离散，
 % 称为时空混合离散伽辽金法。
@@ -130,12 +130,12 @@ $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力
 同时，时空混合离散网格局部细化过程易于实现，
 空间区域的局部细化将不会对后续时间区域构成影响。
 
-在拉格朗日力学中，动力问题需满足变分原理或称哈密顿原理(Hamilton’s Principle)。
+在拉格朗日力学中，动力问题需满足变分原理或称哈密顿原理(Hamilton's Principle)。
 哈密顿原理指出，系统的真实运动轨迹会使能量泛函取极值，
 即动能与势能之差在时间区间上的积分取极值。也就是说能量泛函的变分等于零。
 
 然而，直接采用式\eqref{eq:variation}通常遇到以下问题:
-试函数空间$Q$和权函数空间$P$并不相同，尤其是在时间末端$t_1$处，$q(t_1)$通常是未知的，而$\delta q(t_1)=0$，这导致在数值实现时难以处理时间末端的边界条件。
+试函数空间$\mathcal{Q}$和权函数空间$\mathcal{P}$并不相同，尤其是在时间末端$t_1$处，$q(t_1)$通常是未知的，而$\delta q(t_1)=0$，这导致在数值实现时难以处理时间末端的边界条件。
 并且，初始时刻$t_0$的边界条件同时具有$q(t_0)=q_0$和$\dot q(t_0)=\dot q_0$两个边界条件，如何在弱形式\eqref{eq:variation}的同一时刻施加两个边界条件也是一个难题。
 
 采用传统有限元法进行分析时，对广义变量$q$进行有限元近似，其近似值$q_h$具有如下表达式：
@@ -148,27 +148,27 @@ q_h = \sum_{I=1}^{n_p} N_I d_I
     \dot q_h = \sum_{I=1}^{n_p} N_{I,t} d_I
 \end{equation}
 式中，$N_{I,t}$为形函数对时间的导数。
-将动能和势能表达式\eqref{eq:kinetic-potential}代入到弱形式\eqref{eq:variation}，可得如下问题：找到一个$q_h\in Q_h$，使得
+将动能和势能表达式\eqref{eq:kinetic-potential}代入到弱形式\eqref{eq:variation}，可得如下问题：找到一个$q_h\in \mathcal{Q}_h$，使得
 \begin{equation}\label{eq:discrete-variation}
-    \int_{t_0}^{t_1} \left( \delta \dot q_h m \dot q_h - \delta q_h k q_h \right) dt = \left. \delta q_h m \dot q_h \right|_{t_0} \quad \forall \delta q_h \in P_h
+    \int_{t_0}^{t_1} \left( \delta \dot q_h m \dot q_h - \delta q_h k q_h \right) dt = \left. \delta q_h m \dot q_h \right|_{t=t_0} \quad \forall \delta q_h \in \mathcal{P}_h
 \end{equation}
 
-值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$P_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$。
+值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$\mathcal{P}_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$。
 将有限元近似表达式\eqref{q_h}和式\eqref{dotq_h}代入弱形式\eqref{eq:variation}，
 可得到离散控制方程为：
 \begin{equation}\label{2.15}
 \boldsymbol K \boldsymbol d = \boldsymbol f
 \end{equation}
 其中，$\boldsymbol K$为刚度矩阵，其分量$K_{IJ}$的表达式为：
-\begin{equation}\label{2.14}
+\begin{equation}\label{K_IJ}
 K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 \end{equation}
 而外力向量$\boldsymbol f$施加初始时刻动量边界条件，其分量$f_I$的表达式为：
-\begin{equation}
-    f_I = N_I(t_0) m \dot q_0
+\begin{equation}\label{f_I}
+    f_I = N_I m \dot q_0 |_{t=t_0}
 \end{equation}
 
-在使用伽辽金法进行求解的过程中，试函数空间$Q_h$和权函数空间$P_h$采用相同的节点数进行离散，即$\dim Q_h = \dim P_h$。
+在使用伽辽金法进行求解的过程中，试函数空间$\mathcal{Q}_h$和权函数空间$\mathcal{P}_h$采用相同的节点数进行离散，即$\dim \mathcal{Q}_h = \dim \mathcal{P}_h$。
 然而，如图\ref{fg:δq=0}所示，直接令$\delta q_h(t_1)=0$，将导致刚度矩阵$\boldsymbol K$不为方阵。
 同时，初始时刻已施加边界条件$\dot q(t_0)=\dot q_0$，此时再通过强制方法，如罚函数法，施加$q(t_0)=q_0$边界条件，将导致自然边界条件$\dot q(t_0)=\dot q_0$不起作用。
 
@@ -195,7 +195,7 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 首先是存储困难，对称矩阵可利用对称性仅存储上三角或下三角部分数据，大幅节省内存开销。
 而边界条件的非自然转移会打破矩阵元素的对称分布，非对称矩阵需完整存储所有行和列的元素，
 尤其在大规模多维问题中，数据存储量会翻倍，给内存资源带来巨大压力；
-然后是计算效率低，数值求解中针对对称矩阵的优化算法可将计算复杂度从$O(n^3)$降低至$O(n^2)$,
+然后是计算效率低，数值求解中针对对称矩阵的优化算法可将计算复杂度从$O(n^3)$降低至$O(n^2)$[],
 而非对称矩阵无法适配此类高效算法，需采用通用矩阵求解方法，
 运算步骤增多、迭代次数增加，且数据读写量增大，直接导致整体计算效率大幅下降。
 最后是计算稳定性差，对称矩阵的特征值均为实数，且数值求解过程中误差传播具有可控性，
@@ -220,11 +220,11 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 
 为解决基于哈密顿原理的传统有限元法在时间末端边界的问题，
 本节提出一种基于拉格朗日乘子型的时域未端本质边界条件施加方案。
-在上节中已知，试函数空间$Q$和权函数空间$P$不一致将会导致刚度矩阵不为方阵，无法求解。
-本文所提方案是通过引入一个拉格朗日乘数$p$来代替原来无法数值实现的虚位移$\delta q$，现将试函数空间投影到$Q'$空间中。
-$Q'$空间定义为：
+在上节中已知，试函数空间$\mathcal{Q}$和权函数空间$\mathcal{P}$不一致将会导致刚度矩阵不为方阵，无法求解。
+本文所提方案是通过引入一个拉格朗日乘数$p$来代替原来无法数值实现的虚位移$\delta q$，现将试函数空间投影到$\mathcal{Q}'$空间中。
+$\mathcal{Q}'$空间定义为：
 \begin{equation}
-Q' = \left \{ q \in Q \left \lvert \int_{t_0}^{t_1} \dot p m \dot q - p k q dt = pm\dot q \vert_{t_0}, \; \forall \delta p \in P \right . \right \}
+\mathcal{Q}' = \left \{ q \in \mathcal{Q} \left \lvert \int_{t_0}^{t_1} \dot p m \dot q - p k q dt = pm\dot q \vert_{t=t_0}, \; \forall \delta p \in \mathcal{P} \right . \right \}
 \end{equation}
 随后，在$Q$空间中寻找使用作用量$\Phi$取最小值时的$q$。此时新的能量泛函可表示为：
 \begin{equation}\label{2.16}
@@ -235,11 +235,11 @@ Q' = \left \{ q \in Q \left \lvert \int_{t_0}^{t_1} \dot p m \dot q - p k q dt =
     \delta \bar \Phi(q,p) = \delta \Phi(q) - \int_{t_0}^{t_1} (\delta \dot q m \dot p - \delta q k p) dt - \int_{t_0}^{t_1} (\delta \dot p m \dot q - \delta p k q) dt \\
     + \delta \dot q m p \vert_{t=t_0} + \delta p m \dot q \vert_{t=t_0} = 0
 \end{multline}
-引入相同节点的有限元近似同时离散$q$和$p$，整理可得：找到一组解$(q_h,p_h) \in Q_h \times P_h$，使得
+引入相同节点的有限元近似同时离散$q$和$p$，整理可得：找到一组解$(q_h,p_h) \in \mathcal{Q}_h \times \mathcal{P}_h$，使得
 \begin{equation}
     \begin{aligned}
-        \int_{t_0}^{t_1} (\delta \dot q m \dot q - \delta q k q) dt - \int_{t_0}^{t_1} (\delta \dot q m \dot p - \delta q k p) dt &= 0, \quad & \forall \delta q_h \in Q_h \\
-        - \int_{t_0}^{t_1} (\delta \dot p m \dot q - \delta p k q) dt &= - \delta p m q \vert_{t=t_0}, \quad & \forall \delta p_h \in P_h
+        \int_{t_0}^{t_1} (\delta \dot q m \dot q - \delta q k q) dt - \int_{t_0}^{t_1} (\delta \dot q m \dot p - \delta q k p) dt &= 0, \quad & \forall \delta q_h \in \mathcal{Q}_h \\
+        - \int_{t_0}^{t_1} (\delta \dot p m \dot q - \delta p k q) dt &= - \delta p m  \dot q \vert_{t=t_0}, \quad & \forall \delta p_h \in \mathcal{P}_h
     \end{aligned}
 \end{equation}
 
@@ -257,8 +257,26 @@ Q' = \left \{ q \in Q \left \lvert \int_{t_0}^{t_1} \dot p m \dot q - p k q dt =
  \boldsymbol 0 \\ -\boldsymbol f
 \end{Bmatrix}
 \end{equation}
-从上式可以看出，试函数空间和权函数空间均属于相同的离散空间，$Q_h\times P_h$。
+其中，刚度矩阵$\boldsymbol K$和力向量$\boldsymbol f$的分量$K_{IJ}$和$f_I$与式\eqref{K_IJ}，\eqref{f_I}相同。
+从上式可以看出，试函数空间和权函数空间均属于相同的离散空间，$\mathcal{Q}_h\times \mathcal{P}_h$。
 在施加强制边界条件时，将不再出现由于空间不匹配造成施加困难的问题。本文采用罚函数法\cite{hughes2000finite}对$q$和$p$相关的本质边界条件进行施加。
+罚函数的增广能量泛函可写为：
+\begin{equation}
+\tilde{\Phi}(q,p)
+= \bar \Phi(q,p)
++ \frac{\alpha}{2}\left(q \vert_{t=t_0}-q_0\right)^2
++ \frac{\beta}{2}\left(p\vert_{t=t_1}-\bar p_1\right)^2
+\end{equation}
+其中，$\alpha$和$\beta$分别为与$q$、$p$相关本质边界条件的罚参数，
+$q_0$为初始时刻位移边界值，$\bar p_1$为时间末端动量边界目标值。
+对上式变分可得附加边界项：
+\begin{equation}
+\delta \tilde{\Phi} -\delta \bar \Phi
+= \alpha \left(q\vert_{t=t_0}-q_0\right)\delta q\vert_{t=t_0}
++ \beta \left(p\vert_{t=t_1}-\bar p_1\right)\delta p\vert_{t=t_1}
+\end{equation}
+罚参数取值应足够大以保证边界约束近似满足，同时避免过大导致离散方程病态，
+通常可按问题特征刚度量级进行比例选取并结合条件数进行校核。
 相对应的离散控制方程可表示为：
 \begin{equation}\label{2.25}
 \begin{bmatrix}
@@ -268,16 +286,17 @@ Q' = \left \{ q \in Q \left \lvert \int_{t_0}^{t_1} \dot p m \dot q - p k q dt =
 \boldsymbol q \\ \boldsymbol p
 \end{Bmatrix} =
 \begin{Bmatrix}
- \boldsymbol f^\alpha \\ -\boldsymbol f
+ \boldsymbol f^\alpha \\ -\boldsymbol f + \boldsymbol f^\beta
 \end{Bmatrix}
 \end{equation}
 其中，$\boldsymbol K^\alpha$和$\boldsymbol f^\alpha$、
 $\boldsymbol K^\beta$和$\boldsymbol f^\beta$
 分别为施加与$q$和$p$相关的本质边界条件刚度矩阵和力向量，分量表达式如下：
 \begin{align}
-K^\alpha_{IJ} &= \alpha N_I(t_0) N_J(t_0) \quad 
-f^\alpha_I = \alpha N_I(t_0) q_0 \label{2.26} \\
-K^\beta_{IJ} &= \beta N_I(t_1) N_J(t_1) \label{2.27}
+K^\alpha_{IJ} &= \alpha N_I N_J |_{t=t_0} \quad 
+f^\alpha_I = \alpha N_I q_0 |_{t=t_0} \label{2.26} \\
+K^\beta_{IJ} &= \beta N_I N_J |_{t=t_1} \quad 
+f^\beta_I = \beta N_I \bar p_1 |_{t=t_1} \label{2.27} \\
 \end{align}
 式中$\alpha$为用于施加与广义位移$q$相关的本质边界条件的罚函数因子，
 $\beta$为用于施加与广义动量$p$相关的本质边界条件的罚函数因子。
