@@ -20,7 +20,7 @@
 在拉格朗日表达式\eqref{eq:lagrangian}的基础上，
 一维波动问题在轴向区间$[x_0,x_1]$的动能$T$和势能$U$的积分表达式为：
 \begin{equation}
-    \Phi(u) = \int_{t_0}^{t_1} T(u) - U(u) + F(u) dt
+    \Phi(u) = \int_{t_0}^{t_1} T - U dt
 \end{equation}
 \begin{equation}
     T = \int_{x_0}^{x_1} \frac{1}{2} \rho A \dot u^2 dx
@@ -28,24 +28,30 @@
 
 \begin{equation}
     U = \int_{x_0}^{x_1} \frac{1}{2} EA u_{,x}^2 dx
+    -\int_{x_0}^{x_1} ub dx  + uP \vert_{x=x_t}
 \end{equation}
 
 \begin{equation}
-    F = \int_{x_0}^{x_1} ub dx  + uP \vert_{x=x_t}
+    \Phi(u) = \frac{1}{2} a(u,u) - f(u)
 \end{equation}
-
+其中，$a(u,u)$为双线性形式，$f(u)$为线性形式，表达式如下：
+\begin{equation}
+    a(u,u) = \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\dot u \rho A \dot u - u_{,x} EA u_{,x}) dx dt
+\end{equation}
+\begin{equation}
+    f(u) = \int_{t_0}^{t_1} (\int_{x_0}^{x_1} ub dx  + uP \vert_{x=x_t})dt
+\end{equation}
 式中，$\rho$为材料密度，$A$为材料横截面积，$u$和$\dot u$为广义自由度和其对时间$t$的一阶导数，
 $u,x$为广义自由度对位移$x$的一阶导数。$E$为材料的弹性模量，$b$为体力，$P$为外力。
 
 根据哈密顿原理，将动能和势能表达式代入式\eqref{eq:variation}，
 可以找到一个精确解$u$使得该问题的能量泛函变分等于$0$：
-\begin{equation}
-    \delta \Phi(u) = a(\delta u, u) - f(\delta u)
+\begin{equation}\label{eq:1d weak found}
+    \begin{aligned}
+        \delta \Phi (u) &= \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt \\
+        &- \int_{t_0}^{t_1} (\int_{x_0}^{x_1} \delta ub dx  + \delta uP \vert_{x=x_t})dt 
+    \end{aligned}
 \end{equation}
-\begin{align}\label{eq:1d weak found}
-    a(\delta u, u)= \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt \\
-    f(\delta u) = \int_{t_0}^{t_1} (\int_{x_0}^{x_1} \delta ub dx  + \delta uP \vert_{x=x_t})dt 
-\end{align}
 对弱形式的时间项和空间项分别做分部积分，可得：
 \begin{equation}
     \begin{aligned}
@@ -183,51 +189,30 @@ u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}\left[(1 - 2\beta)\ddo
 再引入以下双线性形式和线性形式来表达拉格朗日变分问题：
 
 \begin{equation}\label{3.16}
-\Phi(u,v) = \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\dot u \rho A \dot v -  u_{,x} EA v_{,x}) dx dt
-\end{equation}
-
-传统能量泛函表达式：
-\begin{equation}\label{3.18}
-\Psi(u) = \frac{1}{2} \Phi(u,u) - f(u)
+\bar \Phi(u,v) = \frac{1}{2} a(u,u) - a(u,v) + f(v)
 \end{equation}
 
 通过引入与变量$u$所属空间不同的虚拟变量来进行变分推导，
 可以将其看作将变量$u$投影到虚拟空间来求$\Psi$的极小值。
 因此，总能量泛函可以通过添加一个拉格朗日乘数来处理空间不匹配的问题，
 从而设计一个全新的拉格朗日乘子型能量泛函：
-\begin{equation}\label{3.19}
-\bar \Psi(u,p) = \Psi(u) + \Phi(u,u) - f(p)
-\end{equation}
 
 \begin{equation}\label{3.24}
-\bar \Phi(u,p)= \int_{t_0}^{t_1} \int_{0}^{l} (\frac{1}{2} \rho A \dot u^2 - \frac{1}{2} EA u_{,x}^2) dx dt
-- \int_{t_0}^{t_1} \int_{0}^{l} (\dot u \rho A \dot p -  u_{,x} EA p_{,x}) dx dt
+\bar \Phi(u,p)= a(\delta u, u) - a(\delta u, v) - a(u, \delta v) + f(\delta v) = 0
 \end{equation}
 
 对上式进行变分得到对应的弱形式：
 \begin{equation}\label{3.21}
-\begin{split}
-\Phi(\delta u, u) + \Phi(\delta u, p) &= f(\delta u) \\
-\Phi(\delta p, u) &= f(\delta p)
-\end{split}
+    \text{Find } u \in \mathcal U, v \in \mathcal V, \quad
+    \left \{
+    \begin{aligned}
+        a(\delta u, u) - a(\delta u, v) &= 0, \quad & \forall \delta u \in \mathcal U \\
+        a(u, \delta v) &= -f(\delta v), \quad & \forall \delta v \in \mathcal V
+    \end{aligned}
+    \right .
 \end{equation}
 
-\begin{equation}\label{2.22}
-\begin{split}
-\delta \bar \Phi(u, p) &=  \int_{t_0}^{t_1} \int_{0}^{l} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt 
--  \int_{t_0}^{t_1} \int_{0}^{l} (\delta \dot p \rho A \dot u - \delta p_{,x} EA u_{,x}) dx dt \\
-&-  \int_{t_0}^{t_1} \int_{0}^{l} (\delta \dot u \rho A \dot p - \delta u_{,x} EA p_{,x}) dx dt = 0
-\end{split}
-\end{equation}
-
-对弱形式进行有限元近似处理得到传统的刚度矩阵和力向量：
-\begin{equation}\label{3.23}
-K_{IJ} = \int_{t_0}^{t_1} \int_{0}^{l} (N_{I,t} \rho A N_{J,t} - N_{I,x}EAN_{J,x})dxdt
-\end{equation}
-
-\begin{equation}\label{3.28}
-f_I = \int_{0}^{l} N_I(t_0) C dx 
-\end{equation}
+\emph{有限元离散:}
 
 由于式\ref{3.19}，所提时空混合离散伽辽金弱形式中双线性算子均为同一算子，
 区别在于变量$u$和其对应的虚变量$p$所处的空间不一致。
