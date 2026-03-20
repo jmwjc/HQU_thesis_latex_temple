@@ -22,11 +22,11 @@
 \begin{equation}
     \Phi(u) = \int_{t_0}^{t_1} T - U dt
 \end{equation}
-\begin{equation}
+\begin{equation}\label{T_2d}
     T = \int_{x_0}^{x_1} \frac{1}{2} \rho A \dot u^2 dx
 \end{equation}
 
-\begin{equation}
+\begin{equation}\label{U_2d}
     U = \int_{x_0}^{x_1} \frac{1}{2} EA u_{,x}^2 dx
     -\int_{x_0}^{x_1} ub dx  + uP \vert_{x=x_t}
 \end{equation}
@@ -45,7 +45,7 @@
 $u,x$为广义自由度对位移$x$的一阶导数。$E$为材料的弹性模量，$b$为体力，$P$为外力。
 
 根据哈密顿原理，将动能和势能表达式代入式\eqref{eq:variation}，
-可以找到一个精确解$u$使得该问题的能量泛函变分等于$0$：
+可以找到一个精确解$u \in \mathcal U$使得该问题的能量泛函变分等于$0$：
 \begin{equation}\label{eq:1d weak found}
     \begin{aligned}
         \delta \Phi (u) &= \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x}) dx dt \\
@@ -77,7 +77,7 @@ $u,x$为广义自由度对位移$x$的一阶导数。$E$为材料的弹性模量
         &u\vert_{x_g} = u_g, \\
         &EA u_{,x} n_x \vert_{x_t} = P \\
         &u\vert_{t_0} = u_0, \\
-        &\dot u\vert_{t_0} = v_0
+        &\dot u\vert_{t_0} = \dot u_0
     \end{aligned}
     \right .
 \end{equation}
@@ -146,36 +146,33 @@ Newmark法对位移、速度和加速度的时间导数采用如下近似：
 \begin{equation}\label{3.2}
 \left \{
 \begin{split}
-\ddot{u}_{n+1} &= \frac{1}{m}(f_{n+1} - k u_{n+1})  \\
-\dot{u}_{n+1} &= \dot{u}_n + \Delta t ((1 - \gamma)\ddot{u}_n + \gamma\ddot{u}_{n+1}) \\
-u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{u}_n + 2\beta\ddot{u}_{n+1} 
+\ddot{\boldsymbol{u}}_{n+1} &= \boldsymbol{M}^{-1}(\boldsymbol{f}_{n+1} - \boldsymbol{K} \boldsymbol{u}_{n+1})  \\
+\dot{\boldsymbol{u}}_{n+1} &= \dot{\boldsymbol{u}}_n + \Delta t ((1 - \gamma)\ddot{\boldsymbol{u}}_n + \gamma\ddot{\boldsymbol{u}}_{n+1}) \\
+\boldsymbol{u}_{n+1} &= \boldsymbol{u}_n + \Delta t \dot{\boldsymbol{u}}_n + \frac{\Delta t^2}{2} \left[ (1 - 2\beta)\ddot{\boldsymbol{u}}_n + 2\beta\ddot{\boldsymbol{u}}_{n+1} \right] 
 \end{split}
 \right .
 \end{equation}
 
-其中，$u_n$、$\dot u_n$、$\ddot u_n$分别为$t_n$时刻的位移、速度和加速度，
+其中，$\boldsymbol{u}_n$、$\dot{\boldsymbol{u}}_n$、$\ddot{\boldsymbol{u}}_n$分别为$t_n$时刻的位移、速度和加速度向量，
 $\beta$和$\gamma$为Newmark参数，$\Delta t$为时间步长。
 通过调整参数可控制算法的特性，当$\gamma = \frac{1}{2}$、
 $\beta = \frac{1}{4}$时为无条件稳定的平均加速度法。
 当$\gamma = \frac{1}{2}$、$\beta = 0$时为条件稳定的中心差分法。
-
-% 空间弱形式可以通过利用格林公式对波动方程两边与试函数$v(x)$作内积得到：
-% \begin{equation}\label{3.3}
-% \int_{\Omega} v\frac{\partial^2 u}{\partial t^2}dx + c^2\int_{\Omega}\frac{\partial v}{\partial x}\frac{\partial u}
-% {\partial x}dx=\int_{\Omega}vf(x,t)dx+\int_{\Gamma}v\frac{\partial u}{\partial x}n_xdx
-% \end{equation}
 
 
 最后联立时间离散格式与空间离散方程式\eqref{Mu+Ku=f}，消去速度项后得到Newmark法的迭代公式：
 \begin{equation}\label{3.5}
 \left \{
 \begin{split}
-(M + \frac{\gamma \Delta t K}{\beta})\ddot{u}_{n+1} &= F_{n+1} - K\left[u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{u}_n\right] \\
-u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}\left[(1 - 2\beta)\ddot{u}_n + 2\beta\ddot{u}_{n+1}\right] \\
-\dot{u}_{n+1} &= \dot{u}_n + \Delta t[(1 - \gamma)\ddot{u}_n + \gamma\ddot{u}_{n+1}] \\
+\left(\boldsymbol{M} + \frac{\gamma \Delta t}{\beta} \boldsymbol{K}\right)\ddot{\boldsymbol{u}}_{n+1} &= \boldsymbol{f}_{n+1} - \boldsymbol{K}\left[\boldsymbol{u}_n + \Delta t \dot{\boldsymbol{u}}_n + \frac{\Delta t^2}{2}(1 - 2\beta)\ddot{\boldsymbol{u}}_n\right] \\
+\boldsymbol{u}_{n+1} &= \boldsymbol{u}_n + \Delta t \dot{\boldsymbol{u}}_n + \frac{\Delta t^2}{2}\left[(1 - 2\beta)\ddot{\boldsymbol{u}}_n + 2\beta\ddot{\boldsymbol{u}}_{n+1}\right] \\
+\dot{\boldsymbol{u}}_{n+1} &= \dot{\boldsymbol{u}}_n + \Delta t\left[(1 - \gamma)\ddot{\boldsymbol{u}}_n + \gamma\ddot{\boldsymbol{u}}_{n+1}\right] \\
 \end{split}
 \right .
 \end{equation}
+
+
+
 
 
 \section{一维波动问题的拉格朗日乘子型时空混合离散分析方法}
@@ -184,169 +181,265 @@ u_{n+1} &= u_n + \Delta t \dot{u}_n + \frac{\Delta t^2}{2}\left[(1 - 2\beta)\ddo
 
 基于哈密顿原理的传统有限元法在时间末端边界的问题，
 提出一种基于拉格朗日乘子型的时域未端本质边界条件施加方案。
-首先，将传统能量泛函中的虚位移$\delta u$作为拉格朗日乘子，
-换成一个拉格朗日乘数$p$的表达形式，设计全新拉格朗日乘子型能量泛函。
+首先，由于试函数空间$\mathcal{U}$和权函数空间$\mathcal{P}$不一致将会导致刚度矩阵不为方阵，无法求解。
+所以我们通过将传统能量泛函中的虚位移$\delta u$作为拉格朗日乘子，
+换成一个拉格朗日乘数$v$的表达形式来代替原来无法数值实现的虚位移$\delta u$，
+再将势函数空间投影到$\mathcal{V}$中，设计全新拉格朗日乘子型能量泛函。
 再引入以下双线性形式和线性形式来表达拉格朗日变分问题：
-
 \begin{equation}\label{3.16}
-\bar \Phi(u,v) = \frac{1}{2} a(u,u) - a(u,v) + f(v)
+\bar \Phi(u,v) = \Phi(u) - a(u,v) + f(v)
 \end{equation}
 
-通过引入与变量$u$所属空间不同的虚拟变量来进行变分推导，
-可以将其看作将变量$u$投影到虚拟空间来求$\Psi$的极小值。
-因此，总能量泛函可以通过添加一个拉格朗日乘数来处理空间不匹配的问题，
-从而设计一个全新的拉格朗日乘子型能量泛函：
-
+通过引入与变量$u$所属空间不同的虚拟变量$v$来进行变分推导，
+可以将其看作将变量$u$投影到虚拟空间来求$\bar \Phi$的极小值。
+然后对总能量泛函变分得到对应的波动问题的弱形式：
 \begin{equation}\label{3.24}
-\bar \Phi(u,p)= a(\delta u, u) - a(\delta u, v) - a(u, \delta v) + f(\delta v) = 0
+    \begin{aligned}
+        \delta \bar \Phi(u,v) = \delta \Phi(u) &- \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot u \rho A \dot v - \delta u_{,x} EA v_{,x}) dx dt - \int_{t_0}^{t_1} \int_{x_0}^{x_1} (\delta \dot v \rho A \dot u - \delta v_{,x} EA u_{,x}) dx dt \\
+        &+ \int_{t_0}^{t_1} \left( \int_{x_0}^{x_1} \delta v b dx + \delta v P \vert_{x=x_t} \right) dt = 0
+    \end{aligned}
 \end{equation}
 
-对上式进行变分得到对应的弱形式：
+引入相同节点的有限元近似同时离散$u$和$v$，对上式进行整理可得：
+找到一组解$(u_h,v_h) \in (\mathcal{U}_h \times \mathcal {v}_h)$，使得
 \begin{equation}\label{3.21}
     \text{Find } u \in \mathcal U, v \in \mathcal V, \quad
     \left \{
     \begin{aligned}
         a(\delta u, u) - a(\delta u, v) &= 0, \quad & \forall \delta u \in \mathcal U \\
-        a(u, \delta v) &= -f(\delta v), \quad & \forall \delta v \in \mathcal V
+        -a(u, \delta v) &= -f(\delta v), \quad & \forall \delta v \in \mathcal V
     \end{aligned}
     \right .
 \end{equation}
 
-\emph{有限元离散:}
+将动能表达式\eqref{T_2d}和势能表达式\eqref{U_2d}代入可得：
+\begin{equation}\label{3.26}
+    \left\{
+    \begin{aligned}
+        &\int_{t_0}^{t_1} \int_{x_0}^{x_1} \left( \delta\dot{u}\rho A\dot{u} - \delta u_{,x}EA u_{,x} \right) dx dt - \int_{t_0}^{t_1} \int_{x_0}^{x_1} \left( \delta\dot{u}\rho A\dot{v} - \delta u_{,x}EA v_{,x} \right) dx dt = 0 \\
+        &-\int_{t_0}^{t_1} \int_{x_0}^{x_1} \left( \delta\dot{v}\rho A\dot{u} - \delta v_{,x}EA u_{,x} \right) dx dt = -\int_{t_0}^{t_1} \left( \int_{x_0}^{x_1} \delta v b dx + \delta v P \vert_{x=x_t} \right) dt
+    \end{aligned}
+    \right.
+\end{equation}
 
-由于式\ref{3.19}，所提时空混合离散伽辽金弱形式中双线性算子均为同一算子，
-区别在于变量$u$和其对应的虚变量$p$所处的空间不一致。
-造成空间不一致的原因在于他们的本质边界条件不一致。
-若$u$和$p$采用相同的存储空间，采用相同的近似方式进行离散时，
-单独将施加本质边界条件部分的刚度矩阵分出，通过罚函数法来施加，
-那么最终的离散控制方程可表示为：
-\begin{equation}\label{3.25}
+采用传统有限元法进行分析时，对位移变量$u$和拉格朗日乘子$v$进行有限元近似，其近似值$u^h$和$v^h$具有如下表达式：
+\begin{equation}\label{uv_h}
+u^h (x,t)=v^h (x,t) = \sum_{I=1}^{n_p} N_I (x,t) d_I
+\end{equation}
+对时间的一阶导数的近似值$\dot u^h$和$\dot v^h$为：
+\begin{equation}\label{dotuv_h}
+    \dot u^h =\dot v^h= \sum_{I=1}^{n_p} N_{I,t} d_I
+\end{equation}
+对位移的一阶导数的近似值$u_{,x}^h$和$v_{,x}^h$为：
+\begin{equation}\label{uv_x^h}
+    u_{,x}^h=v_{,x}^h= \sum_{I=1}^{n_p} N_{I,x} d_I
+\end{equation}
+
+通过有限元近似表达式，可得到对应的离散控制方程为：
+\begin{equation}
+\begin{bmatrix}
+\boldsymbol K & -\boldsymbol K \\ -\boldsymbol K & \boldsymbol 0
+\end{bmatrix}
+\begin{Bmatrix}
+\boldsymbol q \\ \boldsymbol p
+\end{Bmatrix} =
+\begin{Bmatrix}
+ \boldsymbol 0 \\ -\boldsymbol f
+\end{Bmatrix}
+\end{equation}
+其中，刚度矩阵$\boldsymbol K$和力向量$\boldsymbol f$的分量$K_{IJ}$和$f_I$的表达式如下：
+\begin{equation}
+    K_{IJ} = \int_{t_0}^{t_1} \int_{x_0}^{x_1} \left( N_{I,t}\rho A N_{J,t} - N_{I,x}EA N_{J,x} \right) dx dt
+\end{equation}
+\begin{equation}
+    f_I = \int_{t_0}^{t_1} \left( \int_{x_0}^{x_1} N_I b dx + N_I P \vert_{x=x_t} \right) dt
+\end{equation}
+
+通过有限元近似表达式对真实位移变量 $u$ 及其对应的虚拟动量对应变量 $v$（即拉格朗日乘子）进行相同时空边界节点的初步离散（即 $u_h = \sum N_I u_I$, $v_h = \sum N_I v_I$），由于式\eqref{3.26}中所提时空混合离散伽辽金弱形式中双线性算子均为同一个时空算子，我们可以将未考虑本质边界条件的最简离散控制方程表示为：
+\begin{equation}\label{3.27}
+\begin{bmatrix}
+\boldsymbol K & -\boldsymbol K \\ -\boldsymbol K & \boldsymbol 0
+\end{bmatrix}
+\begin{Bmatrix}
+\boldsymbol u \\ \boldsymbol v
+\end{Bmatrix} =
+\begin{Bmatrix}
+ \boldsymbol 0 \\ -\boldsymbol f
+\end{Bmatrix}
+\end{equation}
+
+其中，时空总刚度矩阵 $\boldsymbol{K}$ 重复在三个分块位置处被使用，因此在有限元数值求解阶段，完全可以利用该局部对称且同质的特点来优化程序内核结构，极大降低系统维度的内存开销。
+
+从上式可以看出，试函数空间和权函数空间均属于相同的离散空间，$\mathcal{U}_h\times \mathcal{V}_h$。
+在施加强制边界条件时，将不再出现由于空间不匹配造成施加困难的问题。本文采用罚函数法对$u$和$v$相关的本质边界条件进行施加。
+罚函数的增广能量泛函可写为：
+\begin{equation}
+\tilde{\Phi}(u,v)
+= \bar \Phi(u,v)
++ \frac{\alpha}{2}\int_{x_0}^{x_1} \left(u \vert_{t=t_0}-u_0\right)^2 dx
++ \frac{\beta}{2}\int_{x_0}^{x_1} \left(v\vert_{t=t_1}-\bar v_1\right)^2 dx
+\end{equation}
+其中，$\alpha$和$\beta$分别为与$u$、$v$相关本质边界条件的罚参数，
+$u_0$为初始时刻位移边界值，$\bar v_1$为时间末端虚拟变量边界目标值。
+对上式变分可得附加边界项：
+\begin{equation}
+\delta \tilde{\Phi} -\delta \bar \Phi
+= \alpha \int_{x_0}^{x_1} \left(u\vert_{t=t_0}-u_0\right)\delta u\vert_{t=t_0} dx
++ \beta \int_{x_0}^{x_1} \left(v\vert_{t=t_1}-\bar v_1\right)\delta v\vert_{t=t_1} dx
+\end{equation}
+
+罚参数取值应足够大以保证边界约束近似满足，同时避免过大导致离散方程病态，
+通常可按问题特征刚度量级进行比例选取并结合条件数进行校核。
+相对应的离散控制方程可表示为：
+\begin{equation}\label{3.28}
 \begin{bmatrix}
 \boldsymbol K + \boldsymbol K^\alpha & -\boldsymbol K \\ -\boldsymbol K & \boldsymbol K^\beta
 \end{bmatrix}
 \begin{Bmatrix}
-\boldsymbol u \\ \boldsymbol p
+\boldsymbol u \\ \boldsymbol v
 \end{Bmatrix} =
 \begin{Bmatrix}
  \boldsymbol f^\alpha \\ -\boldsymbol f + \boldsymbol f^\beta
 \end{Bmatrix}
 \end{equation}
-
-其中，总刚度矩阵$\boldsymbol K$重复在三个地方使用，
-因此可以利用该特点优化程序结构，降低内存开销。
-
-$\boldsymbol K^\alpha$和$\boldsymbol f^\alpha$、
+其中，$\boldsymbol K^\alpha$和$\boldsymbol f^\alpha$、
 $\boldsymbol K^\beta$和$\boldsymbol f^\beta$
-分别为施加与$u$和$p$相关的本质边界条件刚度矩阵和力向量,分量表达式如下：
-\begin{equation}\label{3.26}
-K^\alpha_{IJ} = \alpha N_I(t_0) N_J \quad 
-f^\alpha_I = \alpha N_I u(t_0)
-\end{equation}
+分别为施加与$u$和$v$相关的本质边界条件刚度矩阵和力向量，分量表达式如下：
+\begin{align}
+K^\alpha_{IJ} &= \int_{x_0}^{x_1} \alpha N_I N_J \vert_{t=t_0} dx, \quad 
+f^\alpha_I = \int_{x_0}^{x_1} \alpha N_I u_0 \vert_{t=t_0} dx \label{3.29} \\
+K^\beta_{IJ} &= \int_{x_0}^{x_1} \beta N_I N_J \vert_{t=t_1} dx, \quad 
+f^\beta_I = \int_{x_0}^{x_1} \beta N_I \bar v_1 \vert_{t=t_1} dx \label{3.30}
+\end{align}
 
-\begin{equation}\label{3.27}
-K^\beta_{IJ} = \beta N_I(t_1) N_J  \quad 
-f^\beta_I = \beta N_I u(t_1)
-\end{equation}
+式中$\alpha$为用于施加与真实位移$u$相关的本质边界条件的罚函数因子，
+$\beta$为用于施加与虚拟动量对应变量$v$相关的本质边界条件的罚函数因子。
 
-这样，我们通过引入一个拉格朗日乘数$p$代替原来无法数值实现的虚位移$\delta u$，
-构造出一个关于$u$和$p$的双变量的弱形式，
-再将这个弱形式作为一个投影项加入到原来的能量泛函式里进行变分计算，
-最后通过有限元形函数近似得到对应的刚度矩阵和力向量，组装离散控制方程进行代数求解。
-这样，就解决了基于哈密顿原理的完全弱形式求解在时间末端边界条件的问题，
-就可以应用到"1+1"维波动问题完全弱形式时空混合有限元法中数值求解了。
+
+这样，我们通过引入一个在拉格朗日维度投影等价的独立虚变量 $v$，有效替换并且避开了传统弱形式数值求解体系中无法在“将来”时间极点施加末端位移 $\delta u(t_1)=0$ 约束的痛点。我们顺利构造出一个关于真实求解物量 $u$ 以及共轭物量 $v$ 的完全对称弱形式变分问题。在经过罚函数结合统一的单元形函数向有限元离散化后形成的系数矩阵及力列阵性质优良，直接应用代数求解器便得以对动力学的初值问题彻底完成一站式的空间与时间的全维度连续推进。该框架为基于哈密顿变分推导出的“1+1”维复杂弹性阻抗以及边界不连续混合网格动力波动问题，奠定了高度统一且高并行的离散数值计算基石。
+
+
+
+
+
+
+
 
 \subsection{与欧拉--拉格朗日方程的等价性证明}
-在解决时空有限元法在时间末端边界条件的问题，根据最小势能原理，
-我们把原能量泛函变分得到的弱形式当作一个拉格朗日乘子加入到能量泛函中进行变分。
-虚位移$\delta u$用变量$p$表示，如式\ref{3.24}所示，
-可以得到双变量的能量泛函强形式表达式：
-\begin{equation}\label{3.32}
-    \Phi(u,p) = 
-    \int_\Omega \frac{1}{2} u_{,t}^2 - \frac{1}{2} c^2 u_{,i}u_{,i} d\Omega
-    - \int_{\Gamma_t} p t d\Gamma
-    - \int_\Omega p_{,t}u_{,t} - c^2 p_{,i}u_{,i} d\Omega
+在解决时空有限元法在时间末端边界条件的问题时，根据最小势能原理，
+我们把原能量泛函变分得到的弱形式当作一个拉格朗日乘子项加入到能量泛函中进行变分。
+为与上述一维波动问题相对应，虚位移$\delta u$用独立的虚拟变量$v$表示，
+可以得到一维双变量的能量泛函变分表达式等于$0$：
+\begin{equation}
+    \begin{aligned}
+        \delta\Phi(u, v) &= \int_{t_0}^{t_1}\int_{x_0}^{x_1} (\delta\dot{u}\rho A\dot{u} - \delta u_{,x}EA u_{,x}) dx dt \\
+        &\quad - \int_{t_0}^{t_1}\int_{x_0}^{x_1} (\delta\dot{v}\rho A\dot{u} - \delta v_{,x}EA u_{,x}) dx dt \\
+        &\quad - \int_{t_0}^{t_1}\int_{x_0}^{x_1} (\delta\dot{u}\rho A\dot{v} - \delta u_{,x}EA v_{,x}) dx dt \\ 
+        &\quad - \int_{t_0}^{t_1} \left( \int_{x_0}^{x_1} \delta v b dx + \delta v P \vert_{x=x_t} \right) dt= 0
+    \end{aligned}
 \end{equation}
 
-式中：$\int_\Omega \frac{1}{2} u_{,t}^2 d\Omega$表示动能，
-其中$u$为位移，$u_{,t}$为速度;
-$\int_\Omega \frac{1}{2} c^2 u_{,i}u_{,i} d\Omega$表示弹性应变能，
-其中$c$为波速，$c=\sqrt{\frac{EA}{\rho A}}$，$E$为弹性模量，
-$\rho$为材料密度，$A$为材料的面积，$u_{,i}$为应变；
-$\int_{\Gamma_t} utd \Gamma$表示边界上外力做功，其中$t$为外力。
-
-将上式进行变分以及分部积分处理后得到弱形式表达式：
-\begin{equation}\label{3.33}
-    \begin{split}
-        \delta \Phi(u,p) &= \int_\Omega \delta u_{,t} u_{,t} - c^2 \delta u_{,i}u_{,i} d\Omega
-        - \int_{\Gamma_t} \delta u t d\Gamma \\
-        &- \int_\Omega \delta p_{,t}u_{,t} - c^2 \delta p_{,i}u_{,i} d\Omega
-        - \int_\Omega \delta u_{,t}p_{,t} - c^2 \delta u_{,i}p_{,i} d\Omega \\
-        &=
-        \int_\Gamma \delta u (u_{,t} n_t - c^2 u_{,i} n_i) d\Gamma
-        - \int_\Omega \delta u (u_{,tt} - c^2 u_{,ii}) d\Omega - \int_{\Gamma_t} \delta pt d\Gamma \\
-        &- \int_\Gamma \delta p (u_{,t} n_t - c^2 u_{,i} n_i) d\Gamma
-        + \int_\Omega \delta p (u_{,tt} - c^2 u_{,ii}) d\Omega \\
-        &- \int_\Gamma \delta u (p_{,t} n_t - c^2 p_{,i} n_i) d\Gamma
-        + \int_\Omega \delta u (p_{,tt} - c^2 p_{,ii}) d\Omega \\
-        &=
-        \int_{\Gamma_t\cup \Gamma_1} \delta u (u_{,t} n_t - c^2 u_{,i} n_i
-        - (p_{,t} n_t - c^2 p_{,i} n_i)) d\Gamma \\
-        &- \int_{\Gamma_t} \delta p (t + (u_{,t} n_t - c^2 u_{,i} n_i)) d\Gamma \\
-        &- \int_\Omega \delta u (u_{,tt} - c^2 u_{,ii}-(p_{,tt} - c^2 v_{,ii})) d\Omega
-        - \int_\Omega \delta p (u_{,tt} - c^2 u_{,ii}) d\Omega \\
-    \end{split}
+对上述弱形式方程的时间项和空间项分别做分部积分，可得：
+\begin{equation}
+    \begin{aligned}
+        & - \int_{t_0}^{t_1}\int_{x_0}^{x_1} \delta u (\rho A \ddot{u} - EA u_{,xx}) dx dt 
+        + \int_{x_0}^{x_1} \delta u \rho A \dot{u} \big|_{t_0}^{t_1} dx 
+        - \int_{t_0}^{t_1} \delta u EA u_{,x} n_x \big|_{x_0}^{x_1} dt \\
+        & + \int_{t_0}^{t_1}\int_{x_0}^{x_1} \delta v (\rho A \ddot{u} - EA u_{,xx} - b) dx dt - \int_{x_0}^{x_1} \delta v \rho A \dot{u} \big|_{t_0}^{t_1} dx \\
+        & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad + \int_{t_0}^{t_1} \delta v \left( EA u_{,x} n_x \big|_{x_0}^{x_1} - P \vert_{x=x_t} \right) dt \\
+        & + \int_{t_0}^{t_1}\int_{x_0}^{x_1} \delta u (\rho A \ddot{v} - EA v_{,xx}) dx dt 
+        - \int_{x_0}^{x_1} \delta u \rho A \dot{v} \big|_{t_0}^{t_1} dx \\
+        & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad + \int_{t_0}^{t_1} \delta u EA v_{,x} n_x \big|_{x_0}^{x_1} dt = 0
+    \end{aligned}
 \end{equation}
 
-将弱形式整理后可以得到双变量对应的平衡微分方程：
+将上式整理并合并同类项，分别提取出积分域内部以及时空边界上的 $\delta u$ 和 $\delta v$：
+\begin{equation}
+    \begin{aligned}
+        & - \int_{t_0}^{t_1}\int_{x_0}^{x_1} \delta u \left[ (\rho A \ddot{u} - EA u_{,xx}) - (\rho A \ddot{v} - EA v_{,xx}) \right] dx dt \\
+        & + \int_{t_0}^{t_1}\int_{x_0}^{x_1} \delta v (\rho A \ddot{u} - EA u_{,xx} - b) dx dt \\
+        & + \int_{x_0}^{x_1} \delta u \rho A (\dot{u} - \dot{v}) \big|_{t_0}^{t_1} dx 
+        - \int_{x_0}^{x_1} \delta v \rho A \dot{u} \big|_{t_0}^{t_1} dx \\
+        & - \int_{t_0}^{t_1} \delta u EA (u_{,x} - v_{,x}) n_x \big|_{x_0}^{x_1} dt 
+        + \int_{t_0}^{t_1} \delta v \left( EA u_{,x} n_x \big|_{x_0}^{x_1} - P \vert_{x=x_t} \right) dt = 0
+    \end{aligned}
+\end{equation}
+
+其中，根据变分法基本引理，由于任意虚位移 $\delta u$ 和 $\delta v$ 在时空求解域内部 $(x_0, x_1) \times (t_0, t_1)$ 可以任意取值，必须使得其双重积分项的系数为零。由内部的 $\delta v$ 积分项立刻给出波动方程的基本控制形式：
+\begin{equation}
+    \rho A \ddot{u} = EA u_{,xx} + b
+\end{equation}
+将其控制方程代入 $\delta u$ 的内部积分系数项中，不难得到虚拟变量 $v$ 在求解域内同样需满足相同的动力学平衡方程：
+\begin{equation}
+    \rho A \ddot{v} = EA v_{,xx} + b
+\end{equation}
+
+在边界条件方面，由于假定给定初始时刻 $t=t_0$ 的位移和速度，根据哈密顿原理此处的变分保持不变已知，即：
+\begin{equation}
+    \delta u\vert_{t=t_0} = \delta v\vert_{t=t_0} = 0
+\end{equation}
+同时，由于在强制边界条件处（例如两端端部固定，区间 $[x_0,x_1]$ 对应的 $x=x_g$），位移给定，因此对应的虚位移 $\delta u$ 及虚拟变量变分 $\delta v$ 在该强制边界上也必须为零；或者在自然力边界 $\Gamma_t$（如受外力 $P$）处应满足力的动量平衡调节，由此可以得到空间边界条件为：
+\begin{equation}
+    EA u_{,x} n_x \vert_{x=x_t} = P \quad \text{且} \quad EA(u_{,x} - v_{,x}) n_x \vert_{x=x_t} = 0
+\end{equation}
+而对于最关键的新增加时间末端 $t=t_1$ 问题，由于未直接进行强制极值约束，系统通过提取时间边界使得系数自然为零得到关联约束关系：
+\begin{equation}
+    \rho A (\dot{u} - \dot{v}) \big|_{t=t_1} = 0 \quad \Rightarrow \quad \dot{u} \big|_{t=t_1} = \dot{v} \big|_{t=t_1}
+\end{equation}
+
+结合上述所有的平衡微分方程及边界条件，可以得到双变量拉格朗日乘子对应等价的强形式系统为：
 \begin{equation}\label{3.34}
     \left \{
         \begin{aligned}
-            &u_{,tt} = c^2 u_{,ii} &\text{in } \Omega \\
-            &u_{,tt} - c^2 u_{,ii}=p_{,tt} - c^2 p_{,ii} &\text{in } \Omega \\
-            &t = -u_{,t} n_t + c^2 u_{,i} n_i &\text{on } \Gamma_t \\
-            &u_{,t} n_t - c^2 u_{,i} n_i = p_{,t} n_t - c^2 p_{,i} n_i &\text{on } \Gamma_t \\
-            & u = u_0,\;\delta u = \delta p = 0 &\text{on } \Gamma_0 \\
-            &u = g,\;\delta u = \delta p = 0 &\text{on } \Gamma_g \\
-            & u_{,t} n_t - c^2 u_{,i} n_i = p_{,t} n_t - c^2 p_{,i} n_i, \delta p = 0 &\text{on } \Gamma_1
+            &\rho A \ddot{u} = EA u_{,xx} + b,  \quad &&\text{on } \Omega \\
+            &(\rho A \ddot{u} - EA u_{,xx}) = (\rho A \ddot{v} - EA v_{,xx}), \quad &&\text{on } \Omega \\
+            &u = u_g, \; v = v_g, \quad &&\text{on } \Gamma_g \;  \\
+            &EA u_{,x} n_x = P, \; EA (u_{,x} - v_{,x}) n_x = 0, \quad &&\text{on } \Gamma_t \;  \\
+            &u\vert_{t=t_0} = u_0, \quad \dot{u}\vert_{t=t_0} = v_0, &&\text{on } \Gamma_0 \;  \\
+            &\rho A \dot{u}\vert_{t=t_1} = \rho A \dot{v}\vert_{t=t_1} &&\text{on } \Gamma_1 
         \end{aligned}
     \right .
 \end{equation}
+式中，$\Omega$为求解空间，$\Gamma_g$和$\Gamma_t$为强制边界和自然边界，
+$\Gamma_0$和$\Gamma_1$为时间初始时刻和时间末端。
 
-其中，$\Omega$为求解域，$\Gamma_t$和$\Gamma_g$为自然边界条件和强制边界条件，
-$\Gamma_0$和$\Gamma_1$为时间初始边界条件和时间末端边界条件。
-$n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
-从平衡微分方程式\ref{3.34}可以看出，
-基于拉格朗日变分方案的位移变量满足波动方程的强形式控制方程。
-同时，位移变量和虚位移变量在求解域内的动力学行为具有一致性，也保证了在边界处的连续性。
-此外，还交代了强制边界上的位移约束，以及时间末端边界的状态约束。
+如式\eqref{3.34}所示，基于拉格朗日变分方案的真实位移变量 $u$ 完美满足经典动力学波方程的强形式控制方程。
+同时，引入的虚拟变量 $v$ 不仅在时空内部展现出与真实位移相互匹配的一致动力学行为，
+而且在自然边界以及时间的末端边界也确保了连续协调。综上所述，
+我们在时空混合网格求解框架下，完整推导并证明了该能量泛函弱形式与经典波动强形式之间的等价关系。
 
-综上所述，严格推导了波动方程的弱形式到强形式微分方程和自然边界条件，
-完整证明了弱形式和强形式之间的等价性。
+
+
 
 \section{数值算例}
 \subsection{一维弹性杆撞击刚性墙实验}
 
-考虑一维弹性杆撞击刚性壁的情况，如图\ref{fg:impact_bar}所示，
-弹性杆的材料系数为$E=1$，$\rho=1$，杆长$L=1$。
-弹性杆初始具有均匀速度$v_0=1$，撞击时在杆的左端施加位移条件，
-要求该端位移在任意时刻都为零，即$(u(x=0,t)=0$)，
-杆的右端为自由端。
-应力的解析解是一个压缩波，其表达式为$\sigma = EAu_{,x}$。
-如图\ref{fg:impact_bar}所示，在弹性杆的左端施加强制边界条件，
-而右端则施加自然边界条件。弹性杆的求解域通过图\ref{3.2}和\ref{3.3}所示采用
-三节点和六节点三角形单元均布网格离散，
-但区别在于采用的均布网格的离散密度不同。
+考虑一维弹性杆撞击刚性墙的情况，如图\ref{fg:impact_bar}所示，弹性杆的材料参数均取为单位值，即弹性模量 $E=1$，材料密度 $\rho=1$，杆总长 $L=1$。
+在初始时刻，弹性杆整体具有向着刚性墙撞击的均匀初始速度 $v_0=1$。在撞击发生时，杆的左端受到刚性墙的阻挡，因此在该处施加强制的零位移边界条件：在任意时刻均始终满足 $u(x=0,t)=0$。同时，杆的右端不受外力约束，作为自由端施加自然边界条件。
+由于杆的一端固定，另一端以均匀初速度运动，因此在这个一维波动问题中，杆内将会产生一个不断传播的压缩应力波，应力的解析表达式为 $\sigma = EAu_{,x}$。
 
-\begin{figure}[!h]
+\begin{figure}[!htb]
     \centering
-    \includegraphics[scale=0.7]{fig/1.png}
-\caption{\centering{一维弹性杆撞击刚性墙示意图}}
-\label{fg:impact_bar}
+    \includegraphics[width=0.6\textwidth]{fig/1.png}
+    \caption{一维弹性杆撞击刚性墙示意图}
+    \label{fg:impact_bar}
 \end{figure}
 
-\begin{figure}[!h]
+为了对上述计算域进行数值求解，
+本文分别采用不同疏密度的三节点（Tri3）和六节点（Tri6）的三角形单元均布网格进行离散。
+图\ref{fg:pengzhuangTri3}和图\ref{fg:pengzhuangTri6}分别展示了一维弹性杆撞击刚性墙问题中，
+在时空域上采用不同网格的节点模型及其对应的应力云图。
+
+从结果中可以明显看出，
+采用基于拉格朗日变分方案的数值分析方法在时空域上求解弹性动力学问题时，
+不仅计算过程简明（只需按照均布网格进行离散），而且计算效果优异。
+不论是三节点三角形网格还是六节点三角形网格，都可以获得稳定的数值求解空间，
+这表明该方法具有较好的精度适应性；且随着时间推移求解也不会产生明显的寄生振荡，
+从而有效地提高了求解过程的稳定性和计算精度。
+
+\begin{figure}[H]
     \centering
-        \begin{tabular}{cccc@{\hspace{5pt}}c}
+        \begin{tabular}{cccc}
             \includegraphics[width=0.2\textwidth]{fig/Tri3_b=2_4.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri3_b=2_8.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri3_b=2_16.png} &
@@ -354,17 +447,16 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
             \includegraphics[width=0.2\textwidth]{fig/Tri3_4.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri3_8.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri3_16.png} &
-            \includegraphics[width=0.2\textwidth]{fig/Tri3_32.png} &
-            \includegraphics[width=0.1\textwidth]{fig/legend.png} \\
+            \includegraphics[width=0.2\textwidth]{fig/Tri3_32.png}\makebox[0pt][l]{\hspace{5pt}\includegraphics[width=0.1\textwidth]{fig/legend.png}} \\
             $4\times8$ & $8\times16$ & $16\times32$ &  $32\times64$ \\
         \end{tabular}
-        \caption{Tri3均布网格弹性杆问题节点模型以及对应的应力云图}
-        \label{fg:3.2}
+        \caption{Tri3均布网格弹性杆问题不同密度下的节点模型以及应力云图}
+        \label{fg:pengzhuangTri3}
 \end{figure}
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
-        \begin{tabular}{cccc@{\hspace{5pt}}c}
+        \begin{tabular}{cccc}
             \includegraphics[width=0.2\textwidth]{fig/Tri6_b=2_4.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri6_b=2_8.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri6_b=2_16.png} &
@@ -372,20 +464,14 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
             \includegraphics[width=0.2\textwidth]{fig/Tri6_4.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri6_8.png} &
             \includegraphics[width=0.2\textwidth]{fig/Tri6_16.png} &
-            \includegraphics[width=0.2\textwidth]{fig/Tri6_32.png} &
-            \includegraphics[width=0.1\textwidth]{fig/legend.png} \\
+            \includegraphics[width=0.2\textwidth]{fig/Tri6_32.png}\makebox[0pt][l]{\hspace{5pt}\includegraphics[width=0.1\textwidth]{fig/legend.png}} \\
             $4\times8$ & $8\times16$ & $16\times32$ &  $32\times64$ \\
         \end{tabular}
-        \caption{Tri6均布网格弹性杆问题节点模型以及对应的应力云图}
-        \label{fg:3.3}
+        \caption{Tri6均布网格弹性杆问题不同密度下的节点模型以及应力云图}
+        \label{fg:pengzhuangTri6}
 \end{figure}
  
-图\ref{fg:3.2}和图\ref{fg:3.3}为一维弹性杆撞击刚性墙问题的在时空域上的相对应的应力云图。
-从图中可以看出采用基于拉格朗日变分方案的数值分析方法在时空域上求解弹性杆动力学问题时，
-求解域只需按照图中所示的均布网格进行离散，
-不论是三节点三角形网格还是六节点三角形网格，
-都可以得到稳定的数值求解空间，并且随着时间的增长也不会产生振荡，
-从而有效的提高了计算精度。
+
 
 
 
@@ -448,6 +534,7 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
 图\ref{fg:ecr}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
 从图中可以看出采用基于
 拉格朗日变分方案的数值分析方法在时空域上求解弹性材料波动问题时， 
+位移误差收敛率为$2.0$，能量误差收敛率为$1.0$，
 其位移误差和能量误差均能达到理论收敛率。
 \begin{figure}[!h]
     \centering
@@ -456,14 +543,12 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
 \label{fg:ecr}
 \end{figure}
 
-当采用自由度更高的三角形Hermite单元拉进行计算和上面相同的均布网格，
-能得到精度更高的误差收敛率，如图\ref{fg:Hecr}所示：
-位移误差收敛率达到了2.7，能量误差收敛率达到了1.6。
-
+同样，当我们采用六节点单元以相同的疏密程度去计算一维弹性材料层中的波动问题时，
+最终得到的计算结果如图\ref{fg:Hecr}所示，位移误差收敛率和能量误差收敛率均能达到理论误差收敛率。
 \begin{figure}[!h]
     \centering
-    \includegraphics[scale=0.38]{fig/Hermite均布误差收敛率.png}
-\caption{\centering{一维弹性材料波动问题采用Hermite单元计算的误差收敛结果}}
+    \includegraphics[scale=0.38]{fig/Tri6_(4-32).png}
+\caption{\centering{一维弹性材料波动问题采用Tri6单元计算的误差收敛结果}}
 \label{fg:Hecr}
 \end{figure}
 
@@ -472,7 +557,7 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
 对非均布网格适当的局部加密。
 如图\ref{fg:local}所示，对20*20的非均布网格在解的坡顶进行局部加密，
 来缓解梯度变化带来的振荡现象，从而得到更加稳定的数值解。
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{20pt}}c}
             \includegraphics[width=0.4\textwidth]{fig/Tri3非均布_Jbjm_0.03.png} &
@@ -482,38 +567,71 @@ $n_i$和$n_t$为所在边界$\Gamma$上的单位法向量分量。
             \includegraphics[width=0.5\textwidth]{fig/C=0.2_c=0.04.png} \\
             $c=0.03$位移图 & $c=0.04$位移图 \\
         \end{tabular}
-        \caption{弹性材料波动问题局部加密采用Hermite单元计算的三维位移图}\label{fg:local}
+        \caption{弹性材料波动问题局部加密计算的三维位移图}\label{fg:local}
 \end{figure}
 
 
-采用Birefine生成不规则的网格来测试一维弹性材料层中的波动问题，
-根据数值算例的精确解来对该解可能产生误差的部分做refine处理。
-生成的Birefine的网格图如下：
+为了进一步验证局部加密策略的有效性，本文采用半规则化方法生成初始网格，用以测试一维弹性材料层中的波动问题。
+在具体实施过程中，根据数值算例精确解的先验信息，提取出解的梯度变化最为剧烈、极易积累数值误差的时空对角线区域（即波前传播的特征线区域）。
+针对该局部区域，我们采用了由粗到细的逐级网格细分（Refine）处理。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.65]{fig/birefine.png}
+\caption{\centering{半规则化网格演化流程图}}
+\label{fg:Biliucheng}
+\end{figure}
+
+该网格局部细化的具体算法流程如图\ref{fg:Biliucheng}所示。
+其核心思想是基于最长边二分法(Longest Edge Bisection)来协调相邻单元，
+从而消除悬挂节点并保证网格的整体协调性。具体步骤如下：
+首先，选取需要加密的目标三角形单元；
+随后，对其采用最长边二分法进行临时加密，并首先判断该最长边是否为求解域的全局边界。
+若是边界，则直接细化该最长边对应的边界单元并结束当前判定；
+若该最长边并非边界，则进一步判断这条最长边是否同时也是其相邻三角形的最长边。
+若是，则直接将这两个共边的相邻三角形沿着该最长边同步一分为二，完成加密并结束判定；
+若该共用边不是相邻三角形的最长边，那么在二分当前单元后，
+会在相邻单元的边上产生悬挂节点。此时需要将加密指令向相邻单元传递，
+并对该相邻单元重新进入“最长边是否为边界”的系统判定与细分流程。
+如此递归循环，直至所有由于局部细化产生的悬挂节点均被完美消除闭合。
+
+基于上述最长边二分的协调加密机制，我们对该一维波动问题进行了多级网格演化。
+首先构筑出全局的半规则化背景基础网格(BiRefine 无加密)；
+随后精准定位预估误差带区域进行第1次局部网格细分(1次 Refine)，让特征区域内的三角形单元变得密集；
+接着在上一级的基础上进一步缩小加密带宽度，进行第2次迭代加密(2次 Refine)；
+最后收缩至核心梯度变化带完成第3次高度细分加密(3次 Refine)。
+通过上述连续细分的四个阶段，我们在保留全局计算效率的前提下，
+构建出了一条高度密集的局部网格带，用来更精确地捕获波前特征。
+完整的网格生成演化图如下：
  
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{20pt}}c}
             \includegraphics[width=0.3\textwidth]{fig/impact_4_refined_r10.png} &
             \includegraphics[width=0.3\textwidth]{fig/impact_4_refined_r11.png} \\
-            BiRefine & 1次Refine \\
+            BiRefine & 1次Refine \\[5pt]
             \includegraphics[width=0.3\textwidth]{fig/impact_4_refined_r12.png} &
             \includegraphics[width=0.3\textwidth]{fig/impact_4_refined_r13.png} \\
             2次Refine & 3次Refine \\
         \end{tabular}
+        \vspace{-0.5em}
         \caption{弹性材料波动问题节点模型}\label{fg:Birefine}
 \end{figure}
 
 根据上述的BiRefine生成的网格进行离散计算，
-图\ref{fg:3.12}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
+图\ref{fg:BiL2H1}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
 从图中可以看出采用基于拉格朗日变分方案的数值分析方法在时空域上求解弹性材料波动问题时，
 其位移误差和能量误差均能达到理论收敛率。
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.38]{fig/BiRefine_2d(r10-r13)_4-32.png}
 \caption{\centering{一维弹性材料波动问题采用BiRefine单元计算的误差收敛结果}}
-\label{fg:3.12}
+\label{fg:BiL2H1}
 \end{figure}
+
+
+
 
 
 
@@ -575,7 +693,7 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
             \includegraphics[width=0.3\textwidth]{fig/Tri3_square_64.png} \\
             $33\times33$ & $65\times65$ \\
         \end{tabular}
-        \caption{一维弦自由横向振动问题三角形三节点单元模型}\label{fg:3.10}
+        \caption{一维弦自由横向振动问题三角形三节点单元模型}\label{fg:yiweixianwangge}
 \end{figure}
 
 \begin{figure}[!h]
@@ -588,24 +706,27 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
             \includegraphics[width=0.4\textwidth]{fig/Tri3_uniform_64.png} \\
             $33\times33$ & $65\times65$ \\
         \end{tabular}
-        \caption{一维弦自由横向振动问题三节点单元计算位移图}\label{fg:3.11}
+        \caption{一维弦自由横向振动问题三节点单元计算位移图}\label{fg:yiweixiansanjiedianweiyitu}
 \end{figure}
 
-一维弦自由横向振动问题的求解域也可以通过图\ref{fg:square node model}所示，
-采用均布的四个疏密不同、三节点三角形单元网格进行离散。
-图\ref{fg:3.10}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
-从图中可以看出采用基于
-拉格朗日变分方案的数值分析方法在时空域上求解弹一维弦自由横向振动问题时， 
+一维弦自由横向振动问题的求解域也可以通过图\ref{fg:yiweixianwangge}所示，
+采用均布的四个疏密不同、三节点三角形单元网格进行离散，在这个网格单元下，
+当我们采用基于拉格朗日变分方案的完全弱形式伽辽金法去计算该问题时，
+我们可以得到图\ref{fg:yiweixiansanjiedianweiyitu}所示的位移结果，
+可以看出，无论节点疏密，位移的计算结果都十分稳定。
+同时，图\ref{fg:yiweixiansanjiedianL2}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
+从图中可以看出采用基于拉格朗日变分方案的数值分析方法在时空域上求解弹一维弦自由横向振动问题时， 
 其位移误差和能量误差均能达到理论收敛率。
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.38]{fig/Tri3_连续解_H1L2_均布(8-64_ndiv).png}
 \caption{\centering{一维弦自由横向振动问题采用Tri3单元计算的误差收敛结果}}
-\label{fg:3.11}
+\label{fg:yiweixiansanjiedianL2}
 \end{figure}
 
-当采用六节点三角形单元网格\ref{fg:3.12}进行离散时该问题时，
-它的位移误差和能量误差均能达到理论收敛率如图\ref{3.13}所示。
+当我们采用六节点三角形单元网格\ref{fg:yiweixianliujiedianwangge}进行离散时该问题时，
+图\ref{fg:yiweixianliujiedianweiyitu}为该节点离散情况下的位移计算结果，都具有很好的稳定性。
+它的位移误差和能量误差也均能达到理论收敛率，如图\ref{fg:yiweixianliujiedianL2}所示。
 \begin{figure}[!h]
     \centering
         \begin{tabular}{c@{\hspace{20pt}}c}
@@ -616,7 +737,7 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
             \includegraphics[width=0.3\textwidth]{fig/Tri6_均布_32.png} \\
             $17\times17$ & $33\times33$ \\
         \end{tabular}
-        \caption{一维弦自由横向振动问题三角形六节点单元模型}\label{fg:3.12}
+        \caption{一维弦自由横向振动问题三角形六节点单元模型}\label{fg:yiweixianliujiedianwangge}
 \end{figure}
 
 \begin{figure}[!h]
@@ -629,19 +750,19 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
             \includegraphics[width=0.4\textwidth]{fig/Tri6_uniform_32.png} \\
             $17\times17$ & $33\times33$ \\
         \end{tabular}
-        \caption{一维弦自由横向振动问题六节点单元计算位移图}\label{fg:3.13}
+        \caption{一维弦自由横向振动问题六节点单元计算位移图}\label{fg:yiweixianliujiedianweiyitu}
 \end{figure}
 
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.38]{fig/Tri6_连续解_H1L2_均布(4-32_ndiv).png}
 \caption{\centering{一维弦自由横向振动问题采用Tri6单元计算的误差收敛结果}}
-\label{fg:3.14}
+\label{fg:yiweixianliujiedianL2}
 \end{figure}
 
-采用Birefine生成不规则的网格来测试一维弦的横向自由振动问题，
+同样采用Birefine生成不规则的网格来测试一维弦的横向自由振动问题，
 根据数值算例的精确解来对该解可能产生误差的部分做refine处理。
-生成的Birefine的网格图如下：
+生成Birefine的网格图如下：
  
 \begin{figure}[!h]
     \centering
@@ -657,7 +778,7 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
 \end{figure}
 
 根据上述的BiRefine生成的网格进行离散计算，
-图\ref{fg:3.19}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
+图\ref{fg:Birefine_ContinuousL2}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
 从图中可以看出采用基于拉格朗日变分方案的数值分析方法在时空域上求解弹性材料波动问题时，
 其位移误差和能量误差均能达到理论收敛率。
 
@@ -665,20 +786,26 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
     \centering
     \includegraphics[scale=0.38]{fig/BiRefine_Continuous_4-32.png}
 \caption{\centering{一维弦的横向自由振动问题采用BiRefine单元计算的误差收敛结果}}
-\label{fg:3.19}
+\label{fg:Birefine_ContinuousL2}
 \end{figure}
 
+\clearpage
 
+\section{本章小结}
+本章进一步探讨了基于哈密顿原理的拉格朗日变分方案在“1+1”维网格单元的时空混合离散计算。全章主要工作和结论如下：
+从一维波动问题的控制方程出发，回顾了结合时间强形式与空间弱形式的经典Newmark迭代法，
+分析了其在时间积分域和空间离散域上的耦合特性。
+针对完全弱形式伽辽金法在时间末端本质边界条件难以直接施加的痛点，
+提出了基于拉格朗日乘子的时空混合变分方案。
+通过引入与虚拟变量（类似于动量）等价的拉格朗日乘子，
+构造了全新的增广能量泛函。该方案巧妙地将虚位移替换为可数值求解的形式，
+从而在对称的时空域中顺利推导并得到了最终统一的有限元离散控制方程，
+并且严格给出了该变分框架与经典波动强形式之间的等价性证明。
+在数值算例部分，对一维弹性杆撞击刚性墙、弹性材料层波动传导以及一维弦的横向自由振动等经典动力学问题进行了丰富的测试。
+结果表明，基于拉格朗日乘子法的变分方案能够实现时空并行分析，
+极大提高了计算效率。在位移误差和能量误差的收敛性测试中，
+均稳定达到了全阶的最优理论预收敛率。
+结合半规则化局部网格自适应加密策略（最长边二分加密），
+算法展现了极其优越的局部特征捕捉能力。针对大梯度变化的局域加密能够在保证全局计算效率的同时，
+显著抑制非均布网格带来的数值振荡现象，确保了整个动力学推进过程的高精度与数值极强稳定性。
 
-\section{小结}
-本章进一步探讨了基于哈密顿原理的拉格朗日变分方案在“1+1”维网格单元的时空混合离散计算。
-首先，从波动问题的控制方程出发，介绍了结合时间强形式与空间弱形式的Newmark迭代法。
-随后，结合上一章的拉格朗日乘子法，分析了在时空混合的“1+1”维的网格单元中，
-基于哈密顿原理的完全弱形式伽辽金法在时间末端的本质边界条件的施加方案。
-通过将原能量泛函变分得到的弱形式当作一个拉格朗日乘子项加入到能量泛函中进行变分，
-用动量$p$替换虚位移$\delta u$的表达形式，
-构造一个全新的能量泛函在变分近似得到最终的离散控制方程。
-最后，通过对经典杆动力学算例的系统验证，证实了在时空混合离散网格计算中，
-所提的基于拉格朗日变分方案的正确性。数值结果表明，
-该拉格朗日乘子变分方案不仅可以时空并行计算，大大提高计算效率，
-而且能够确保数值计算的精度和稳定性，大大减小甚至消除了振荡现象。

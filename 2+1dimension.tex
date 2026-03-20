@@ -1,173 +1,405 @@
-\chapter{“2+1”维波动问题完全弱形式时空混合有限元分析}
+﻿\chapter{“2+1”维波动问题完全弱形式时空混合有限元分析}
+本章为进一步分析弹性波动力问题在更加复杂的二维空间区域求解，
+引入时间方向的网格与二维空间方向的网格构成“2+1”形式的三维时空网格来离散计算。
+对网格的节点个数、布置方式、网格形状等元素进行调控来模拟各式各样的复杂平面求解域。
+并在这套网格的基础上，采用基于哈密顿原理的完全弱形式伽辽金法进行求解。
+在上一章“1+1”维波动问题的基础上，将空间拓展到二维，对基于拉格朗日乘子法的完全弱形式时空混合有限元分析框架进行详细推导与验证。
 
-\section{基于哈密顿原理的完全弱形式求解}
+\section{二维波动问题及时间强形式求解方案}
+\subsection{二维波动问题时间强形式离散控制方程}
 
-根据前两章的基于哈密顿原理的完全弱形式公式推导，考虑一个二维平面域$\Omega$，边界为$\Gamma$。
-求解域的空间尺寸为$L_x \times L_y$，
-根据波动控制方程：
-\begin{equation}\label{4.1}
-u_{,tt} - a^2 \Delta u = 0
+不失一般性，我们考虑一个二维平面求解域$\Omega$，其边界为$\Gamma$，展示二维动力波问题的求解推导过程。
+在拉格朗日表达式的基础上，
+二维波动问题在平面区域$\Omega$：
+\begin{equation}
+    \Phi(u) = \int_{t_0}^{t_1} (T - U) dt
 \end{equation}
-其中，二维空间的位移场为$u (x,y,t)$，
-拉普拉斯算子$\Delta u = u_{,xx} + u_{,yy}$，
-波速$a = \sqrt{\frac{E}{\rho}}$，$E$为杨氏模量，$\rho$为材料密度。
- 
-动能由二维空间内的运动能量在时空域上的积分表示，
-速度$\dot u =  \frac{\partial u}{\partial t}$，动能表达式：
-\begin{equation}\label{4.2}
-T  =  \int_{\Omega} \frac{1}{2} \rho A \dot u^2 dxdy
+\begin{equation}\label{T_3d}
+    T = \int_{\Omega} \frac{1}{2} \rho A \dot u^2 dxdy
 \end{equation}
-其中$A$为材料的厚度。
-
-二维弹性体的势能用应变能积分表达，应变分量为
-$\varepsilon_{xx} = u_{,x}$, 
-$\varepsilon_{yy} = v_{,y}$, 
-对于线弹性各向同性材料，势能表达式为：
-\begin{equation}\label{4.3}
-U = \int_{\Omega} \frac{1}{2} 
-EA (u_{,x}^2 + u_{,y}^2) dxdy
-\end{equation}
-其中，$E$为杨氏模量。
-
-根据拉格朗日函数$L = T - U$，三维时空下的总内能为：
-\begin{equation}\label{4.4}
-\phi = \int_{t_0}^{t_1}  L dt
-= \int_{t_0}^{t_1} \int_{\Omega} (\frac{1}{2} \rho A \dot u^2 -
-\frac{1}{2} EA (u_{,x}^2 + u_{,y}^2)) dxdydt
+\begin{equation}\label{U_3d}
+    U = \int_{\Omega} \frac{1}{2} EA (u_{,x}^2 + u_{,y}^2) dxdy
+    -\int_{\Omega} ub dxdy  - \int_{\Gamma_t} uP ds
 \end{equation}
 
-对能量泛函进行变分得到弱形式：
-\begin{equation}\label{4.5}
-\delta \phi = \int_{t_0}^{t_1} \int_{\Omega} \delta \dot{u} 
-\rho A \dot{u} - \delta u_{,x} E A u_{,x} - \delta u_{,y} E A u_{,y} dxdydt
+总能量泛函可表示为：
+\begin{equation}
+    \Phi(u) = \frac{1}{2} a(u,u) - f(u)
+\end{equation}
+其中，双线性形式$a(u,u)$，线性形式$f(u)$，表达式如下：
+\begin{equation}
+    a(u,u) = \int_{t_0}^{t_1} \int_{\Omega} (\dot u \rho A \dot u - u_{,x} EA u_{,x} - u_{,y} EA u_{,y}) dxdy dt
+\end{equation}
+\begin{equation}
+    f(u) = \int_{t_0}^{t_1} \left(\int_{\Omega} ub dxdy  + \int_{\Gamma_t} uP ds\right) dt
+\end{equation}
+式中，$\rho$为材料密度，$E$为材料的弹性模量，$A$为材料的横截面积，$b$为体力，$P$为外力。
+$u$和$\dot u$为位移以及其对时间的一阶导数，
+$u_{,x}$和$u_{,y}$为其对位移的一阶导数，$\Gamma_t$为时间末端边界。
+
+根据哈密顿原理，将动能和势能表达式代入变分极值条件，可以找到一个精确解$ u\in \mathcal{U}$使得其能量变分等于零：
+\begin{equation}\label{eq:2d weak found}
+    \begin{aligned}
+        \delta \Phi (u) &= \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot u - \delta u_{,x} EA u_{,x} - \delta u_{,y} EA u_{,y}) dxdy dt \\
+        &- \int_{t_0}^{t_1} \left(\int_{\Omega} \delta ub dxdy  + \int_{\Gamma_t} \delta uP ds\right)dt = 0
+    \end{aligned}
 \end{equation}
 
-根据最小势能原理，能量泛函在变分得到弱形式后等于零。
-但是由第二章式\ref{2.8}对能量泛函变分的公式可知，只有在时间末端虚位移等于零的情况下，
-也就是满足$\delta u(t_0) = \delta u(t_1) = 0$时，
-变分得到的弱形式才能够等价于控制方程强形式。因此，综上哈密顿原理，
-我们可得推导出在“2+1”下的计算动力学问题的时空表达式为：
-\begin{equation}\label{4.6}
-\delta \int_{t_0}^{t_1} L dt -  \frac{\partial L}{\partial \dot u} 
-\delta u \vert_{t_0}^{t_1} = 0 
+对弱形式的时间项和空间项分别做分部积分(空间分部积分即高维格林公式)，可得：
+\begin{equation}
+    \begin{aligned}
+        & - \int_{t_0}^{t_1} \int_{\Omega} \delta u (\rho A \ddot u - EA \nabla^2 u - b) dxdy dt \\
+        & + \int_{\Omega} \delta u \rho A \dot u dxdy \big|_{t_0}^{t_1}
+        - \int_{t_0}^{t_1} \int_{\Gamma} \delta u \left(EA \frac{\partial u}{\partial n} - P\right) ds dt = 0
+    \end{aligned}
 \end{equation}
-对上式进行变分得到弱形式：
-\begin{equation}\label{4.7}
-\int_{t_0}^{t_1} \int_{\Omega} (\delta \dot{u} 
-\rho A \dot{u} - \delta u_{,x} E A u_{,x} - \delta u_{,y} E A u_{,y}) dxdydt
- - (\int_{\Omega} \rho A \dot u dxdy \delta u) t \vert_{t_0}^{t_1} = 0
+其中，$\nabla^2 u = u_{,xx} + u_{,yy}$。根据哈密顿原理虚位移在初始与末端时间点处为零：
+\begin{equation}
+    \delta u\vert_{t=t_0} = \delta u\vert_{t=t_1} = 0
 \end{equation}
-
-分别对$u, \dot u , u_{,x} , u_{,y}$进行近似：
-\begin{equation}\label{4.8}
-\begin{split}
-u^h(x,t) &= \sum_{I=1}^{n_p} N_I(x,t) d_I \\
-\dot u^h &= \sum_{I=1}^{n_p} N_{I,t} d_I \\
-u_{,x}^h &= \sum_{I=1}^{n_p} N_{I,x} d_I \\ 
-u_{,y}^h &= \sum_{I=1}^{n_p} N_{I,y} d_I
-\end{split}
-\end{equation}
-
-得到刚度矩阵$K_IJ$为：
-\begin{equation}\label{4.9}
-K_{IJ} = \int_{t_0}^{t_1} \int_{0}^{l} (N_{I,t} \rho A N_{J,t} - 
-N_{I,x} EA N_{J,x} - N_{I,y} EA N_{J,y})  dxdydt
+同时，由于$\delta u，结合本质边界条件\vert_{\Gamma_g} = u_g$，可以提取其等价的强形式微分方程表达式为：
+\begin{equation}
+    \left \{
+    \begin{aligned}
+        &\rho A \ddot u = EA \nabla^2 u + b \\
+        &u\vert_{\Gamma_g} = u_g, \\
+        &EA \frac{\partial u}{\partial n}\vert_{\Gamma_t} = P \\
+        &u\vert_{t_0} = u_0, \\
+        &\dot u\vert_{t_0} = \dot u_0
+    \end{aligned}
+    \right .
 \end{equation}
 
-得到力矩阵$f_I$为：
-\begin{equation}\label{4.10}
-f_{I} = \int_{0}^{l} \rho A N_I  N_{I,t} dxdy \vert_{t_0}^{t_1}
+根据上述的公式推导，利用分部积分的方法验证了能量泛函变分后的弱形式和强形式控制方程之间的等价性。
+而在传统有限元法在求解上述问题时，通常采用时间域强形式离散与空间域弱形式离散相结合的方法。
+在式\eqref{eq:2d weak found}基础上，只在时间域上采用分部积分，有：
+\begin{multline}
+    \int_{t_0}^{t_1} \int_{\Omega} \delta u \rho A \ddot u dxdy dt + \int_{t_0}^{t_1} \int_{\Omega} (\delta u_{,x} EA u_{,x} + \delta u_{,y} EA u_{,y}) dxdy dt = \\ 
+    \int_{\Omega} \delta u \rho A \dot u dxdy \big|_{t_0}^{t_1}
+    + \int_{t_0}^{t_1} \int_{\Gamma_t} \delta u P ds dt + \int_{t_0}^{t_1} \int_{\Omega} \delta u b dxdy dt
+\end{multline}
+引入时间虚位移边界条件$\delta u(t_0) = \delta u(t_1) = 0$的情况下，得到如下的空间弱形式：
+\begin{multline}
+    \int_{t_0}^{t_1} \int_{\Omega} \delta u \rho A \ddot u dxdy dt + \int_{t_0}^{t_1} \int_{\Omega} (\delta u_{,x} EA u_{,x} + \delta u_{,y} EA u_{,y}) dxdy dt = \\ 
+    \int_{t_0}^{t_1} \int_{\Gamma_t} \delta u P ds dt + \int_{t_0}^{t_1} \int_{\Omega} \delta u b dxdy dt
+\end{multline}
+对上式采用配点法进行求解，当$t = t_{n+1}$时，满足：
+\begin{equation}
+    \int_{\Omega} \delta u \rho A \ddot u dxdy + \int_{\Omega} (\delta u_{,x} EA u_{,x} + \delta u_{,y} EA u_{,y}) dxdy = 
+    \int_{\Gamma_t} \delta u P ds + \int_{\Omega} \delta u b dxdy 
 \end{equation}
 
-将时间末端虚位移边界条件$\delta u (t_1) = 0$带入弱形式，
-引入动量表达式:
-\begin{equation}\label{4.11}
-C = \rho A \dot u(t_0)
+经过上述处理后，直接引入空间有限元离散：
+\begin{equation}
+    \left \{ 
+        \begin{aligned}
+        u^h(x,y,t_n) &= \sum_{I=1}^{n_p} N_I(x,y) u_{In} \\
+        \dot u^h(x,y,t_n) &= \sum_{I=1}^{n_p} N_I(x,y) \dot u_{In} \\
+        \ddot u^h(x,y,t_n) &= \sum_{I=1}^{n_p} N_I(x,y) \ddot u_{In}
+        \end{aligned}
+    \right .
 \end{equation}
-
-最终得到力矩阵$f_I$为：
-\begin{equation}\label{4.12}
-f_{I} = - \int_{0}^{l} N_I(t_0) C dxdy
+通过二维形函数近似离散u$^h = \sum_{I=1}^{n_p} N_I d_I$，进行空间坐标约束后可得到平面矩阵方程：
+\begin{equation}\label{Mu+Ku=f_2d}
+\boldsymbol M \ddot{\boldsymbol u}_{n+1} + \boldsymbol K \boldsymbol u_{n+1} = \boldsymbol f_{n+1}
 \end{equation}
-
-带入离散控制方程$Kd = f$得到精确解。
-
-综上，在“2+1"维波动问题中采用基于哈密顿原理的完全弱形式求解时也要要求时间末端的虚位移必须为零。
-这在实际的工程应用中是无法数值实现的，
-所以，我们需要建立时域末端虚位移本质边界条件的施加方案，
-建立一个在有限元伽辽金数值计算中能完全时空混合离散的方案。
-
-\section{拉格朗日乘子型时域末端本质边界条件施加方案}
-同第二章和第三章的方法一样，将传统能量泛函变分得到的弱形式当作一个拉格朗日乘子项加入到能量泛函中进行变分，
-将虚位移$\delta u$用$p$的表达方式替换，构造一种基于拉格朗日乘子型的时域末端本质边界条件的施加方案，
-来解决基于哈密顿原理的传统有限元法在时间末端边界无法数值施加的问题。
-
-
-
-动能由质量运动能量积分表示，速度分量为$\dot u= \frac{\partial u}{\partial t}$,
-$\dot v= \frac{\partial v}{\partial t}$，
-积分表达式为：
-\begin{equation}\label{4.2}
-T = \int_{\Omega} \frac{1}{2} \rho A ( \dot{u}^2 + \dot{v}^2 ) dxdy
+其中，二维致质量矩阵的分量$M_{IJ}$的表达式为：
+\begin{equation}
+M_{IJ} = \int_{\Omega} \rho A N_I N_J dxdy
 \end{equation}
-
-其中，$\rho$为材料密度，$\dot u$，$\dot v$分别为$x$，$y$方向的速度。 
-
-拉格朗日函数$L = T - U$，引入时间范畴，总内能为时间$[t_0,t_1]$和空间$\Omega$的二重积分：
-\begin{equation}\label{4.3}
-\Phi = \int_{t_0}^{t_1} \int_{\Omega} [\frac{1}{2} \rho A ( \dot{u}^2 + \dot{v}^2 ) -
-\frac{1}{2} (EA (\varepsilon_{xx}^2 + \varepsilon_{yy}^2 + 2\nu 
-\varepsilon_{xx}\varepsilon_{yy}) + G A \varepsilon_{xy}^2)] dxdydt
+二维刚度矩阵的分量$K_{IJ}$表达式为：
+\begin{equation}
+K_{IJ} = \int_{\Omega} EA (N_{I,x} N_{J,x} + N_{I,y} N_{J,y}) dxdy
 \end{equation}
-
-对能量泛函进行变分，根据应变变分和位移变分的关系，
-$\delta \varepsilon_{xx} = \delta u_{，x}$，
-$\delta \varepsilon_{yy} = \delta v_{，y}$，
-$\delta \varepsilon_{xy} = \frac{1}{2} (\delta u_{，y} \delta v_{，x})$，
-得到弱形式：
-\begin{equation}\label{4.4}
-\delta \Phi = \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot u +
-\delta \dot v \rho A \dot v - \delta u_{,x} \sigma_{xx} - 
-\delta v_{,y} \sigma_{yy} - \frac{1}{2} (\delta u_{,y} + \delta v_{,x}) \sigma_{xy}dxdydt)
+力向量的分量$f_{I}$表达式为：
+\begin{equation}
+f_{I} = \int_{\Omega} b N_{I} dxdy + \int_{\Gamma_t} P N_{I} ds 
 \end{equation}
-
-其中，$\sigma_{xx} = EA(\varepsilon_{xx} + \mu \varepsilon_{yy})$，
-$\sigma_{yy} = EA(\varepsilon_{yy} + \mu \varepsilon_{xx})$，
-$\sigma_{xy} = GA \varepsilon_{xy}$为应力分量。
-
-外力功的表达式为：
-\begin{equation}\label{4.5}
-W = \int_{t_0}^{t_1} ( \int_{\Omega} (u b_x + v b_y) dxdy + 
-\int_{\Gamma} (u t_x + v t_y) ds)dt
+$\boldsymbol u_{n+1}$为结点位移,其分量$u_{I}$的表达式为：
+\begin{equation}
+    \boldsymbol u_n = \{u_{1n}, u_{2n}, \cdots, u_{n_p n}\}^T 
 \end{equation}
-
-其中，体力$\boldsymbol b = [b_x,b_y]^T$，边界力$\boldsymbol{t} = [t_x,t_y]^T$。
-基于哈密顿原理，得到计算动力学问题的时空表达式：
-\begin{equation}\label{4.6}
-\delta \int_{t_0}^{t_1} L dt - \int_{t_0}^{t_1} \delta W dt = 0
-\end{equation}
-
-对上式进行变分得到弱形式：
-\begin{equation}\label{4.7}
-\int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot u +
-\delta \dot v \rho A \dot v - \delta u_{,x} \sigma_{xx} - 
-\delta v_{,y} \sigma_{yy} - \frac{1}{2} (\delta u_{,y} + \delta v_{,x} )\sigma_{xy}dxdydt)
-= 
-\end{equation}
-
-根据前两章对能量泛函进行变分的公式可以发现，只有在时间末端虚位移等于零的情况下，
-即满足$\delta u (t_1)=0,\delta v (t_1)=0$时，弱形式才会等价于强形式。
-因此，根据上述的哈密顿原理，我们可以得到计算动力问题的时空表达式:
-\begin{equation}\label{4.8}
-\begin{aligned}
-&\int_{t_0}^{t_1} \int_{\Omega} ( \delta \dot{u} \rho A \dot{u} + \delta \dot{v} \rho A \dot{v} 
-- \delta u_{,x} \sigma_{xx} - \delta v_{,y} \sigma_{yy} - \frac{1}{2}(\delta u_{,y} + \delta v_{,x}) \sigma_{xy} ) dxdy dt \\
-&=  \int_{\Omega} \rho A (\dot{u} \delta u + \dot{v} \delta v) dxdy|_{t_0}^{t_1} 
-+ \int_{t_0}^{t_1} ( \int_{\Omega} (\delta u b_x + \delta v b_y) dxdy + \int_{\Gamma} (\delta u t_x + \delta v t_y) ds ) dt
-\end{aligned}
+$\ddot {\boldsymbol u}_{n+1}$为结点位移对时间的二阶导数,其分量$\ddot u_{I}$的表达式为：
+\begin{equation}
+    \ddot {\boldsymbol u}_{n+1}= \{\ddot u_{1n}, \ddot u_{2n}, \cdots, \ddot u_{n_p n}\}^T 
 \end{equation}
 
 
-\section{} 
 
-\section{}
+
+
+
+
+
+
+\section{二维波动问题的拉格朗日乘子型时空混合离散分析方法}
+
+\subsection{拉格朗日乘子型虚位移边界条件施加方案}
+
+针对基于哈密顿原理的传统有限元法在求解时间末端边界必定要求施加$\delta u(t_1)=0$，我们将一维框架下的拉格朗日乘子型时域末端本质边界条件施加方案直接向二维波动模型完全推广。
+由于直接去除末端虚位移限制会导致二维控制阵的试函数空间和权函数空间不一致从而使总体刚度矩阵无法成为可解方阵。
+我们通过将传统二维时空能量泛函中引入与之对偶的虚位移$\delta u(x,y,t)(x,y,t)$。
+设计如下可以对空间和时间全量化约束的新能量“2+1”拉格朗日变分映射框架：
+\begin{equation}\label{4.16}
+\bar \Phi(u,v) = \Phi(u) - a(u,v) + f(v)
+\end{equation}
+
+通过对上述联合对偶波动体系虚拟系统，引入三重时空独立变分的二维总体弱形式为：
+\begin{equation}\label{4.24}
+    \begin{aligned}
+        \delta \bar \Phi(u,v) = \delta \Phi(u) &- \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot u \rho A \dot v - \delta u_{,x} EA v_{,x} - \delta u_{,y} EA v_{,y}) dxdy dt \\
+        &- \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot v \rho A \dot u - \delta v_{,x} EA u_{,x} - \delta v_{,y} EA u_{,y}) dxdy dt \\
+        &+ \int_{t_0}^{t_1} \left( \int_{\Omega} \delta v b dxdy + \int_{\Gamma_t} \delta v P ds \right) dt = 0
+    \end{aligned}
+\end{equation}
+
+在离散与计算系统层面，同时引入在“2+1”有限元素的形函数，对物理场采用三维拓展网格：
+\begin{equation}
+u^h (x,y,t) = v^h (x,y,t) = \sum_{I=1}^{n_p} N_I (x,y,t) d_I
+\end{equation}
+对时间一阶导数的近似替换提取为：
+\begin{equation}
+    \dot u^h = \dot v^h = \sum_{I=1}^{n_p} N_{I,t} d_I
+\end{equation}
+对二维空间坐标, $y$：
+\begin{equation}
+    u_{,x}^h = v_{,x}^h = \sum_{I=1}^{n_p} N_{I,x} d_I, \quad
+    u_{,y}^h = v_{,y}^h = \sum_{I=1}^{n_p} N_{I,y} d_I
+\end{equation}
+
+利用该矩阵离散系对其对称化投影，得到的最简(未考虑边界强制施加)大型时空全局离散矩阵方程依然可以抽象写为：
+\begin{equation}\label{4.27}
+\begin{bmatrix}
+\boldsymbol K & -\boldsymbol K \\ -\boldsymbol K & \boldsymbol 0
+\end{bmatrix}
+\begin{Bmatrix}
+\boldsymbol u \\ \boldsymbol v
+\end{Bmatrix} =
+\begin{Bmatrix}
+ \boldsymbol 0 \\ -\boldsymbol f
+\end{Bmatrix}
+\end{equation}
+此时三维时空弱耦合控制系统主刚度矩阵：
+\begin{equation}
+    K_{IJ} = \int_{t_0}^{t_1} \int_{\Omega} \left( N_{I,t}\rho A N_{J,t} - N_{I,x}EA N_{J,x} - N_{I,y}EA N_{J,y} \right) dxdy dt
+\end{equation}
+\begin{equation}
+    f_I = \int_{t_0}^{t_1} \left( \int_{\Omega} N_I b dxdy + \int_{\Gamma_t} N_I P ds \right) dt
+\end{equation}
+
+最后，采用高额罚函数法来专门应对全时空“块”内部首尾封端极值域。添加分别表征边界权重的惩罚系数$\alpha$、$\beta$：
+\begin{equation}
+\tilde{\Phi}(u,v) = \bar \Phi(u,v)
++ \frac{\alpha}{2}\int_{\Omega} \left(u \vert_{t=t_0}-u_0\right)^2 dxdy
++ \frac{\beta}{2}\int_{\Omega} \left(v\vert_{t=t_1}-\bar v_1\right)^2 dxdy
+\end{equation}
+
+其变分后的罚积分界面响应变为了附加虚应力刚项，用于调和边界与全域积分网络内接法向相容过渡：
+\begin{equation}
+\delta \tilde{\Phi} -\delta \bar \Phi
+= \alpha \int_{\Omega} \left(u\vert_{t=t_0}-u_0\right)\delta u\vert_{t=t_0} dxdy
++ \beta \int_{\Omega} \left(v\vert_{t=t_1}-\bar v_1\right)\delta v\vert_{t=t_1} dxdy
+\end{equation}
+
+引入以上增调因子，原本缺失奇点系统的时空离散问题即形成无奇异且极高自由度的闭解体系：
+\begin{equation}\label{4.28}
+\begin{bmatrix}
+\boldsymbol K + \boldsymbol K^\alpha & -\boldsymbol K \\ -\boldsymbol K & \boldsymbol K^\beta
+\end{bmatrix}
+\begin{Bmatrix}
+\boldsymbol u \\ \boldsymbol v
+\end{Bmatrix} =
+\begin{Bmatrix}
+ \boldsymbol f^\alpha \\ -\boldsymbol f + \boldsymbol f^\beta
+\end{Bmatrix}
+\end{equation}
+其中时空交接平面的局部刚度组分在数学矩阵形式上直接变为二维重积分求解项：
+\begin{align}
+K^\alpha_{IJ} &= \int_{\Omega} \alpha N_I N_J \vert_{t=t_0} dxdy, \quad 
+f^\alpha_I = \int_{\Omega} \alpha N_I u_0 \vert_{t=t_0} dxdy \\
+K^\beta_{IJ} &= \int_{\Omega} \beta N_I N_J \vert_{t=t_1} dxdy, \quad 
+f^\beta_I = \int_{\Omega} \beta N_I \bar v_1 \vert_{t=t_1} dxdy 
+\end{align}
+
+结合以上算法推广，拉格朗日体系完全胜任规避掉无穷时间边端极值约束不可求的核心缺陷，成功在平面二维联合时间一维所衍生的结构域实现“2+1”高维直接数值联算体系架构。
+
+\subsection{与欧拉--拉格朗日方程的等价性证明}
+为证明前述采用, v，与原本二维几何平面域下强控制偏微主程具有物理上的完美对应验证。依据全变量式\eqref{4.24}对总泛函执行三维时空的多重高维格林定理与反向分阶积分运算：
+
+\begin{equation}
+    \begin{aligned}
+        & - \int_{t_0}^{t_1}\int_{\Omega} \delta u (\rho A \ddot{u} - EA \nabla^2 u) dxdy dt 
+        + \int_{\Omega} \delta u \rho A \dot{u} \big|_{t_0}^{t_1} dxdy 
+        - \int_{t_0}^{t_1} \int_{\Gamma} \delta u EA \frac{\partial u}{\partial n} ds dt \\
+        & + \int_{t_0}^{t_1}\int_{\Omega} \delta v (\rho A \ddot{u} - EA \nabla^2 u - b) dxdy dt 
+        - \int_{\Omega} \delta v \rho A \dot{u} \big|_{t_0}^{t_1} dxdy \\
+        & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad + \int_{t_0}^{t_1} \left( \int_{\Gamma} \delta v EA \frac{\partial u}{\partial n} ds - \int_{\Gamma_t} \delta v P ds \right) dt \\
+        & + \int_{t_0}^{t_1}\int_{\Omega} \delta u (\rho A \ddot{v} - EA \nabla^2 v) dxdy dt 
+        - \int_{\Omega} \delta u \rho A \dot{v} \big|_{t_0}^{t_1} dxdy \\
+        & \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad + \int_{t_0}^{t_1} \int_{\Gamma} \delta u EA \frac{\partial v}{\partial n} ds dt = 0
+    \end{aligned}
+\end{equation}
+
+把展开的三维超体内部积分和时间二维界面投影以及最后外围空间曲边界曲面线分别梳理进行剥离对应分析：
+首先关注由体全流型$\int_{t_0}^{t_1} \int_{\Omega} \dots dx dy dt$，基于变分算子全域非奇异与随机独立性。直接从$\delta v$ 项对应的组合核因子确立等于是原本理论“2+1”平面的动力学平衡直接驱动关系：
+\begin{equation}
+    \rho A \ddot{u} = EA \nabla^2 u + b
+\end{equation}
+将该物理强结果重置替换进$\delta u$：系统附属强加衍生量它也必须精确符合波动微方程：
+\begin{equation}
+    \rho A \ddot{v} = EA \nabla^2 v + b
+\end{equation}
+
+在“2+1”模型的周侧自由边向应力释放投影点(空间外环曲面积分环)处，
+以$\delta u\vert_{t_0} = \delta v\vert_{t_0}=0$，析取外法向量微分平衡关系$\Gamma_t$：
+\begin{equation}
+    EA \frac{\partial u}{\partial n} \vert_{\Gamma_t} = P \quad \text{同时产生附属镜像受力限定：} \quad EA\left(\frac{\partial u}{\partial n} - \frac{\partial v}{\partial n}\right) \vert_{\Gamma_t} = 0
+\end{equation}
+
+对于传统不可数值操作而面临阻隔的时间极端$=t_1$(超平面投影)，
+此系统在伴随变分解调后自动浮现速度/动量强制贴合协同边界：
+\begin{equation}
+    \rho A (\dot{u} - \dot{v}) \big|_{t=t_1} = 0 \quad \Rightarrow \quad \dot{u} \big|_{t=t_1} = \dot{v} \big|_{t=t_1}
+\end{equation}
+
+联立从上述变分重合理论推衍体系返回出来的物理波动微积关系与多面平衡自然关联。
+得到了极高对称度及等效意义完善的双模“2+1”时空相容封闭偏微分算阵：
+\begin{equation}\label{4.34}
+    \left \{
+        \begin{aligned}
+            &\rho A \ddot{u} = EA \nabla^2 u + b,  \quad &&\text{on } \Omega \\
+            &(\rho A \ddot{u} - EA \nabla^2 u) = (\rho A \ddot{v} - EA \nabla^2 v), \quad &&\text{on } \Omega \\
+            &u = u_g, \; v = v_g, \quad &&\text{on } \Gamma_g \;  \\
+            &EA \frac{\partial u}{\partial n} = P, \; EA \left(\frac{\partial u}{\partial n} - \frac{\partial v}{\partial n}\right) = 0, \quad &&\text{on } \Gamma_t \;  \\
+            &u\vert_{t=t_0} = u_0, \quad \dot{u}\vert_{t=t_0} = v_0, &&\text{on } \Gamma_0 \;  \\
+            &\rho A \dot{u}\vert_{t=t_1} = \rho A \dot{v}\vert_{t=t_1} &&\text{on } \Gamma_1 
+        \end{aligned}
+    \right .
+\end{equation}
+
+结论从式\eqref{4.34}控制矩阵映射组清楚地展示，
+基于双参变分体系推演生成的拉格朗日时空系统不但求解主要位移参数，
+而且确立了衍生伴生向量空间。完美填补了“2+1”维几何下由于缺乏端部限制形成矩阵奇点的底层学术短板，
+并建立起了数学机制与变分物理意义极其对应的完整论证。
+
+
+
+
+
+
+
+
+
+\section{数值算例}
+
+为验证前述提出并证明的“2+1”维波动问题完全弱形式时空混合有限元求解框架的正确性、稳定性和计算精度，
+本节构建了一个典型的二维平面弹性波传播问题作为标杆算例进行数值模拟，
+并将其计算结果与精确检验解进行对比分析。
+
+
+考虑一个在二维物理空间内呈谐波延展传播的弹性波动问题。
+设定波传播速度物理常量为$c = 1.0$。
+定义计算系统的空间几何求解域为单位正方形$\Omega_{xy} = [0, 1] \times [0, 1]$，
+时间演化域考虑一段初始基准周期 $t \in [0, 1]$。因此，
+在该构架体系下构成的“2+1”时空计算域表现为一个标准的三维单位立方体$\Omega_{st} = [0, 1] \times [0, 1] \times [0, 1]$。
+其三维外表面包含六个独立且完备的边界面 $\Gamma^1$ 至 $\Gamma^6$。
+
+为进行精确定量的误差度量设定，
+在此单位体上标定该波动方程的高维精确解(解析解)如下形式：
+\begin{equation}
+u(x,y,t) = \sin \left( \frac{x+y}{\sqrt{2}} - ct \right)
+\end{equation}
+
+对该位移精确解进行对自变量求导，
+即可直接得到对应的精确速度场以及精确变形偏导数场分别为：
+\begin{align}
+\dot{u}(x,y,t) &= -c \cos \left( \frac{x+y}{\sqrt{2}} - ct \right) \label{eq:2d_udot} \\
+u_{,x}(x,y,t) &= \frac{1}{\sqrt{2}} \cos \left( \frac{x+y}{\sqrt{2}} - ct \right) \\
+u_{,y}(x,y,t) &= \frac{1}{\sqrt{2}} \cos \left( \frac{x+y}{\sqrt{2}} - ct \right)
+\end{align}
+
+同时，根据本章前述提出的对偶虚拟能量增广机制以及式\eqref{4.27}所示矩阵耦合属性，
+我们将与之对应的对偶伴随变量(即虚拟位移)的理论精确解及其各阶导数统一设置为全域无响应零场：
+\begin{equation}
+v(x,y,t) = \delta u(x,y,t) = 0
+\end{equation}
+\begin{equation}
+\dot{v}(x,y,t) = v_{,x}(x,y,t) = v_{,y}(x,y,t) = 0
+\end{equation}
+
+
+在此三维时空系统框架下，不采用传统的强置换降阶方式，
+而是全面运用罚函数法以及能量变分拉格朗日边界映射在控制边界面上予以边界约束弱强加。
+针对式\eqref{4.28}的具体矩阵方程构建环节中设定超大刚度惩罚系数
+$\alpha = 10^8$ 以及 $\beta = 10^8$：
+
+对于主位移控制变量系统 $u$ 所在的微分方程体系，
+在四周的时空周际面(如 $\Gamma^1, \Gamma^3, \Gamma^4, \Gamma^5, \Gamma^6$ 等)通过拉格朗日边界扩展能量罚积分项 $\int_{\Gamma} \delta v \alpha(u - u_g) ds$施加上述给定解析式对应的时空本质边界条件(Dirichlet 边界)。
+针对初始时刻界面，结合式\eqref{eq:2d_udot}构建正向速度等效动力边界条件，
+以弱诺伊曼(Neumann 边界)向外法流量形式直接代入载荷向量中：$t_u(x,y,z) = \dot{u}(x,y,t) n_t$。
+
+对于因消除理论限制而延拓出的辅助虚拟变量系统 $v$，
+对其施加全零刚性对偶约束边界：
+由罚映射机制 $\int_{\Gamma} \delta u \beta (v - 0) ds$ 使其边界强行收敛于零基础场(如作用于对应边界 $\Gamma^2$ 等)。
+
+在离散与求解实施模型上，
+采用自由度更为灵活的四面体网格(Tetrahedral elements，
+如程序中的 \texttt{cube\_tet\_10.msh})或空间六面体网格(Hexahedral elements，如 \texttt{cube\_hex\_20.msh})对此“2+1”时空立方体域开展空间与时间全耦合的联合离散剖分构建网格组。
+基于高阶高斯数值积分(例如2阶积分)，
+构建并计算得出包含各场算子在内的大型三维广义稀疏关联积分阵列。
+
+运用线性求解器对上述对称且非奇异的庞大矩阵一举求取结果，
+不仅直接并行算出了横跨所有连续时间帧和二维空间广域节点上的统合位移响应列向量 $\boldsymbol d_I$，
+也伴带得出了系统副协调位移残余列向量 $\delta \boldsymbol d_I$ 全列集合。
+从而彻底消解了原本按小步长循环打断的层级阶梯，
+极大程度保证了随向计算精度的能量不散逸性。
+
+
+经过直接控制矩阵解算收敛后，将获取的模型每一网格节点求得的插值重构值 $u^h(x_I, y_I, t_I)$ 直接映射代入物理精确标准场中。
+提取系统的整体能量准范数量级(即采用哈密顿体系 $\int \int \nabla q \nabla p \, d\Omega dt$ 高斯多积分评价算子对节点位移梯度和变量场精度作 $H^1$ 参数度半等效平方估误差)。
+结果显示：模型所求解导出的整体物理波动位移场、速度场等均严格契合原解析场的几何包络曲面，无论是 $d$ 还是衍生导数均证实具有高标准的逼近吻合度。
+同时对于最受质疑的衍生双位场——随系统同步解算获得的分布极值时空对偶数值波形 $\delta d_I$ 的幅值反馈极为迫近于零矢量态。
+这一数据校验有力论证了本章理论——伴生变量只在修正变分奇异域生效而不实质引入产生频散特性的失真干扰能量，真正意义上印证了多维弱定形式在计算大型弹性波复杂传播方程解析具备着强力数值抗差能力。
+
+根据如图\ref{fg:3dwangge}所示的三维网格示意图，当我们采用基于拉格朗日变分方案的完全弱形式伽辽金法去计算该问题时，
+可以得到图\ref{fg:3d_u}的位移云图，可以看出当我们边长取$10\times10$和$20\times20$时，
+计算所得的位移云图是数值稳定的，且计算结果精确度很高。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{fig/三维网格示意图.png}
+\caption{\centering{三维网格示意图}}
+\label{fg:3dwangge}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/3d_10_u.png} \\
+    $10\times10$网格位移云图 \\ \vspace{10pt}
+    \includegraphics[width=0.45\textwidth]{fig/3d_20_u.png} \\
+    $20\times20$网格位移云图
+    \caption{拉格朗日时空有限元法计算三维算例位移云图}\label{fg:3d_u}
+\end{figure}
+
+
+
+\clearpage
+\section{本章小结}
+
+本章在前一章“1+1”维波动问题的理论基础上，将针对时间--空间全域的完全弱形式离散框架成功拓展至更加复杂的“2+1”维(二维空间联合一维时间)波动问题解析中。
+通过深入的理论推导、变分设计以及严格的数学论证，本章的主要工作与研究结论可总结如下：
+基于哈密顿变分原理，建立了二维平面弹性波动问题总能量泛函体系。
+深入对比了传统求解中普遍采用的空间弱形式加时间强形式耦合差分离散方法(如Newmark-$\beta$法)，
+指出了因传统理论限制导致的局限性，为全向离散指出了架构方向。
+针对传统有限元在时间终止物理边界变分$\delta u(t_1)=0$这一难以满足的苛刻理论限制进行破局，
+引入了独立伴随对偶变量$v(x,y,t)$，在三维时空连续体尺度上重构了拉格朗日混合能量泛函，
+使时间和空间边界条件能以完全对称和柔性的弱惩罚形式被系统吸收。
+提出了专门响应局部“时间块”两极表面的罚函数正则化调节方案，
+利用具有高额权重的惩罚势能消除了时空超维度矩阵在无条件解域下的刚度缺秩与奇异性。
+在此基础上，构建了具备极高自由度与绝佳对称性的大型全局闭解微分矩阵。
+运用三维高维格林定理与多步分部积分演绎，
+从几何域分离对应原则出发剥离伴随边界算子，在理论最底层的物理意义上，
+以无可辩驳的数学连续推理证实了该弱解系统与原始“2+1”维偏微分方程组(欧拉--拉格朗日强形式方程)之间的完美等效性。
+通过构建相应的二维数值实验与算例测试，系统印证了该完全弱形式时空混合有限元框架在处理多维网格交互、
+时空节点递进和波动物理传播现象中的优越算法稳定性与出众的计算精度。
