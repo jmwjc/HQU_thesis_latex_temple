@@ -152,8 +152,15 @@ q_h = \sum_{I=1}^{n_p} N_I d_I
 \begin{equation}\label{eq:discrete-variation}
     \int_{t_0}^{t_1} \left( \delta \dot q_h m \dot q_h - \delta q_h k q_h \right) dt = \left. \delta q_h m \dot q_h \right|_{t=t_0} \quad \forall \delta q_h \in \mathcal{P}_h
 \end{equation}
+其中，$\mathcal Q_h$为有限元近似空间：
+\begin{equation}
+    \mathcal Q_h = \textrm{span} \{N_I\}_{I=1}^{n_p}
+\end{equation}
 
-值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$\mathcal{P}_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$。
+值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$\mathcal{P}_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$，即：
+\begin{equation}
+    \mathcal P_h = \{q_h \in \mathcal Q_h \vert \delta q_h(t_1) = 0\}
+\end{equation}
 将有限元近似表达式\eqref{q_h}和式\eqref{dotq_h}代入弱形式\eqref{eq:variation}，
 可得到离散控制方程为：
 \begin{equation}\label{2.15}
