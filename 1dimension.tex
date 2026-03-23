@@ -1,4 +1,4 @@
-\chapter{动力问题的完全弱形式时空混合有限元分析}
+\chapter{动力问题的完全弱形式时空混合有限元法}
 
 本章基于弹性波动力问题在复杂求解域难以进行解析求解，
 通常需要采用有限元等数值近似方法模拟波在介质中的传播过程，
@@ -186,7 +186,7 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[scale=0.75]{fig/math/边界条件转移图.png}
+    \includegraphics[scale=0.45]{fig/math/边界条件转移图.png}
 \caption{\centering{初始时刻本质边界条件直接施加到时间末端}}
 \label{fg:δq=q}
 \end{figure}
@@ -195,7 +195,7 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
 首先是存储困难，对称矩阵可利用对称性仅存储上三角或下三角部分数据，大幅节省内存开销。
 而边界条件的非自然转移会打破矩阵元素的对称分布，非对称矩阵需完整存储所有行和列的元素，
 尤其在大规模多维问题中，数据存储量会翻倍，给内存资源带来巨大压力；
-然后是计算效率低，数值求解中针对对称矩阵的优化算法可将计算复杂度从$O(n^3)$降低至$O(n^2)$[],
+然后是计算效率低，数值求解中针对对称矩阵的优化算法可将计算复杂度从$O(n^3)$降低至$O(n^2)$\cite{golub2013matrix}，
 而非对称矩阵无法适配此类高效算法，需采用通用矩阵求解方法，
 运算步骤增多、迭代次数增加，且数据读写量增大，直接导致整体计算效率大幅下降。
 最后是计算稳定性差，对称矩阵的特征值均为实数，且数值求解过程中误差传播具有可控性，
@@ -507,7 +507,7 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 
 \subsection{受简谐外力作用的无阻尼弹簧小车问题}
 
-同样的考虑一个一维无阻尼弹簧小车问题，我们在此基础上在额外施加一个随着时间改变的简谐振动力$F(t) = F_0 sin(\Omega t)$，
+同样的考虑一个一维无阻尼弹簧小车问题，我们在此基础上在额外施加一个随着时间改变的简谐振动力$F(t) = F_0 \sin (\Omega t)$，
 其中初始力$F_0=5.0$，驱动频率$\Omega = 25.0$。
 如图\ref{fg:jianxiexiaoche}所示，小车的质量$m=1.0$，初始位移$q_0=0$和初始速度$\dot q_0$的作用下运动。
 小车的左端仍然施加一个刚度系数为$k=50.0$的弹簧约束，右端不施加任何约束。
@@ -522,7 +522,7 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 
 根据弹性力学控制方程：
 \begin{equation}\label{con found}
-m \ddot q + k q = F_0 sin(\Omega t)
+m \ddot q + k q = F_0 \sin (\Omega t)
 \end{equation}
 在给定的初始条件下，其精确解由齐次解和特解组成：
 \begin{equation}\label{Exa solu}
@@ -530,7 +530,6 @@ m \ddot q + k q = F_0 sin(\Omega t)
 q(t) &= A \cos (\omega t) + B \sin(\omega t) + \frac{F_0}{k-m\Omega^2} sin(\Omega t)
 \end{split}
 \end{equation}
-
 其中$A = q_0$，$B = \frac{(\dot q_0 - U_0 * \Omega)}{\omega}$，
 $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
 
@@ -557,7 +556,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.25简谐位移图.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.25简谐位移误差图.png} \\
         \end{tabular}
-        \caption{$\Delta t=0.25$时四种方法计算在简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.25}
+        \caption{$\Delta t=0.25$时四种方法计算简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.25}
 \end{figure}
 \begin{figure}[!h]
     \centering
@@ -565,7 +564,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.125简谐位移图.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.125简谐位移误差图.png} \\
         \end{tabular}
-        \caption{$\Delta t=0.125$时四种方法计算在简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.125}
+        \caption{$\Delta t=0.125$时四种方法计算简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.125}
 \end{figure}
 \begin{figure}[!h]
     \centering
@@ -573,7 +572,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.0625简谐位移图.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.0625简谐位移误差图.png} \\
         \end{tabular}
-        \caption{$\Delta t=0.0625$时四种方法计算在简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.0625}
+        \caption{$\Delta t=0.0625$时四种方法计算简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.0625}
 \end{figure}
 \begin{figure}[!h]
     \centering
@@ -581,7 +580,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.03125简谐位移图.png} &
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.03125简谐位移误差图.png} \\
         \end{tabular}
-        \caption{$\Delta t=0.03125$时四种方法计算在简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.03125}
+        \caption{$\Delta t=0.03125$时四种方法计算简谐外力作用下弹簧小车问题位移图与误差图}\label{fg:jx0.03125}
 \end{figure}
 
 \begin{figure}[!h]
