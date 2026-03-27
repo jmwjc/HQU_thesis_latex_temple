@@ -15,14 +15,18 @@
 根据式\eqref{eq:functional}的哈密顿原理，
 多为波动问题中的能量泛函$\Phi$以及内部的动能$T$和势能$U$的分别为:
 \begin{equation}
-    \Phi(\boldsymbol u) = \int_{t_0}^{t_1} (\boldsymbol T - \boldsymbol U) dt
+    \ddot u = c^2 \nabla^2 u
+\end{equation}
+$\nabla^2 = \nabla \cdot \nabla$, $\nabla = \frac{\partial }{\partial x_i} \boldsymbol e_i$
+\begin{equation}
+    \Phi(u) = \int_{t_0}^{t_1} (T - U) dt
 \end{equation}
 \begin{equation}\label{T_3d}
-    \boldsymbol T = \int_{\Gamma} \frac{1}{2} \rho A \boldsymbol{\dot u}^2 d\Gamma
+    T = \int_{\Omega} \frac{1}{2} \dot u^2 d\Omega
 \end{equation}
 \begin{equation}\label{U_3d}
-    \boldsymbol U = \int_{\Gamma} \frac{1}{2} EA \boldsymbol u_{,\Gamma_g}^2 d\Gamma
-    -\int_{\Gamma} \boldsymbol u \boldsymbol b d\Gamma  - \int_{\Gamma_t} \boldsymbol u P ds
+    U = \int_{\Omega} \frac{1}{2} c^2 \nabla u \cdot \nabla u d\Omega
+    - \int_{\Gamma_t} u P ds
 \end{equation}
 式中，$\boldsymbol u$为沿$x$和$y$方向上的位移，
 $\boldsymbol{\dot u}$和$\boldsymbol u_{,\Gamma}$为其速度和应变。
