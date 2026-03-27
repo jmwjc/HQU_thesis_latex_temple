@@ -5,37 +5,39 @@
 并在这套网格的基础上，采用基于哈密顿原理的完全弱形式伽辽金法进行求解。
 在上一章“1+1”维波动问题的基础上，将空间拓展到二维，对基于拉格朗日乘子法的完全弱形式时空混合有限元分析框架进行详细推导与验证。
 
-\section{二维波动问题及时间强形式求解方案}
-\subsection{二维波动问题时间强形式离散控制方程}
+\section{多维波动问题及时间强形式求解方案}
+\subsection{多维波动问题时间强形式离散控制方程}
 
-不失一般性，我们考虑一个二维平面求解域$\Omega$，其边界为$\Gamma$，展示二维动力波问题的求解推导过程。
-在拉格朗日表达式的基础上，
-二维波动问题在平面区域$\Omega$：
+不失一般性，我们考虑一个二维平面求解域$\Omega$，其边界为$\Gamma$，
+展示多维动力波问题的求解推导过程。
+该弹性杆的材料密度为$\rho$、弹性模量为$E$、横截面积为$A$，杆受内部体力$b$和外面力$P$作用，
+四面为固定端$\Gamma_g$，顶端为时间末端边界$\Gamma_t$。
+根据式\eqref{eq:functional}的哈密顿原理，
+多为波动问题中的能量泛函$\Phi$以及内部的动能$T$和势能$U$的分别为:
 \begin{equation}
-    \Phi(u) = \int_{t_0}^{t_1} (T - U) dt
+    \Phi(\boldsymbol u) = \int_{t_0}^{t_1} (\boldsymbol T - \boldsymbol U) dt
 \end{equation}
 \begin{equation}\label{T_3d}
-    T = \int_{\Omega} \frac{1}{2} \rho A \dot u^2 dxdy
+    \boldsymbol T = \int_{\Gamma} \frac{1}{2} \rho A \boldsymbol{\dot u}^2 d\Gamma
 \end{equation}
 \begin{equation}\label{U_3d}
-    U = \int_{\Omega} \frac{1}{2} EA (u_{,x}^2 + u_{,y}^2) dxdy
-    -\int_{\Omega} ub dxdy  - \int_{\Gamma_t} uP ds
+    \boldsymbol U = \int_{\Gamma} \frac{1}{2} EA \boldsymbol u_{,\Gamma_g}^2 d\Gamma
+    -\int_{\Gamma} \boldsymbol u \boldsymbol b d\Gamma  - \int_{\Gamma_t} \boldsymbol u P ds
+\end{equation}
+式中，$\boldsymbol u$为沿$x$和$y$方向上的位移，
+$\boldsymbol{\dot u}$和$\boldsymbol u_{,\Gamma}$为其速度和应变。
+为了简化算子以表述方便，同样引入双线性算子表示哈密顿量：
+\begin{equation}\label{eq:duoweihmd}
+    \Phi(\boldsymbol u) = \frac{1}{2} a(\boldsymbol u,\boldsymbol u) - f(\boldsymbol u)
+\end{equation}
+其中，双线性形式$a(\boldsymbol u,\boldsymbol u)$，线性形式$f(\boldsymbol u)$，表达式如下：
+\begin{equation}
+    a(\boldsymbol u,\boldsymbol u) = \int_{\Omega} (\boldsymbol{\dot u} \rho A \boldsymbol{\dot u} - \boldsymbol u_{,\Gamma_g} EA \boldsymbol u_{,\Gamma_g}) d\Omega
+\end{equation}
+\begin{equation}
+    f(\boldsymbol u) = \int_{\Omega} \boldsymbol u \boldsymbol b d\Omega  + \int_{t_0}^{t_1} \boldsymbol u P \vert_{x=x_t}dt
 \end{equation}
 
-总能量泛函可表示为：
-\begin{equation}
-    \Phi(u) = \frac{1}{2} a(u,u) - f(u)
-\end{equation}
-其中，双线性形式$a(u,u)$，线性形式$f(u)$，表达式如下：
-\begin{equation}
-    a(u,u) = \int_{t_0}^{t_1} \int_{\Omega} (\dot u \rho A \dot u - u_{,x} EA u_{,x} - u_{,y} EA u_{,y}) dxdy dt
-\end{equation}
-\begin{equation}
-    f(u) = \int_{t_0}^{t_1} \left(\int_{\Omega} ub dxdy  + \int_{\Gamma_t} uP ds\right) dt
-\end{equation}
-式中，$\rho$为材料密度，$E$为材料的弹性模量，$A$为材料的横截面积，$b$为体力，$P$为外力。
-$u$和$\dot u$为位移以及其对时间的一阶导数，
-$u_{,x}$和$u_{,y}$为其对位移的一阶导数，$\Gamma_t$为时间末端边界。
 
 根据哈密顿原理，将动能和势能表达式代入变分极值条件，可以找到一个精确解$ u\in \mathcal{U}$使得其能量变分等于零：
 \begin{equation}\label{eq:2d weak found}
