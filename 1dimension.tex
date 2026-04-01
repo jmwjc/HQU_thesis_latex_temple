@@ -146,28 +146,28 @@ $m$为质量，$c$为阻尼系数，$k$为刚度，$f_{n+1}$为第$n+1$步外力
 试函数空间$\mathcal{Q}$和权函数空间$\mathcal{P}$并不相同，尤其是在时间末端$t_1$处，$q(t_1)$通常是未知的，而$\delta q(t_1)=0$，这导致在数值实现时难以处理时间末端的边界条件。
 并且，初始时刻$t_0$的边界条件同时具有$q(t_0)=q_0$和$\dot q(t_0)=\dot q_0$两个边界条件，如何在弱形式\eqref{eq:variation}的同一时刻施加两个边界条件也是一个难题。
 
-采用传统有限元法进行分析时，对广义变量$q$进行有限元近似，其近似值$q_h$具有如下表达式：
+采用传统有限元法进行分析时，对广义变量$q$进行有限元近似，其近似值$q^h$具有如下表达式：
 \begin{equation}\label{q_h}
-q_h = \sum_{I=1}^{n_p} N_I d_I
+q^h = \sum_{I=1}^{n_p} N_I d_I
 \end{equation}
 其中，$N_I$为时间域的形函数，$d_I$为对应的节点系数，$n_p$为时间域节点总数。
 广义坐标对时间的一阶导数的近似值$\dot q_h$为：
 \begin{equation}\label{dotq_h}
-    \dot q_h = \sum_{I=1}^{n_p} N_{I,t} d_I
+    \dot q^h = \sum_{I=1}^{n_p} N_{I,t} d_I
 \end{equation}
 式中，$N_{I,t}$为形函数对时间的导数。
-将动能和势能表达式\eqref{eq:kinetic-potential}代入到弱形式\eqref{eq:variation}，可得如下问题：找到一个$q_h\in \mathcal{Q}_h$，使得
+将动能和势能表达式\eqref{eq:kinetic-potential}代入到弱形式\eqref{eq:variation}，可得如下问题：找到一个$q^h\in \mathcal{Q}^h$，使得
 \begin{equation}\label{eq:discrete-variation}
-    \int_{t_0}^{t_1} \left( \delta \dot q_h m \dot q_h - \delta q_h k q_h \right) dt = \left. \delta q_h m \dot q_h \right|_{t=t_0} \quad \forall \delta q_h \in \mathcal{P}_h
+    \int_{t_0}^{t_1} \left( \delta \dot q^h m \dot q^h - \delta q^h k q^h \right) dt = \left. \delta q^h m \dot q^h \right|_{t=t_0} \quad \forall \delta q^h \in \mathcal{P}^h
 \end{equation}
-其中，$\mathcal Q_h$为有限元近似空间：
+其中，$\mathcal Q^h$为有限元近似空间：
 \begin{equation}
-    \mathcal Q_h = \textrm{span} \{N_I\}_{I=1}^{n_p}
+    \mathcal Q^h = \textrm{span} \{N_I\}_{I=1}^{n_p}
 \end{equation}
 
-值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$\mathcal{P}_h$需要满足$\delta q_h(t_1)=0$，但不再要求$\delta q_h(t_0)=0$，即：
+值得注意的是，为了施加初始时刻动量边界条件，此时的近似权函数空间$\mathcal{P}^h$需要满足$\delta q^h(t_1)=0$，但不再要求$\delta q^h(t_0)=0$，即：
 \begin{equation}
-    \mathcal P_h = \{q_h \in \mathcal Q_h \vert \delta q_h(t_1) = 0\}
+    \mathcal P^h = \{q^h \in \mathcal Q^h \vert \delta q^h(t_1) = 0\}
 \end{equation}
 将有限元近似表达式\eqref{q_h}和式\eqref{dotq_h}代入弱形式\eqref{eq:variation}，
 可得到离散控制方程为：
@@ -183,7 +183,7 @@ K_{IJ} = \int_{t_0}^{t_1} N_{I,t} m N_{J,t} - N_I k N_J dt
     f_I = N_I m \dot q_0 |_{t=t_0}
 \end{equation}
 
-在使用伽辽金法进行求解的过程中，试函数空间$\mathcal{Q}_h$和权函数空间$\mathcal{P}_h$采用相同的节点数进行离散，即$\dim \mathcal{Q}_h = \dim \mathcal{P}_h$。
+在使用伽辽金法进行求解的过程中，试函数空间$\mathcal{Q}^h$和权函数空间$\mathcal{P}^h$采用相同的节点数进行离散，即$\dim \mathcal{Q}^h = \dim \mathcal{P}^h$。
 然而，如图\ref{fg:δq=0}所示，直接令$q(t_1)=0$，将导致刚度矩阵$\boldsymbol K$不为方阵。
 同时，初始时刻已施加边界条件$\dot q(t_0)=\dot q_0$，此时再通过强制方法，如罚函数法，施加$q(t_0)=q_0$边界条件，将导致自然边界条件$\dot q(t_0)=\dot q_0$不起作用。
 
@@ -251,11 +251,11 @@ $\mathcal{Q}'$空间定义为：
     + \delta \dot q m p \vert_{t=t_0} + \delta p m \dot q \vert_{t=t_0} = 0
 \end{multline}
 引入相同节点的有限元近似同时离散$q$和$p$，整理可得如下伽辽金弱形式：
-找到一组解$(q_h,p_h) \in \mathcal{Q}_h \times \mathcal{P}_h$，使得
+找到一组解$(q^h,p^h) \in \mathcal{Q}^h \times \mathcal{P}^h$，使得
 \begin{equation}
     \begin{aligned}
-        \int_{t_0}^{t_1} (\delta \dot q m \dot q - \delta q k q) dt - \int_{t_0}^{t_1} (\delta \dot q m \dot p - \delta q k p) dt &= 0, \quad & \forall \delta q_h \in \mathcal{Q}_h \\
-        - \int_{t_0}^{t_1} (\delta \dot p m \dot q - \delta p k q) dt &= - \delta p m  \dot q \vert_{t=t_0}, \quad & \forall \delta p_h \in \mathcal{P}_h
+        \int_{t_0}^{t_1} (\delta \dot q m \dot q - \delta q k q) dt - \int_{t_0}^{t_1} (\delta \dot q m \dot p - \delta q k p) dt &= 0, \quad & \forall \delta q^h \in \mathcal{Q}^h \\
+        - \int_{t_0}^{t_1} (\delta \dot p m \dot q - \delta p k q) dt &= - \delta p m  \dot q \vert_{t=t_0}, \quad & \forall \delta p^h \in \mathcal{P}^h
     \end{aligned}
 \end{equation}
 
@@ -309,7 +309,7 @@ $\mathcal{Q}'$空间定义为：
 \end{Bmatrix}
 \end{equation}
 其中，刚度矩阵$\boldsymbol K$和力向量$\boldsymbol f$的分量$K_{IJ}$和$f_I$与式\eqref{K_IJ}，\eqref{f_I}相同。
-从上式可以看出，试函数空间和权函数空间均属于相同的离散空间，$\mathcal{Q}_h\times \mathcal{P}_h$。
+从上式可以看出，试函数空间和权函数空间均属于相同的离散空间，$\mathcal{Q}^h\times \mathcal{P}^h$。
 在施加强制边界条件时，将不再出现由于空间不匹配造成施加困难的问题。本文采用罚函数法\cite{hughes2000finite}对$q$和$p$相关的本质边界条件进行施加。
 罚函数的增广能量泛函可写为：
 \begin{equation}
