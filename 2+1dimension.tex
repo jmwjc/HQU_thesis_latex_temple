@@ -1,7 +1,9 @@
 ﻿\chapter{“2+1”维波动问题完全弱形式时空混合有限元法}
-本章为进一步分析弹性波动力问题在更加复杂的二维空间区域求解，
+本章为进一步分析波动问题在二维空间区域求解，
 引入时间方向的网格与二维空间方向的网格构成“2+1”形式的三维时空网格来离散计算。
+将……方法，用于求解二维波动问题
 对网格的节点个数、布置方式、网格形状等元素进行调控来模拟各式各样的复杂平面求解域。
+FIXME
 并在这套网格的基础上，采用基于哈密顿原理的完全弱形式伽辽金法进行求解。
 在上一章“1+1”维波动问题的基础上，将空间拓展到二维，对基于拉格朗日乘子法的完全弱形式时空混合有限元分析框架进行详细推导与验证。
 
@@ -10,12 +12,13 @@
 不失一般性，我们考虑一个二维平面求解域$\Omega$，其边界为$\Gamma$，
 展示多维动力波问题的求解推导过程。
 该多维波动问题其控制方程通常可表示为：
+FIXME
 \begin{equation}
     \ddot u = c^2 \nabla^2 u
 \end{equation}
-式中，$u(x,y,t)$ 为介质中的场变量，$c$为波速，其中拉普拉斯算子与梯度算子表示为：
+式中，$u$ 为介质中的场变量，$c$为波速，其中拉普拉斯算子与梯度算子表示为：
 \begin{equation}
-    \nabla^2 = \nabla \cdot \nabla, 
+    \nabla^2 = \nabla \cdot \nabla, \quad
     \nabla = \frac{\partial }{\partial x_i} \boldsymbol e_i
 \end{equation}
 
@@ -35,12 +38,12 @@
 其中，$\Gamma_t$ 是施加分布载荷 $P$ 的力边界。
 
 根据哈密顿原理，系统的真实运动轨迹使得能量泛函在一阶变分下取驻值，
-即寻找一个解 $u(x,y,t) \in \mathcal{U}$ 满足其能量变分 $\delta \Phi(u) = 0$：
+即寻找一个解 $u \in \mathcal{U}$ 满足其能量变分 $\delta \Phi(u) = 0$：
 \begin{equation}\label{eq:3d weak found}
     \begin{aligned}
         \delta \Phi (u) &= \int_{t_0}^{t_1} \left( \delta T - \delta U \right) dt \\
-        &= \int_{t_0}^{t_1}  \int_{\Omega} \left( \dot u \delta \dot u - c^2 \nabla u \cdot \nabla \delta u \right) d\Omega dt \\
-        &+ \int_{t_0}^{t_1} \int_{\Gamma_t} P \delta u ds dt = 0
+        &= \int_{t_0}^{t_1}  \int_{\Omega} \left( \delta \dot u \dot u - c^2 \delta \nabla u \cdot \nabla u \right) d\Omega dt \\
+        &+ \int_{t_0}^{t_1} \int_{\Gamma_t} \delta u P ds dt = 0
     \end{aligned}
     \quad
     \forall \delta u \in \mathcal V
@@ -55,7 +58,7 @@
     \begin{aligned}
     \bar \Phi(u,v) &= \int_{t_0}^{t_1} \int_{\Omega} \left( \frac{1}{2} \dot u^2 - \frac{1}{2} c^2 \nabla u \cdot \nabla u \right) d\Omega dt \\
     &- \int_{t_0}^{t_1} \int_{\Omega}\left( \frac{1}{2} \dot u \dot v  - \frac{1}{2} c^2 \nabla u \cdot \nabla v \right) d\Omega dt \\
-    &-\int_{\Omega} v t d\Omega  - \int_{t_0}^{t_1} \int_{\Gamma_t} u P ds dt 
+    & - \int_{t_0}^{t_1} \int_{\Gamma_t} u P ds dt 
     \end{aligned}
 \end{equation}
 对上述的双变量能量泛函进行变分，同时考虑$\delta u$和$\delta v$的任意性，
@@ -65,9 +68,9 @@
 
 在采用时空混合有限元法进行分析时，对位移变量$u$进行的有限元近似，
 区别于之前的近似表达式\eqref{uv_h}、\eqref{dotuv_h}和\eqref{uv_x^h}所示的时空二维近似，
-此处的形函数$N_I(x，y,t)$为空间二维结合时间的三维结构，其对应的近似值$u^h$的表达式如下：
+此处的形函数$N_I$为空间二维结合时间的三维结构，其对应的近似值$u^h$的表达式如下：
 \begin{equation}\label{uv^h}
-u^h (x,y,t) = \sum_{I=1}^{n_p} N_I (x,y,t) d_I
+u^h (\boldsymbol x,t) = \sum_{I=1}^{n_p} N_I (\boldsymbol x,t) d_I
 \end{equation}
 对时间的一阶导数的近似值$\dot u^h$为：
 \begin{equation}\label{dotuv_h}
@@ -75,9 +78,9 @@ u^h (x,y,t) = \sum_{I=1}^{n_p} N_I (x,y,t) d_I
 \end{equation}
 对位移的空间一阶导数（即梯度 $\nabla u^h$ 的分量）的近似值 $u_{,x}^h$ 和 $u_{,y}^h$ 分别为：
 \begin{equation}\label{uv_x^h}
-    u_{,x}^h = \sum_{I=1}^{n_p} N_{I,x} d_I, \quad
-    u_{,y}^h = \sum_{I=1}^{n_p} N_{I,y} d_I
+    \nabla u^h = \sum_{I=1}^{n_p} \nabla N_{I} d_I, \quad
 \end{equation}
+FIXME
 其中，$N_{I,x}$ 和 $N_{I,y}$ 分别为形函数对空间坐标 $x$ 和 $y$ 的偏导数。
 通过有限元近似表达式，可得到对应的离散控制方程为：
 \begin{equation}
@@ -96,8 +99,7 @@ u^h (x,y,t) = \sum_{I=1}^{n_p} N_I (x,y,t) d_I
     K_{IJ} = \int_{t_0}^{t_1} \int_{\Omega} \left( N_{I,t} N_{J,t} - c^2 (N_{I,x} N_{J,x} + N_{I,y} N_{J,y}) \right) d\Omega dt
 \end{equation}
 \begin{equation}
-    f_I = - \int_{\Omega} N_I \dot u_0 \big|_{t=t_0} d\Omega 
-    - \int_{t_0}^{t_1} \int_{\Gamma_t} N_I P ds dt
+    f_I = - \int_{t_0}^{t_1} \int_{\Gamma_t} N_I P ds dt
 \end{equation}
 
 此时，势函数空间和权函数空间均属于相同的离散空间，在施加强制边界条件时，
@@ -120,20 +122,22 @@ u^h (x,y,t) = \sum_{I=1}^{n_p} N_I (x,y,t) d_I
 对上式进行分部积分可得：
 \begin{equation}
     \begin{aligned}
-        & - \int_{t_0}^{t_1} \int_{\Omega} \delta u \left[ (\ddot u - c^2 \nabla^2 u) - (\ddot v - c^2 \nabla^2 v) \right] d\Omega dt \\
-        & + \int_{\Omega} \delta u (\dot u - \dot v) d\Omega \bigg|_{\Gamma_0}^{\Gamma_1} 
-        - \int_{t_0}^{t_1} \int_{\Gamma} \delta u c^2 \left( \frac{\partial u}{\partial n} - \frac{\partial v}{\partial n} \right) ds dt = 0
+        & - \int_{t_0}^{t_1} \int_{\Omega} \delta u \left( (\ddot u - c^2 \nabla^2 u) - (\ddot v - c^2 \nabla^2 v) \right) d\Omega dt \\
+        & + \int_{\Omega} \delta u (\dot u - \dot v) n_t d\Omega \bigg|_{t_0}^{t_1} 
+        - \int_{t_0}^{t_1} \int_{\Gamma} \delta u c^2 \nabla u \cdot \boldsymbol n d\Gamma dt = 0
     \end{aligned}
 \end{equation}
+FIXME $n_t$ $\boldsymbol n = n_i \boldsymbol e_i, i=1,2,3$
 根据哈密顿原理虚位移在时间端点处和强制边界条件处为零：
 \begin{equation}
-    \delta u \vert_{\Gamma_g} = \delta u\vert_{\Gamma_0} = \delta u\vert_{\Gamma_1} = 0
+    \delta u \vert_{\Gamma_g} = \delta u\vert_{t_0} = \delta u\vert_{t_1} = 0
 \end{equation}
 可以得到波动方程的基本方程：
 \begin{equation}
     \ddot u = c^2 \nabla^2 u
 \end{equation}
 以及可以得到空间边界条件和时间边界的关联约束关系：
+FIXME
 \begin{equation}
     \left \{
         \begin{aligned}
