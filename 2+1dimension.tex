@@ -1,20 +1,26 @@
 ﻿\chapter{“2+1”维波动问题完全弱形式时空混合有限元法}
-本章为进一步分析波动问题在二维空间区域求解，
-引入时间方向的网格与二维空间方向的网格构成“2+1”形式的三维时空网格来离散计算。
-将……方法，用于求解二维波动问题
-对网格的节点个数、布置方式、网格形状等元素进行调控来模拟各式各样的复杂平面求解域。
-FIXME
-并在这套网格的基础上，采用基于哈密顿原理的完全弱形式伽辽金法进行求解。
-在上一章“1+1”维波动问题的基础上，将空间拓展到二维，对基于拉格朗日乘子法的完全弱形式时空混合有限元分析框架进行详细推导与验证。
+为了进一步分析波动问题在二维空间区域求解，
+本章将一维时间方向的计算网格与二维物理空间方向的网格结合，
+构建出能够全计算域的“2+1”维的三维时空混合离散框架。
+在上一章节成功建立的“1+1”维波动问题理论基础上，本章将空间求解场增加至二维，
+同样采用了基于拉格朗日变分方案的完全弱形式时空混合有限元法，
+本文将对其总体能量泛函、控制方程离散构建、边界条件的协同施加及其与经典动力学边界平衡方程的等价性，
+展开更为详尽的理论数学推导与严密的数值算例验证。
 
 \section{多维波动问题的拉格朗日乘子型时空混合离散分析方法}
 
 不失一般性，我们考虑一个二维平面求解域$\Omega$，其边界为$\Gamma$，
 展示多维动力波问题的求解推导过程。
-该多维波动问题其控制方程通常可表示为：
-FIXME
-\begin{equation}
-    \ddot u = c^2 \nabla^2 u
+该多维波动问题的控制方程通常可表示为：
+\begin{equation}\label{eq:bdfc3d}
+    \left \{
+    \begin{aligned}
+        & \ddot u = c^2 \nabla^2 u, &&  \text{in } \Omega  \\
+        & u = u_g, && \text{on } \Gamma_g \\
+        & c^2 \frac{\partial u}{\partial n} = P, && \text{on } \Gamma_t \\
+        & u = u_0, \; \dot u= \dot u_0, && t=t_0
+    \end{aligned}
+    \right .
 \end{equation}
 式中，$u$ 为介质中的场变量，$c$为波速，其中拉普拉斯算子与梯度算子表示为：
 \begin{equation}
@@ -50,7 +56,7 @@ FIXME
 \end{equation}
 
 结合前两章的内容，在有限元离散的完全弱形式中试函数空间$\mathcal U$和权函数空间$\mathcal V$并不相同，
-权函数近似空间$\mathcal V$要求其任意元素在时间末端处为零，即$δu(x,y,t1)=0$。
+权函数近似空间$\mathcal V$要求其任意元素在时间末端处为零，即$δu(\boldsymbol x,t_1)=0$。
 此时，将传统能量泛函\eqref{eq:3d weak found}中的虚位移$δu$作为拉格朗日乘子，
 并将其采用拉格朗日乘子$v$表示。再将该拉格朗日乘子项引入原能量泛函式中的哈密顿量，
 可得如下全新能量泛函表达式：
@@ -69,19 +75,17 @@ FIXME
 在采用时空混合有限元法进行分析时，对位移变量$u$进行的有限元近似，
 区别于之前的近似表达式\eqref{uv_h}、\eqref{dotuv_h}和\eqref{uv_x^h}所示的时空二维近似，
 此处的形函数$N_I$为空间二维结合时间的三维结构，其对应的近似值$u^h$的表达式如下：
-\begin{equation}\label{uv^h}
+\begin{equation}\label{uv^h3d}
 u^h (\boldsymbol x,t) = \sum_{I=1}^{n_p} N_I (\boldsymbol x,t) d_I
 \end{equation}
 对时间的一阶导数的近似值$\dot u^h$为：
-\begin{equation}\label{dotuv_h}
+\begin{equation}\label{dotuv_h3d}
     \dot u^h = \sum_{I=1}^{n_p} N_{I,t} d_I
 \end{equation}
-对位移的空间一阶导数（即梯度 $\nabla u^h$ 的分量）的近似值 $u_{,x}^h$ 和 $u_{,y}^h$ 分别为：
-\begin{equation}\label{uv_x^h}
-    \nabla u^h = \sum_{I=1}^{n_p} \nabla N_{I} d_I, \quad
+对位移的空间一阶导数（即梯度 $\nabla u^h$ 的分量）的近似值为：
+\begin{equation}\label{uv_x^h3d}
+    \nabla u^h = \sum_{I=1}^{n_p} \nabla N_{I} d_I
 \end{equation}
-FIXME
-其中，$N_{I,x}$ 和 $N_{I,y}$ 分别为形函数对空间坐标 $x$ 和 $y$ 的偏导数。
 通过有限元近似表达式，可得到对应的离散控制方程为：
 \begin{equation}
 \begin{bmatrix}
@@ -96,7 +100,7 @@ FIXME
 \end{equation}
 其中，刚度矩阵 $\boldsymbol K$ 和力向量 $\boldsymbol f$ 的分量 $K_{IJ}$ 和 $f_I$ 的表达式如下：
 \begin{equation}
-    K_{IJ} = \int_{t_0}^{t_1} \int_{\Omega} \left( N_{I,t} N_{J,t} - c^2 (N_{I,x} N_{J,x} + N_{I,y} N_{J,y}) \right) d\Omega dt
+    K_{IJ} = \int_{t_0}^{t_1} \int_{\Omega} \left( N_{I,t} N_{J,t} - c^2 \nabla N_I \cdot \nabla N_J \right) d\Omega dt
 \end{equation}
 \begin{equation}
     f_I = - \int_{t_0}^{t_1} \int_{\Gamma_t} N_I P ds dt
@@ -127,22 +131,22 @@ FIXME
         - \int_{t_0}^{t_1} \int_{\Gamma} \delta u c^2 \nabla u \cdot \boldsymbol n d\Gamma dt = 0
     \end{aligned}
 \end{equation}
-FIXME $n_t$ $\boldsymbol n = n_i \boldsymbol e_i, i=1,2,3$
+其中，$n_t$为单位外法向量在时间上的分量；
+$\boldsymbol n = n_i \boldsymbol e_i, i=1,2,3$为位外法向量在空间上的分量。
 根据哈密顿原理虚位移在时间端点处和强制边界条件处为零：
 \begin{equation}
-    \delta u \vert_{\Gamma_g} = \delta u\vert_{t_0} = \delta u\vert_{t_1} = 0
+    \delta u \vert_{\Gamma_g} = \delta u\vert_{t=t_0} = \delta u\vert_{t=t_1} = 0
 \end{equation}
 可以得到波动方程的基本方程：
 \begin{equation}
     \ddot u = c^2 \nabla^2 u
 \end{equation}
 以及可以得到空间边界条件和时间边界的关联约束关系：
-FIXME
 \begin{equation}
     \left \{
         \begin{aligned}
-            & \dot u = \dot v,  \quad & \Gamma_1 \\
-            & \frac{\partial u}{\partial n} = \frac{\partial v}{\partial n} , \quad & \Gamma_t
+            & \dot u = \dot v,  \quad &t=t_1 \\
+            & \frac{\partial u}{\partial n} = \frac{\partial v}{\partial n} , \quad &\Gamma_t
         \end{aligned}
     \right .
 \end{equation}
@@ -151,8 +155,7 @@ FIXME
 考虑式\eqref{3.21}的第二行如下所示：
 \begin{equation}
     \begin{aligned}
-    &- \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot v \dot u - c^2 \nabla \delta v \cdot \nabla u) d\Omega dt \\ 
-    &- \int_{\Omega} \delta v \dot u_0 \big|_{\Gamma_0} d\Omega - \int_{t_0}^{t_1} \int_{\Gamma_t} \delta v P ds dt 
+    - \int_{t_0}^{t_1} \int_{\Omega} (\delta \dot v \dot u - c^2 \nabla \delta v \cdot \nabla u) d\Omega dt - \int_{t_0}^{t_1} \int_{\Gamma_t} \delta v P ds dt 
     \end{aligned}
     \quad \forall \delta v \in \mathcal{V}
 \end{equation}
@@ -160,15 +163,14 @@ FIXME
 \begin{equation}
     \begin{aligned}
         & \int_{t_0}^{t_1} \int_{\Omega} \delta v (\ddot u - c^2 \nabla^2 u) d\Omega dt 
-         - \int_{\Omega} \delta v \dot u d\Omega \bigg|_{\Gamma_1} 
-        + \int_{\Omega} \delta v (\dot u - \dot u_0) \big|_{\Gamma_0} d\Omega \\
-        &+ \int_{t_0}^{t_1} \int_{\Gamma} \delta v c^2 \frac{\partial u}{\partial n} ds dt 
-        - \int_{t_0}^{t_1} \int_{\Gamma_t} \delta v P ds dt = 0
+         - \int_{\Omega} \delta v \dot u d\Omega \bigg|^{t_1}_{t_0} \\
+        &+ \int_{t_0}^{t_1} \int_{\Gamma} \delta v c^2 \frac{\partial u}{\partial n} d\Gamma dt 
+        - \int_{t_0}^{t_1} \int_{\Gamma_t} \delta v P d\Gamma dt = 0
     \end{aligned}
 \end{equation}
 为了使方程成立，拉格朗日乘子变分项$\delta v$必须满足：
 \begin{equation}
-    \delta v \vert_{\Gamma_1} = \delta v \vert_{\Gamma_g} = 0
+    \delta v \vert_{t=t_0} = \delta v \vert_{t=t_1} =  \delta v \vert_{\Gamma_g} = 0
 \end{equation}
 综上，联立第一行变分弱形式分部积分式，
 再结合所有的平衡微分方程及边界条件，
@@ -177,22 +179,24 @@ FIXME
     \left \{
         \begin{aligned}
             &\ddot u = c^2 \nabla^2 u,  \quad && \text{in}\; \Omega \\
-            &\ddot u = c^2 \nabla^2 u =  \ddot v = c^2 \nabla^2 v, \quad && \text{in} \; \Omega \\
-            &u = u_g, \; \delta u = \delta v = 0, \quad &&\text{on} \; \Gamma_g \;  \\
+            &u = u_g, \quad &&\text{on} \; \Gamma_g \;  \\
             &c^2 \frac{\partial u}{\partial n}  = P, \; \frac{\partial u}{\partial n} = \frac{\partial v}{\partial n}, \quad &&\text{on}\;\Gamma_t \;  \\
-            &u= u_0, \; \delta u = \delta v = 0, && \text{on}\;\Gamma_0   \\
+            &u= u_0, \; \dot u = \dot u_0, && \text{on}\;\Gamma_0   \\
+            &\ddot u = c^2 \nabla^2 u =  \ddot v = c^2 \nabla^2 v, \quad && \text{in} \; \Omega \\
+            &\delta u = \delta v = 0, \quad &&\text{on} \; \Gamma_g \;  \\
+            &\delta u = \delta v = 0, && \text{on}\;\Gamma_0   \\
             &\dot{u} = \dot v, && \text{on}\;\Gamma_1
         \end{aligned}
     \right .
 \end{equation}
 
-如式\eqref{3ddengjia}所示，基于拉格朗日变分方案的真实位移变量 $u$ 满足多维经典动力学波方程的强形式控制方程及所有边界协调条件。
+如式\eqref{3ddengjia}所示，前四项同式\eqref{eq:bdfc3d}一样，证明了基于拉格朗日变分方案的真实位移变量 $u$ 满足多维经典动力学波方程的强形式控制方程及所有边界协调条件。
 同时，所引入的虚拟伴随变量 $v$ 不仅在求解域内部展现出与位移场完全同构的偏微分关系，
 而且在空间的自然边界、本质边界以及时间的末端边界处也天然保证了相容与连续。综上所述，
 我们在“2+1”维时空混合分析框架下，
 完整推导并证明了该双变量能量泛函变分弱形式与欧拉-拉格朗日方程强形式之间严格的本构等价关系。
 
-根据上述分部积分推导出的条件 $\delta v \vert_{\Gamma_1} = \delta v \vert_{\Gamma_g} = 0$，
+根据上述分部积分推导出的条件 $\delta v \vert_{t=t_1} = \delta v \vert_{\Gamma_g} = 0$，
 可以明确界定离散空间 $\mathcal{V}$ 内拉格朗日乘子对应的时间末端和空间强制边界条件。
 在实际数值求解时，同样可以采用罚函数法对该辅助拓展边界进行弱向施加。
 则最终得到的离散控制方程为：
@@ -212,10 +216,10 @@ $\boldsymbol K^\beta$和$\boldsymbol f^\beta$的分量表达式如下：
 \begin{equation}\label{3d^ab}
     \left \{
         \begin{aligned}
-            K^\alpha_{IJ} &= \int_{\Gamma_0 \cup \Gamma_g} \alpha N_I N_J  d\Gamma \\
-            f^\alpha_{I}  &= \int_{\Gamma_0 \cup \Gamma_g} \alpha N_I u d\Gamma \\
-            K^\beta_{IJ} &= \int_{\Gamma_1} \beta N_I N_J d\Gamma \\ 
-            f^\beta_I &= \int_{\Gamma_1} \beta N_I  v d\Gamma
+            K^\alpha_{IJ} &= \int_{\Gamma_g} \alpha N_I N_J \vert_{t=t_o} d\Gamma + \int_{t_0}^{t_1} \alpha N_I N_J \vert_{\Gamma_g} dt \\
+            f^\alpha_{I}  &= \int_{\Gamma_g} \alpha N_I u \vert_{t=t_o} d\Gamma + \int_{t_0}^{t_1} \alpha N_I u \vert_{\Gamma_g} dt\\
+            K^\beta_{IJ} &= \int_{t_0}^{t_1} \beta N_I N_J dt \\ 
+            f^\beta_I &= 0
         \end{aligned}
     \right .
 \end{equation}
