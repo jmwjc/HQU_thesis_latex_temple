@@ -44,7 +44,7 @@ $L$为拉格朗日量，其表达式为：
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[scale=1.0]{fig/math/弹簧小车模型.png}
+    \includegraphics[scale=0.7]{fig/math/弹簧小车模型.png}
 \caption{\centering{一维弹簧小车算例模型}}
 \label{fg:2.3}
 \end{figure}
@@ -535,7 +535,7 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[scale=1.0]{fig/math/简谐弹簧小车模型.png}
+    \includegraphics[scale=0.6]{fig/math/简谐弹簧小车模型.png}
 \caption{\centering{受简谐作用的无阻尼弹簧小车算例模型}}
 \label{fg:jianxiexiaoche}
 \end{figure}
@@ -624,7 +624,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
 
 
 
-\subsection{双自由度滑块问题}
+\subsection{双自由度楔形-滑块动力学系统}
 
 本小节算例为一个双自由度无摩擦动力学系统，如图\ref{fg:szyd}。
 一个楔形滑块质量为$M=2.0$放置在水平地面上，
@@ -634,7 +634,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
 在此基础上来计算楔形滑块相对于地面的绝对水平位移和小滑块相对于楔形滑块斜面下滑的相对位移。
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=1.8]{fig/math/两滑块.png}
+    \includegraphics[scale=1.4]{fig/math/两滑块.png}
 \caption{\centering{双自由度楔形-滑块动力学系统模型}}
 \label{fg:szyd}
 \end{figure}
@@ -667,16 +667,16 @@ s(t) = \frac{1}{2} a_s t^2
 \begin{figure}[H]
     \centering
         \begin{tabular}{c}
-            \includegraphics[width=0.8\textwidth]{fig/math/n=32.png} \\
+            \includegraphics[width=0.8\textwidth]{fig/math/2dn=4.png} \\
             $n=4$ \\
-            \includegraphics[width=0.8\textwidth]{fig/math/n=64.png} \\
+            \includegraphics[width=0.8\textwidth]{fig/math/2dn=8.png} \\
             $n=8$ \\
-            \includegraphics[width=0.8\textwidth]{fig/math/n=128.png} \\
+            \includegraphics[width=0.8\textwidth]{fig/math/2dn=16.png} \\
             $n=16$ \\
-            \includegraphics[width=0.8\textwidth]{fig/math/n=256.png} \\
+            \includegraphics[width=0.8\textwidth]{fig/math/2dn=32.png} \\
             $n=32$
         \end{tabular}
-        \caption{弹性小车问题节点均布布置示意图}\label{fg:bar_szyd}
+        \caption{双自由度楔形-滑块动力学系统节点均布布置示意图}\label{fg:bar_szyd}
 \end{figure}
 
 
@@ -744,7 +744,7 @@ s(t) = \frac{1}{2} a_s t^2
 
 
 
-\section{小结}
+\section{本章小结}
 
 本章系统探究了动力问题的基于强形式的Newmark-$\beta$求解法和基于哈密顿原理的完全弱形式求解法，
 对两种方法的数值计算结果进行了对比分析，
@@ -755,6 +755,6 @@ s(t) = \frac{1}{2} a_s t^2
 并提出了一种基于拉格朗日乘子型的时域未端本质边界条件的施加方案来解决该问题，
 通过引入一个拉格朗日乘数$p$代替原来无法数值实现的虚位移$\delta q$,
 再将变分后的弱形式作为一个投影项加入到原来的能量泛函式里进行变分计算。
-最后，通过对典型的弹簧小车算例的系统验证，证实了所提方案的优越性。
+最后，通过对典型的弹簧小车等算例的系统验证，证实了所提方案的优越性。
 数值结果表明，该拉格朗日乘子变分求解方案不仅计算效率更高，
 而且能够更好的确保数值计算结果的稳定性，同时具有最高的计算精度。

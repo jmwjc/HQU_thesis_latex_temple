@@ -1,32 +1,27 @@
 % TODO: 设置摘要
 \begin{abstract}
-    由于传统有限元分析在求解弹性波动力问题时，
+    由于传统有限元分析在求解弹性动力问题时，
     普遍倾向于采用空间域弱形式离散而保留时间域的强形式差分逐步求解(如经典的Newmark-$\beta$法)。
     这种半离散方法在结构面临长时间持续响应、复杂多维相互作用及高度演化计算时，
-    往往受制于时间步长所积累的误差及格式的不稳定性。鉴于此，
-    本文提出并系统研究了一种基于完全弱形式的时空混合有限元分析框架。
-    该架构打破了空间与时间异构离散的常规思路，
-    实现了真正意义上针对整个时空连续体的联合一致性变分离散，
-    为高维弹性波问题的数值分析提供了一套理论完备、
-    结构对称且高度稳定的全新途径。
-
+    往往受制于时间步长所积累的误差及格式的不稳定性。
+    而时空有限元法则是将时间视为第四维空间变量进行时空协同离散，相较于传统的迭代法，
+    该方法具有时空全并行求解、复杂移动边界以及时空网格自适应加密等特点。
+    然而，当前的时空有限元法通常被迫采用沿时间轴拉伸的半结构化网格和“时间板”网格，
+    严重削弱了该方法在处理复杂移动边界问题和执行高灵活度的自适应网格重构时的优势。
+    
+    针对时空有限元法在时间末端本质边界条件难以施加的问题，本文提出时间末端虚位移本质边界条件施加方案，
+    系统的研究了一种基于完全弱形式的拉格朗日时空混合有限元分析框架。
     首先，本文从传统哈密顿变分原理出发，
-    指出了其在进行时间弱形式离散时由于必须强制设定时间终点虚位移为零($\delta u(t_1)=0$)而产生的根本性计算阻碍。
-    针对该矛盾，本文创新性地引入了独立的对偶伴随变量$v(x,t)$，
-    重构出包含双变量的拉格朗日乘子型混合变分能量泛函，
-    直接规避了无穷时间端点上的极值限制。
-
-    其次，对于由端部状态自由化所引致的大型系统刚度矩阵奇异性痛点，
-    提出并设计了具有针对性调整能力的边界控制罚函数体系。
-    研究推演了在“1+1”维及“2+1”维(时间+空间)波动模型中，
-    通过附加虚应力刚度项来填补系统边值矩阵缺陷的底层机制，
-    建立起无截断且具备极高架构对称性的封闭微分算阵。
-
-    最后，充分运用多维格林公式、分阶空间导数运算与全域分部积分，
-    不仅实现了这一时空双参数拉格朗日模型与其底层的“2+1”高维强物理偏微控制方程的完美等价性数学论证；
-    还通过详尽的数值分析与结构验证，充分展示了该完全弱形式算法平台在压制数值色散、
-    贴合时空动态相容边界与维护长效演化的高保真度计算上的优良综合性能。
-    为后续将其拓展至真正的大规模四维空间及多物理场复杂系统评估奠定了稳固的基础。
+    指出了其在进行时间弱形式离散时由于必须强制时间终点虚位移为零($\delta u(t_1)=0$)而导致本质边界条件难以数值施加的问题。
+    然后将弱形式中的虚位移作为拉格朗日乘子投影项$v(x,t)$重构投影约束，重构出包含双变量的能量泛函，
+    并对其变分处理得到全新的拉格朗日乘子型的伽辽金弱形式，以此成功建立了时域末端本质边界条件施加方案。
+    该方案打破了空间与时间异构离散的常规思路，
+    实现了真正意义上针对整个时空连续体的联合一致性变分离散，
+    为高维弹性波问题的数值分析提供了一套理论完备、结构对称且高度稳定的全新途径。
+    相较于其他的时空有限元法，该方法在时域可空间域上均离散为弱形式，本文理论推导了其与原有的欧拉--拉格朗日方程之间的等价性。
+    同时该方法所得的刚度矩阵具有对称性，因此可根据矩阵的复用性进行程序优化，降低内存开销。
+    最后，通过一些典型单时间维度的动力学问题、
+    "1+1"维的动力学问题和“2+1”维波动问题等算例成功验证了本文所提方案的有效性和可靠性。
 
 \end{abstract}
 \keywords{时空有限元；完全时空伽辽金弱形式；虚位移本质边界条件；拉格朗日乘子法；哈密顿能量泛函}
@@ -34,12 +29,8 @@
 
 % NOTE:以下是摘要的英文部分，需要时可取消注释
 \begin{abstractEn}
-    When solving elastodynamic wave problems, traditional finite element analysis generally prefers spatial weak-form discretization while retaining temporal strong-form finite difference step-by-step integration (such as the classic Newmark-$\beta$ method). When dealing with long-term continuous responses, complex multi-dimensional interactions, and highly evolutionary computations, this semi-discretization approach is often constrained by error accumulation from time steps and the instability of the scheme. In view of this, this thesis proposes and systematically investigates a space-time mixed finite element analysis framework based on a full weak form. This architecture breaks the conventional paradigm of heterogenous spatial and temporal discretizations, achieves a truly unified and consistent variational discretization for the whole space-time continuum, and provides a novel, theoretically complete, structurally symmetric, and highly stable approach for the numerical analysis of high-dimensional elastic wave problems.
+    When solving elastodynamic problems, traditional finite element analysis generally tends to adopt spatial weak-form discretization while retaining temporal strong-form finite difference step-by-step methods (such as the classic Newmark-$\beta$ method). When facing long-term continuous responses, complex multi-dimensional interactions, and highly evolutionary computations, this semi-discretization approach is often constrained by error accumulation from time steps and the instability of the scheme. In contrast, the space-time finite element method treats time as the fourth spatial dimension for coordinated space-time discretization. Compared to traditional iterative methods, this method features full space-time parallel solving, complex moving boundaries, and space-time adaptive mesh refinement. However, current space-time finite element methods are usually forced to adopt semi-structured meshes stretched along the time axis and "time-slab" meshes, which severely weakens the advantages of this method in handling complex moving boundary problems and performing highly flexible adaptive mesh reconstruction.
 
-    First, starting from the traditional Hamilton's variational principle, this thesis identifies the fundamental computational obstacle caused by the mandatory requirement of zero virtual displacement at the final time ($\delta u(t_1)=0$) during temporal weak-form discretization. To resolve this contradiction, an independent dual adjoint variable $v(x,t)$ is innovatively introduced to reconstruct a Lagrange multiplier-type mixed variational energy functional with dual variables, successfully circumventing the extreme constraints at the infinite time endpoints.
-
-    Second, to address the singularity issue of the large-scale system stiffness matrix caused by the liberalization of endpoint states, a boundary control penalty function system with targeted adjustment capabilities is proposed and designed. The underlying mechanisms of repairing the defects of the system's boundary value matrix by appending virtual stress stiffness terms in both "1+1" and "2+1" dimensional (space+time) wave models are derived, establishing a closed differential operator matrix without truncation and with extremely high architectural symmetry.
-
-    Finally, by fully utilizing the multi-dimensional Green's formula, step-by-step spatial derivative operations, and global integration by parts, this study not only mathematically proves the perfect equivalence between the space-time dual-parameter Lagrangian model and its underlying "2+1" high-dimensional strong-form physical partial differential governing equations, but also comprehensively demonstrates the excellent overall performance of the full weak-form algorithm platform in suppressing numerical dispersion, fitting space-time dynamic compatible boundaries, and maintaining high-fidelity computations for long-term evolution through exhaustive numerical analysis and structural verifications. This lays a solid foundation for its future extension to authentic large-scale four-dimensional spaces and the evaluation of multi-physics complex systems.
+    Aiming at the problem that the essential boundary condition at the end of time is difficult to impose in the space-time finite element method, this thesis proposes a scheme for imposing the virtual displacement essential boundary condition at the final time, and systematically studies a Lagrange space-time mixed finite element analysis framework based on a full weak form. First, starting from the traditional Hamilton's variational principle, this thesis points out the problem that the essential boundary conditions are difficult to impose numerically due to the mandatory requirement of zero virtual displacement at the final time ($\delta u(t_1)=0$) during temporal weak-form discretization. Then, the virtual displacement in the weak form is used as a Lagrange multiplier projection term $v(x,t)$ to construct a projection constraint, and a dual-variable energy functional is reconstructed. By performing variational processing on it, a brand-new Lagrange multiplier-type Galerkin weak form is obtained, thereby successfully establishing a scheme for imposing essential boundary conditions at the end of the time domain. This scheme breaks the conventional paradigm of heterogeneous spatial and temporal discretization, achieves a truly unified and consistent variational discretization for the whole space-time continuum, and provides a novel, theoretically complete, structurally symmetric, and highly stable approach for the numerical analysis of high-dimensional elastic wave problems. Compared with other space-time finite element methods, this method is discretized into a weak form in both the time and space domains, and this thesis theoretically derives its equivalence with the original Euler-Lagrange equations. Meanwhile, the stiffness matrix obtained by this method is symmetric; therefore, program optimization can be carried out according to the reusability of the matrix to reduce memory overhead. Finally, the effectiveness and reliability of the proposed scheme are successfully verified through typical single-time-dimension dynamics problems, "1+1"-dimensional dynamics problems, and "2+1"-dimensional wave problems.
 \end{abstractEn}
-\keywordsEn{Space-time mixed finite element; Wave dynamics; Full weak form; Lagrange multiplier method; Penalty function method}
+\keywordsEn{Space-time finite element method; Full space-time Galerkin weak form; Virtual displacement essential boundary condition; Lagrange multiplier method; Hamiltonian energy functional}
