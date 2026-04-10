@@ -1,19 +1,36 @@
 % TODO: 设置摘要
 \begin{abstract}
-    \LaTeX 是一种强大的排版系统，该系统提供了丰富的功能，包括自动编号、交叉引用、数学公式排版、参考文献管理等。它还支持多种文档类、宏包和模板，使用户能够根据自己的需求定制文档的外观和格式，广泛用于撰写学术论文、科技文档和出版物。
-    本文主要以前期准备、图表设置、使用Zotero管理参考文献、\LaTeX 部分所需包介绍、附录和参考格式等环节进行介绍。
-    首先在前期准备中介绍了Git的相关内容以及VS Code的配置。
-    此外，还介绍了文件和标签的命名规则，为编写论文的命名提供参考，并对在\LaTeX 中的图表设置以例子详细说明如何在论文中插入和设置图表，涵盖了图片的插入、标注、引用和交叉引用等方面的技巧和方法，   
-    也对如何使用Zotero管理参考文献进行了介绍说明。
-    最后，在附录部分给出了参考格式的理解说明。    
-    通过阅读本文，读者将获得关于前期准备、图表设置、参考文献管理、\LaTeX 必需包、附录和参考格式的全面指导，有助于顺利完成论文写作和格式规范要求。
+    由于传统有限元分析在求解弹性动力问题时，
+    普遍倾向于采用空间域弱形式离散而保留时间域的强形式差分逐步求解(如经典的Newmark-$\beta$法)。
+    这种半离散方法在结构面临长时间持续响应、复杂多维相互作用及高度演化计算时，
+    往往受制于时间步长所积累的误差及格式的不稳定性。
+    而时空有限元法则是将时间视为第四维空间变量进行时空协同离散，相较于传统的迭代法，
+    该方法具有时空全并行求解、复杂移动边界以及时空网格自适应加密等特点。
+    然而，当前的时空有限元法通常被迫采用沿时间轴拉伸的半结构化网格和“时间板”网格，
+    严重削弱了该方法在处理复杂移动边界问题和执行高灵活度的自适应网格重构时的优势。
+    
+    针对时空有限元法在时间末端本质边界条件难以施加的问题，本文提出时间末端虚位移本质边界条件施加方案，
+    系统的研究了一种基于完全弱形式的拉格朗日时空混合有限元分析框架。
+    首先，本文从传统哈密顿变分原理出发，
+    指出了其在进行时间弱形式离散时由于必须强制时间终点虚位移为零($\delta u(t_1)=0$)而导致本质边界条件难以数值施加的问题。
+    然后将弱形式中的虚位移作为拉格朗日乘子投影项$v(x,t)$重构投影约束，重构出包含双变量的能量泛函，
+    并对其变分处理得到全新的拉格朗日乘子型的伽辽金弱形式，以此成功建立了时域末端本质边界条件施加方案。
+    该方案打破了空间与时间异构离散的常规思路，
+    实现了真正意义上针对整个时空连续体的联合一致性变分离散，
+    为高维弹性波问题的数值分析提供了一套理论完备、结构对称且高度稳定的全新途径。
+    相较于其他的时空有限元法，该方法在时域可空间域上均离散为弱形式，本文理论推导了其与原有的欧拉--拉格朗日方程之间的等价性。
+    同时该方法所得的刚度矩阵具有对称性，因此可根据矩阵的复用性进行程序优化，降低内存开销。
+    最后，通过一些典型单时间维度的动力学问题、
+    "1+1"维的动力学问题和“2+1”维波动问题等算例成功验证了本文所提方案的有效性和可靠性。
 
 \end{abstract}
-\keywords{\LaTeX；模板学习}
+\keywords{时空有限元；完全时空伽辽金弱形式；虚位移本质边界条件；拉格朗日乘子法；哈密顿能量泛函}
 
 
 % NOTE:以下是摘要的英文部分，需要时可取消注释
-% \begin{abstractEn}
-% fdsa
-% \end{abstractEn}
-% \keywordsEn{keyword1; keyword2; keyword3; keyword4; keyword5; keyword6; keyword7; keyword8}
+\begin{abstractEn}
+    When solving elastodynamic problems, traditional finite element analysis generally tends to adopt spatial weak-form discretization while retaining temporal strong-form finite difference step-by-step methods (such as the classic Newmark-$\beta$ method). When facing long-term continuous responses, complex multi-dimensional interactions, and highly evolutionary computations, this semi-discretization approach is often constrained by error accumulation from time steps and the instability of the scheme. In contrast, the space-time finite element method treats time as the fourth spatial dimension for coordinated space-time discretization. Compared to traditional iterative methods, this method features full space-time parallel solving, complex moving boundaries, and space-time adaptive mesh refinement. However, current space-time finite element methods are usually forced to adopt semi-structured meshes stretched along the time axis and "time-slab" meshes, which severely weakens the advantages of this method in handling complex moving boundary problems and performing highly flexible adaptive mesh reconstruction.
+
+    Aiming at the problem that the essential boundary condition at the end of time is difficult to impose in the space-time finite element method, this thesis proposes a scheme for imposing the virtual displacement essential boundary condition at the final time, and systematically studies a Lagrange space-time mixed finite element analysis framework based on a full weak form. First, starting from the traditional Hamilton's variational principle, this thesis points out the problem that the essential boundary conditions are difficult to impose numerically due to the mandatory requirement of zero virtual displacement at the final time ($\delta u(t_1)=0$) during temporal weak-form discretization. Then, the virtual displacement in the weak form is used as a Lagrange multiplier projection term $v(x,t)$ to construct a projection constraint, and a dual-variable energy functional is reconstructed. By performing variational processing on it, a brand-new Lagrange multiplier-type Galerkin weak form is obtained, thereby successfully establishing a scheme for imposing essential boundary conditions at the end of the time domain. This scheme breaks the conventional paradigm of heterogeneous spatial and temporal discretization, achieves a truly unified and consistent variational discretization for the whole space-time continuum, and provides a novel, theoretically complete, structurally symmetric, and highly stable approach for the numerical analysis of high-dimensional elastic wave problems. Compared with other space-time finite element methods, this method is discretized into a weak form in both the time and space domains, and this thesis theoretically derives its equivalence with the original Euler-Lagrange equations. Meanwhile, the stiffness matrix obtained by this method is symmetric; therefore, program optimization can be carried out according to the reusability of the matrix to reduce memory overhead. Finally, the effectiveness and reliability of the proposed scheme are successfully verified through typical single-time-dimension dynamics problems, "1+1"-dimensional dynamics problems, and "2+1"-dimensional wave problems.
+\end{abstractEn}
+\keywordsEn{Space-time finite element method; Full space-time Galerkin weak form; Virtual displacement essential boundary condition; Lagrange multiplier method; Hamiltonian energy functional}

@@ -117,13 +117,13 @@
         \makebox[\titlelength][s]{作者姓名}： \underline{\makebox[182pt][c]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@authorZh
             \@authorZh
         \else
-            张三
+            王崇志
         \fi}}}}}
 
         \makebox[\titlelength][s]{指导教师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@supervisorZh
             \@supervisorZh
         \else
-            李四
+            赵珧冰
         \fi}}}
         \hfill
         \makebox[42pt][s]{\textrm{\textbf{\ifdefined\@supervisorTitleZh
