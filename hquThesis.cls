@@ -113,24 +113,25 @@
     \def\infolength{100pt}
 
     \noindent\parbox{\textwidth}{
-        \sffamily\bfseries\setstretch{1.5}\centering\fontsize{14pt}{\baselineskip}\selectfont
+        \sffamily\setstretch{1.5}\centering\fontsize{14pt}{\baselineskip}\selectfont
         \makebox[\titlelength][s]{作者姓名}： \underline{\makebox[182pt][c]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@authorZh
             \@authorZh
         \else
-            王崇志
+            张三
         \fi}}}}}
 
         \makebox[\titlelength][s]{指导教师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@supervisorZh
             \@supervisorZh
         \else
-            赵珧冰
+            李四
         \fi}}}
         \hfill
-        \makebox[42pt][s]{\textrm{\textbf{\ifdefined\@supervisorTitleZh
+        \makebox[42pt][c]{\textrm{\textbf{\ifdefined\@supervisorTitleZh
             \@supervisorTitleZh
         \else
             教授
         \fi}}}}}}
+        
 
         \ifdefined\@cosupervisorZh
             \makebox[\titlelength][s]{合作教师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\@cosupervisorZh}}}
@@ -140,43 +141,45 @@
         \fi
 
         \ifdefined\@practicevisorZh
-            \makebox[\titlelength][s]{实践教师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\@practicevisorZh}}}
+            \makebox[\titlelength][s]{实践导师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\@practicevisorZh}}}
                 \hfill
-                \makebox[42pt][s]{\textrm{\textbf{\@practicevisorTitleZh}}}}}
+                \makebox[42pt][s]{\textrm{\textbf{\@practicevisorTitleZh}}}}}%
             }
         \fi
 
         \ifdefined\@majortype
             \makebox[\titlelength][s]{专业学位类别}： \underline{\makebox[182pt][c]{\textrm{\textbf{\@majortype}}}}
 
-            \makebox[\titlelength][s]{专业学位领域}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
-                    \@major
-                \else
-                    土木水利
-                \fi}}
-            }}
-        \else
-            \makebox[\titlelength][s]{学科}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
-                \@major
-            \else
-                土木工程
-            \fi}}}}
-        \fi
+        %     \makebox[\titlelength][s]{专业学位领域}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
+        %             \@major
+        %         \else
+        %             土木水利
+        %         \fi}}
+        %     }}
+        % \else
+        %     \makebox[\titlelength][s]{学科}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
+        %         \@major
+        %     \else
+        %         土木工程
+        %     \fi}}}}
+        % \fi
 
         \makebox[\titlelength][s]{研究方向}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@fieldZh
             \@fieldZh
         \else
             结构体系创新与工程应用
-        \fi}}}}
+        \fi}}}}%
 
         \makebox[\titlelength][s]{所在学院}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@departmentZh
             \@departmentZh
         \else
             土木工程学院
-        \fi}}}}
+        \fi}}}}%
     }
+    
+     \vfill
 
-    \vfill
+
 
     \noindent\begin{center}
         \sffamily\setstretch{1.5}\fontsize{14pt}{\baselineskip}\selectfont

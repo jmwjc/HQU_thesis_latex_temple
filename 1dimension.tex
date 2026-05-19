@@ -343,12 +343,14 @@ $q_0$为初始时刻位移边界值，$\bar p_1$为时间末端动量边界目�
 其中，$\boldsymbol K^\alpha$和$\boldsymbol f^\alpha$、
 $\boldsymbol K^\beta$和$\boldsymbol f^\beta$
 分别为施加与$q$和$p$相关的本质边界条件刚度矩阵和力向量，分量表达式如下：
-\begin{align}
+\begin{equation}
+\begin{aligned}
 K^\alpha_{IJ} &= \alpha N_I N_J |_{t=t_0} \quad
-f^\alpha_I = \alpha N_I q_0 |_{t=t_0} \label{2.26} \\
+f^\alpha_I = \alpha N_I q_0 |_{t=t_0} \\
 K^\beta_{IJ} &= \beta N_I N_J |_{t=t_1} \quad
-f^\beta_I = \beta N_I \bar p_1 |_{t=t_1} \label{2.27} \\
-\end{align}
+f^\beta_I = \beta N_I \bar p_1 |_{t=t_1}  \\
+\end{aligned}
+\end{equation}
 式中$\alpha$为用于施加与广义位移$q$相关的本质边界条件的罚函数因子，
 $\beta$为用于施加与广义动量$p$相关的本质边界条件的罚函数因子。
 
@@ -396,41 +398,6 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 弹簧小车的求解域分别通过图\ref{fg:bar}所示采用均布的四种疏密不同的节点进行计算，
 其中节点个数$n=32-256$分别对应$\Delta t=0.25-0.03125$的时间步长。
 
-首先对弹簧小车问题在不同计算方法和不同的时间步长下的位移随时间变化对比图进行了分析，
-图\ref{fg:0.25}-\ref{fg:0.03125}为分析结果，
-实线为精确的解析解和我们所提出的基于拉格朗日变分方案的计算结果，
-虚线为$\gamma$和$\beta$在不同取值下的Newmark-$\beta$法位移随时间变化的计算结果。
-其中灰色折线为$\gamma=0$、$\beta=0$时的显式格式，可以看出无论在何种时间步长的计算下，
-该算法的计算稳定性最差，且计算所得的误差也是远远大于其他算法，计算精度很低。
-
-绿色折线为$\gamma=1$、$\beta=\frac{1}{2}$时的隐式格式计算结果，
-由于隐式算法对时间步长不敏感，所以计算结果相较于显式格式会稳定一些，
-但是从图中可以看出隐式算法会出现严重的数值耗散现象，
-导致数值结果被过度衰减，振荡逐渐趋近于停止。
-
-蓝色折线为$\gamma=1$、$\beta=0$时的半隐式格式计算结果，
-该方法的计算结果是明显优于前两种迭代法的。
-因为半隐迭代方程满足哈密顿正则方程生成的保辛算法(Symplectic integrators)，\cite{GAGARINA2016370}
-通过勒让德变换能等价于哈密顿正则方程，
-在哈密顿正则方程的情况下迭代计算，角动量是守恒的，所以计算精度更高。
-但是，该方法在强形式框架下，仍然难以完全避免数值弥散现象，
-随着时间迭代步数的增加，数值解与精确解之间的相位差会逐渐累积，
-影响计算精度，尤其在长时程动力分析中表现得更为明显。
-
-而红色实线为本文所提出的基于哈密顿原理的完全弱形式，再通过拉格朗日乘子变分求解的方案，
-通过对比发现红色实线是最贴近于黑色实线所代表的精确解的计算结果，且从误差图中可以看出误差是所有方法中最小的。
-这表明该方法的计算精度和稳定性都比之前的三种Newmark-$\beta$迭代法更好，
-误差远远小于传统迭代的计算方法。同时，因为该方法是通过伽辽金弱形式在全域上做并行计算，
-不同于传统迭代法在计算过程依赖于上一步的计算结果，难以实现高度并行化，
-该方法可以一次性将位移求解出来，计算效率更高。
-
-根据上面四种时间步长计算得出的位移结果，我们可以得到如图\ref{fg:tanhuangxiaocheL2}所示的位移误差收敛图。
-从图中可以看出，当我们波速取$\omega=\sqrt{50}$时，节点密度采取$32,64,128,256$四种形式，
-来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，
-可以得到$2.0$的位移误差收敛率，达到理论的误差收敛率，证明该方案是能够准确收敛的。
-
-
-
 \begin{figure}[H]
     \centering
         \begin{tabular}{c}
@@ -446,7 +413,19 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \caption{弹性小车问题节点均布布置示意图}\label{fg:bar}
 \end{figure}
 
-\begin{figure}[!h]
+
+首先对弹簧小车问题在不同计算方法和不同的时间步长下的位移随时间变化对比图进行了分析，
+图\ref{fg:0.25}-\ref{fg:0.03125}为分析结果，
+实线为精确的解析解和我们所提出的基于拉格朗日变分方案的计算结果，
+虚线为$\gamma$和$\beta$在不同取值下的Newmark-$\beta$法位移随时间变化的计算结果。
+其中灰色折线为$\gamma=0$、$\beta=0$时的显式格式，可以看出无论在何种时间步长的计算下，
+该算法的计算稳定性最差，且计算所得的误差也是远远大于其他算法，计算精度很低。
+绿色折线为$\gamma=1$、$\beta=\frac{1}{2}$时的隐式格式计算结果，
+由于隐式算法对时间步长不敏感，所以计算结果相较于显式格式会稳定一些，
+但是从图中可以看出隐式算法会出现严重的数值耗散现象，
+导致数值结果被过度衰减，振荡逐渐趋近于停止。
+
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.25位移图.png} &
@@ -454,7 +433,17 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \end{tabular}
         \caption{$\Delta t=0.25$时四种方法计算弹簧小车问题的位移图与误差图}\label{fg:0.25}
 \end{figure}
-\begin{figure}[!h]
+
+蓝色折线为$\gamma=1$、$\beta=0$时的半隐式格式计算结果，
+该方法的计算结果是明显优于前两种迭代法的。
+因为半隐迭代方程满足哈密顿正则方程生成的保辛算法(Symplectic integrators)，\cite{GAGARINA2016370}
+通过勒让德变换能等价于哈密顿正则方程，
+在哈密顿正则方程的情况下迭代计算，角动量是守恒的，所以计算精度更高。
+但是，该方法在强形式框架下，仍然难以完全避免数值弥散现象，
+随着时间迭代步数的增加，数值解与精确解之间的相位差会逐渐累积，
+影响计算精度，尤其在长时程动力分析中表现得更为明显。
+
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.125位移图.png} &
@@ -462,7 +451,15 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \end{tabular}
         \caption{$\Delta t=0.125$时四种方法计算弹簧小车问题的位移图与误差图}\label{fg:0.125}
 \end{figure}
-\begin{figure}[!h]
+
+而红色实线为本文所提出的基于哈密顿原理的完全弱形式，再通过拉格朗日乘子变分求解的方案，
+通过对比发现红色实线是最贴近于黑色实线所代表的精确解的计算结果，且从误差图中可以看出误差是所有方法中最小的。
+这表明该方法的计算精度和稳定性都比之前的三种Newmark-$\beta$迭代法更好，
+误差远远小于传统迭代的计算方法。同时，因为该方法是通过伽辽金弱形式在全域上做并行计算，
+不同于传统迭代法在计算过程依赖于上一步的计算结果，难以实现高度并行化，
+该方法可以一次性将位移求解出来，计算效率更高。
+
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.0625位移图.png} &
@@ -470,7 +467,8 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \end{tabular}
         \caption{$\Delta t=0.0625$时四种方法计算弹簧小车问题的位移图与误差图}\label{fg:0.0625}
 \end{figure}
-\begin{figure}[!h]
+
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.03125位移图.png} &
@@ -479,7 +477,13 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
         \caption{$\Delta t=0.03125$时四种方法计算弹簧小车问题的位移图与误差图}\label{fg:0.03125}
 \end{figure}
 
-\begin{figure}[!h]
+根据上面四种时间步长计算得出的位移结果，我们可以得到如图\ref{fg:tanhuangxiaocheL2}所示的位移误差收敛图。
+从图中可以看出，当我们波速取$\omega=\sqrt{50}$时，节点密度采取$32,64,128,256$四种形式，
+来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，
+可以得到$2.0$的位移误差收敛率和$1.4$的位移梯度误差收敛率，
+均能达到理论的误差收敛率，证明该方案是能够准确收敛的。
+
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.38]{fig/math/波长根号50的L2收敛图.png}
 \caption{\centering{弹簧小车问题误差收敛结果}}
@@ -487,10 +491,10 @@ q(t) &= q_0 \cos (\omega t) + \frac{\dot q}{\omega} \sin(\omega t) \\
 \end{figure}
 
 同样的，采取一样的节点密度，但采用如图\ref{fg:unbar}所示的非均布网格，
-在拉格朗日乘子时空混合离散计算下，也可以得到如图\ref{fg:tanhuangxiaochefeijunbuL2}所示的$2.0$的位移误差收敛率，
-达到理论的误差收敛率。
+在拉格朗日乘子时空混合离散计算下，也可以得到如图\ref{fg:tanhuangxiaochefeijunbuL2}所示的$2.0$的位移误差收敛率和$1.6$的位移梯度误差收敛率，
+也均能达到理论的误差收敛率。
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
         \begin{tabular}{c}
             \includegraphics[width=0.8\textwidth]{fig/math/un_n=32.png} \\
@@ -565,10 +569,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
 根据图\ref{fg:jx0.25}-\ref{fg:jx0.03125}的位移以及位移误差计算结果可以看出，
 本文所提出的基于拉格朗日乘子型的变分方案计算该算例可以得到目前最精确的数值，
 计算误差最小的同时还能保证计算的稳定性。
-当我们波速取$\omega=\sqrt{50}$时，节点密度采取$32,64,128,256$四种形式，
-来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，
-可以得到如图\ref{fg:jxtanhuangxiaocheL2}所示的$2.0$的位移误差收敛率，
-达到理论的误差收敛率，证明该方案是能够准确收敛的。
+
 
 \begin{figure}[H]
     \centering
@@ -578,7 +579,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
         \end{tabular}
         \caption{$\Delta t=0.25$时四种方法计算简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.25}
 \end{figure}
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.125简谐位移图.png} &
@@ -586,7 +587,7 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
         \end{tabular}
         \caption{$\Delta t=0.125$时四种方法计算简谐外力作用下弹簧小车问题的位移图与误差图}\label{fg:jx0.125}
 \end{figure}
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{15pt}}c}
             \includegraphics[width=0.45\textwidth]{fig/math/Δt=0.0625简谐位移图.png} &
@@ -603,7 +604,12 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
         \caption{$\Delta t=0.03125$时四种方法计算简谐外力作用下弹簧小车问题位移图与误差图}\label{fg:jx0.03125}
 \end{figure}
 
-\begin{figure}[!h]
+当我们波速取$\omega=\sqrt{50}$时，节点密度采取$32,64,128,256$四种形式，
+来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，
+可以得到如图\ref{fg:jxtanhuangxiaocheL2}所示的$2.0$的位移误差收敛率和$1.5$的位移梯度误差收敛率
+均能达到理论的误差收敛率，证明该方案是能够准确收敛的。
+
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.38]{fig/math/简谐波长根号50的L2收敛图.png}
 \caption{\centering{在简谐外力作用下弹簧小车问题误差收敛结果}}
@@ -640,23 +646,22 @@ $U_0 = \frac{F_0}{(k - m * \Omega^2)}$。
 \end{figure}
 
 根据拉格朗日动力学，
-FIXME
-有于系统的质量矩阵$\boldsymbol{M}$与外力向量$\mathbf{F}$在整个运动过程中均为常数，系统具有恒定的加速度$\mathbf{a}$：
+有于系统的质量矩阵$\boldsymbol{M}$与外力向量$\boldsymbol{F}$在整个运动过程中均为常数，系统具有恒定的加速度$\boldsymbol{a}$：
 \begin{equation}
-\mathbf{a} = \mathbf{M}^{-1} \mathbf{F} = \begin{bmatrix} a_X \\ a_s \end{bmatrix}
+\boldsymbol{a} = \boldsymbol{M}^{-1} \boldsymbol{F} = \begin{bmatrix} a_1 \\ a_2 \end{bmatrix}
 \end{equation}
-其中，$a_X$、$a_s$分别为楔形滑块和小滑块的加速度，
+其中，$a_1$、$a_2$分别为楔形滑块和小滑块的加速度，
 结合零初始速度和位移，任意时刻$t$的位移解析解符合标准匀加速运动学公式：
 \begin{equation}
-\mathbf{q}(t) = \frac{1}{2} \mathbf{a} t^2 \implies
+\boldsymbol{q}(t) = \frac{1}{2} \boldsymbol{a} t^2 \implies
 \begin{cases}
-X(t) = \frac{1}{2} a_X t^2 \\
-s(t) = \frac{1}{2} a_s t^2
+q_2(t) = \frac{1}{2} a_1 t^2 \\
+q_1(t) = \frac{1}{2} a_2 t^2
 \end{cases}
 \end{equation}
 
 通过解析解方程我们可以同样可以采用Newmark-$\beta$法对它进行动力分析，
-根据式\ref{newmark-explicit}-\ref{newmark-semi-implicit}
+根据式\eqref{newmark-explicit}-\eqref{newmark-semi-implicit}
 所提到的在计算时，根据$\gamma$和$\beta$的取值不同，区分的三种迭代法进行测试。
 由于本算例的加速度为常数，因此在采用Newmark-$\beta$法时，它的隐式格式和半隐式格式是一致的。
 最后根据Newmark-$\beta$法得到计算结果，
@@ -684,10 +689,7 @@ s(t) = \frac{1}{2} a_s t^2
 根据图\ref{fg:jx0.25}-\ref{fg:jx0.03125}的位移以及位移误差计算结果可以看出，
 本文所提出的基于拉格朗日乘子型的变分方案计算该算例可以得到目前最精确的数值，
 计算误差最小的同时还能保证计算的稳定性。
-当我们节点密度采取$4,8,16,32$四种形式，
-来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，双自由度楔形-滑块动力学系统模型
-可以得到如图\ref{fg:jxtanhuangxiaocheL2}所示的$2.0$的位移误差收敛率，
-达到理论的误差收敛率，证明该方案是能够准确收敛的。
+
 
 
 \begin{figure}[H]
@@ -723,6 +725,11 @@ s(t) = \frac{1}{2} a_s t^2
         \caption{$\Delta t=0.0625$时四种方法计算双自由度楔形-滑块动力学系统位移图与误差图}\label{fg:szyd0.0625}
 \end{figure}
 
+当我们节点密度采取$4,8,16,32$四种形式，
+来测试基于拉格朗日变分方案的哈密顿完全弱形式法的误差收敛率时，双自由度楔形-滑块动力学系统模型
+可以得到如图\ref{fg:jxtanhuangxiaocheL2}所示的$2.0$的位移误差收敛率和$1.0$的位移梯度误差收敛率
+均能够达到理论的误差收敛率，证明该方案是能够准确收敛的。
+ 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.38]{fig/math/双自由度小滑块的L2误差图.png}

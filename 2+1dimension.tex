@@ -269,8 +269,8 @@ v(x,y,t) = \dot{v}(x,y,t) = v_{,x}(x,y,t) = v_{,y}(x,y,t) = 0
 
 
 根据如图\ref{fg:3dwangge}所示的三维网格示意图，当我们采用基于拉格朗日变分方案的完全弱形式伽辽金法去计算该问题时，
-可以得到图\ref{fg:3d_u}的位移云图，可以看出当我们边长取$10\times10$和$20\times20$时，
-计算所得的位移云图是数值稳定的，且计算结果精确度很高。
+可以得到图\ref{fg:3d_u}的位移云图，我们边长分别取$8\times8$、$12\times12$和$20\times20$，
+来计算他们的全局位移云图和时间中点时的二维位移云图。
 
 \begin{figure}[H]
     \centering
@@ -282,16 +282,48 @@ v(x,y,t) = \dot{v}(x,y,t) = v_{,x}(x,y,t) = v_{,y}(x,y,t) = 0
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{fig/3d_10_u.png} \\
-    $10\times10$网格位移云图 \\ \vspace{10pt}
-    \includegraphics[width=0.45\textwidth]{fig/3d_20_u.png} \\
-    $20\times20$网格位移云图
-    \caption{拉格朗日时空有限元法计算三维算例位移云图}\label{fg:3d_u}
+        \begin{tabular}{c@{\hspace{10pt}}c}
+            \includegraphics[width=0.38\linewidth]{fig/3d/cube_8.png} &
+            \includegraphics[width=0.38\linewidth]{fig/3d/cube_12.png} \\
+            $8\times8$ & $12\times12$ \\
+            \includegraphics[width=0.38\linewidth]{fig/3d/cube_20.png} &
+            \includegraphics[width=0.38\linewidth]{fig/3d/cube_excat.png}\makebox[0pt][l]{\hspace{5pt}\includegraphics[width=0.16\textwidth]{fig/3d/3d_legend.png}} \\
+            $20\times20$ & 位移精确解  \\
+        \end{tabular}
+    \caption{波动问题在不同网格密度计算下的三维位移云图}
+    \label{fg:3d_u}
+\end{figure}
+
+从图\ref{fg:3d_u}可以看出，在采用基于拉格朗日的时空混合有限元法来计算"2+1"维的波动问题时，
+四面强制边界均可以得到准确的数值解析解，当网格过于稀疏的情况下，
+顶面的时间末端边界也只会出现较小的数值振荡，稍微对网格进行加密，就可以得到跟精确解相差无几的数值解析解了，
+接着我们对各个网格密度下的时间中点时的位移云图做分析。
+图\ref{fg:3d_2_u}是对图\ref{fg:3d_u}的三维位移云图做时间中点的切片，可以看出，
+网格密度较小的时候稳定性稍有不足，有略微的数值振荡。但是当我们把网格密度加到$20 \times 20$的时候，
+基本和位移精确解一致，且也不会有明显数值振荡的现象了，能够得到稳定的计算结果，
+从而验证了本文所提方法的有效性。
+
+\begin{figure}[H]
+    \centering
+        \begin{tabular}{c@{\hspace{10pt}}c}
+            \includegraphics[width=0.4\linewidth]{fig/3d/split_8.png} &
+            \includegraphics[width=0.4\linewidth]{fig/3d/split_12.png} \\
+            $8\times8$ & $12\times12$ \\
+            \includegraphics[width=0.4\linewidth]{fig/3d/split_20.png} &
+            \includegraphics[width=0.4\linewidth]{fig/3d/split_excat.png} \\
+            $20\times20$ & 位移精确解  \\
+        \end{tabular}
+    \caption{波动问题在不同网格密度时间中点下的二维位移云图}
+    \label{fg:3d_2_u}
 \end{figure}
 
 
 
-\clearpage
+
+
+
+
+
 \section{本章小结}
 
 本章在前一章“1+1”维动力问题的理论基础上，将针对时间--空间全域的完全弱形式离散框架成功拓展至“2+1”维(二维空间联合时间维度)波动问题解析中。

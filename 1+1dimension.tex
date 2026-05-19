@@ -770,12 +770,6 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
 \label{fg:tension_bar}
 \end{figure}
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[scale=0.4]{fig/脉冲图.png}
-\caption{\centering{施加在弹性材料左侧的应力}}
-\label{fg:impulse wave}
-\end{figure}
 
 在此脉冲边界条件的影响下，位移的精确解的解析表达式为：
 \begin{equation}
@@ -787,7 +781,23 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
     \end{cases}
 \end{equation}
 
-\begin{figure}[!h]
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.35]{fig/脉冲图.png}
+\caption{\centering{施加在弹性材料左侧的应力}}
+\label{fg:impulse wave}
+\end{figure}
+
+
+弹性材料的求解域分别通过图\ref{fg:square node model}所示采用均布的四个疏密不同、
+三节点三角形单元网格进行离散。
+图\ref{fg:ecr}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
+从图中可以看出采用基于
+拉格朗日变分方案的数值分析方法在时空域上求解弹性材料波动问题时， 
+位移误差收敛率为$2.0$，能量误差收敛率为$1.0$，
+其位移误差和能量误差均能达到理论收敛率。
+
+\begin{figure}[H]
     \centering
         \begin{tabular}{c@{\hspace{20pt}}c}
             \includegraphics[width=0.3\textwidth]{fig/Tri3_square_8.png} &
@@ -800,13 +810,7 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
         \caption{弹性材料波动问题节点模型}\label{fg:square node model}
 \end{figure}
 
-弹性材料的求解域分别通过图\ref{fg:square node model}所示采用均布的四个疏密不同、
-三节点三角形单元网格进行离散。
-图\ref{fg:ecr}为采用上述四个疏密不同的离散节点时的位移误差和能量误差的收敛结果。
-从图中可以看出采用基于
-拉格朗日变分方案的数值分析方法在时空域上求解弹性材料波动问题时， 
-位移误差收敛率为$2.0$，能量误差收敛率为$1.0$，
-其位移误差和能量误差均能达到理论收敛率。
+
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.38]{fig/Tri3均布误差收敛率.png}
@@ -815,7 +819,11 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
 \end{figure}
 
 同样，当我们采用六节点单元以相同的疏密程度去计算一维弹性材料层中的波动问题时，
-最终得到的计算结果如图\ref{fg:Hecr}所示，位移误差收敛率和能量误差收敛率均能达到理论误差收敛率。
+最终得到的计算结果如图\ref{fg:Hecr}所示，
+位移误差收敛率和能量误差收敛率并没有达到理论误差收敛率，
+其原因是，该算例的精确解的连续性不够，存在梯度变化很大的区域，
+所以导致误差收敛时出现了收敛性不足的问题。
+
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.38]{fig/Tri6_(4-32).png}
@@ -842,13 +850,6 @@ u(x,t) =  \cos (\frac{\pi a}{l}t) \sin\frac{\pi x}{l}
         \begin{tabular}{c@{\hspace{20pt}}c}
             \includegraphics[width=0.4\textwidth]{fig/pmC=0.2_c=0.03.png} &
             \includegraphics[width=0.4\textwidth]{fig/pmC=0.2_c=0.04.png} \\
-            $c=0.03$位移图 & $c=0.04$位移图 
-        \end{tabular}
-        \caption{弹性材料波动问题局部加密计算的二维位移图}\label{fg:local2d}
-\end{figure}
-\begin{figure}[H]
-    \centering
-        \begin{tabular}{c@{\hspace{20pt}}c}
             \includegraphics[width=0.4\textwidth]{fig/C=0.2_c=0.03.png} &
             \includegraphics[width=0.4\textwidth]{fig/C=0.2_c=0.04.png} \\
             $c=0.03$位移图 & $c=0.04$位移图 \\
