@@ -1,1 +1,1 @@
-# HQU_thesis_latex_temple
+# WCZ_thesis
