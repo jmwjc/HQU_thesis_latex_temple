@@ -9,13 +9,27 @@
     \def\degree{博士}
     \def\coverfig{covers/doctor.png}
 }
+\DeclareOption{internationaldoctor}{
+    \def\degree{博士}
+    \def\coverfig{covers/international_doctor.png}
+}
 \DeclareOption{master}{
     \def\degree{硕士}
     \def\coverfig{covers/master.png}
 }
 \DeclareOption{engineeringmaster}{
     \def\degree{硕士}
+    \def\majortype{专硕}
     \def\coverfig{covers/engineering_master.png}
+}
+\DeclareOption{internationalmaster}{
+    \def\degree{硕士}
+    \def\coverfig{covers/international_master.png}
+}
+\DeclareOption{internationalengineeringmaster}{
+    \def\degree{硕士}
+    \def\majortype{专硕}
+    \def\coverfig{covers/international_engineering_master.png}
 }
 \ProcessOptions\relax
 
@@ -33,7 +47,7 @@
 \newcommand\fieldZh[1]{\def\@fieldZh{#1}}
 \newcommand\fieldEn[1]{\def\@fieldEn{#1}}
 \newcommand\major[1]{\def\@major{#1}}
-\newcommand\majortype[1]{\def\@majortype{#1}}
+% \newcommand\majortype[1]{\def\@majortype{#1}}
 \newcommand\coverdate[1]{\def\@coverdate{#1}}
 
 %---------------------------------------------------------------------------%
@@ -78,11 +92,11 @@
 %->> makecover, frontmatter, mainmatter, backmatter
 %---------------------------------------------------------------------------%
 \newcommand{\makecover}{
-    \newgeometry{top=3.2cm,bottom=2.6cm,left=2.4cm,right=2.2cm,bindingoffset=0cm}
+    \newgeometry{top=3.2cm,bottom=2.6cm,left=2.5cm,right=2.2cm,bindingoffset=0cm}
     \noindent\parbox{\textwidth}{\ttfamily\setstretch{1.5}\fontsize{10.5pt}{\baselineskip}\selectfont
-        学校代码：\hspace{6pt}\underline{\textrm{10385}}\hfill 分类号：\underline{\hspace{72pt}}
+        中图分类号：\underline{\hspace{49pt}} \hfill 学校代码：\underline{\makebox[49pt]{\textrm{10385}}}
 
-        研究生学号：\underline{\makebox[72pt]{\textrm{\ifdefined\@id \@id \fi}}}\hfill 密\hspace{10.5pt}集：\underline{\hspace{72pt}}
+        UDC分类号：\underline{\hspace{49pt}}\hfill 密\hspace{21pt}集：\underline{\hspace{49pt}}
     }
 
     \begin{figure}[h!]
@@ -105,11 +119,12 @@
 
     \vfill
 
-    \ifdefined\@majortype
-        \def\titlelength{88pt}
-    \else
-        \def\titlelength{60pt}
-    \fi
+    \def\titlelength{60pt}
+    % \ifdefined\majortype
+    %     \def\titlelength{88pt}
+    % \else
+    %     \def\titlelength{60pt}
+    % \fi
     \def\infolength{100pt}
 
     \noindent\parbox{\textwidth}{
@@ -118,6 +133,10 @@
             \@authorZh
         \else
             张三
+        \fi}}}}}
+
+        \makebox[\titlelength][s]{学号}： \underline{\makebox[182pt][c]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@id
+            \@id
         \fi}}}}}
 
         \makebox[\titlelength][s]{指导教师}： \underline{\makebox[182pt][c]{\makebox[\infolength]{\makebox[42pt][s]{\textrm{\textbf{\ifdefined\@supervisorZh
@@ -146,17 +165,15 @@
             }
         \fi
 
-        \ifdefined\@majortype
-            \makebox[\titlelength][s]{专业学位类别}： \underline{\makebox[182pt][c]{\textrm{\textbf{\@majortype}}}}
-
-            \makebox[\titlelength][s]{专业学位领域}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
+        \ifdefined\majortype
+            \makebox[88pt][s]{专业学位类别}： \underline{\makebox[158pt][c]{\textrm{\textbf{\ifdefined\@major
                     \@major
                 \else
                     土木水利
                 \fi}}
             }}
         \else
-            \makebox[\titlelength][s]{学科}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
+            \makebox[\titlelength][s]{学科专业}： \underline{\makebox[182pt][c]{\textrm{\textbf{\ifdefined\@major
                 \@major
             \else
                 土木工程
@@ -257,6 +274,15 @@
     \addcontentsline{toc}{chapter}{个人简历、在学期间发表的学术论文与研究成果}
     \indent\rmfamily\fontsize{12pt}{20pt}\selectfont
 }{\vspace{20pt}\par}
+\newenvironment{ai}{
+    \cleardoublepage
+    \markboth{人工智能工具使用声明}{}
+    \phantomsection
+    \chapter*{人工智能工具使用声明}
+    \addcontentsline{toc}{chapter}{人工智能工具使用声明}
+    \indent\rmfamily\fontsize{12pt}{20pt}\selectfont
+}{\vspace{20pt}\par}
+
 %---------------------------------------------------------------------------%
 %->> Structure layout
 %---------------------------------------------------------------------------%
