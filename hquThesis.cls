@@ -85,7 +85,7 @@
 \fancyhf{}
 \fancyhead[CO]{\rmfamily\fontsize{10.5pt}{\baselineskip}\selectfont \leftmark}
 \fancyhead[CE]{\rmfamily\fontsize{10.5pt}{\baselineskip}\selectfont 华侨大学\degree 学位论文}
-\bibliographystyle{gbt7714-2005-numerical}
+\bibliographystyle{gbt7714-numerical}
 \setlength{\parindent}{24pt}
 
 %---------------------------------------------------------------------------%
